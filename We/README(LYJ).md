@@ -1,6 +1,6 @@
 ## 20.09.07
 
-### 오늘 할 일
+### 오늘 한 일
 
 - 주제 선정
 - 팀명/서비스명 선정
@@ -93,3 +93,66 @@ mysql> show tables;
 데이터베이스 테이블 조회
 ```
 
+
+
+## 20.09.08
+
+### 오늘 한 일
+
+- 와이어 프레임 설계
+- DB 설계
+- API 설계
+- JPA 기본적인 내용 학습
+
+
+
+#### JPA (Java Persistent API)
+
+> Java에서의 ORM 기술 표준으로, 인터페이스의 모음. 구현체는 Hibernate를 사용할 것이다.
+
+###### 장점
+
+- 객체지향적으로 데이터 관리 가능 -> 비즈니스 로직에 집중할 수 있음
+- 테이블 생성, 변경, 관리가 쉬움
+- 빠른 개발이 가능
+
+###### 단점
+
+- 어려움
+- 성능상 문제 발생 가능성
+
+
+
+##### JPA annotation
+
+@Entity
+
+- DB의 테이블과 일대일로 매칭되는 객체 단위.
+- 객체의 인스턴스 하나가 테이블에서 하나의 레코드 값 의미
+
+@Id
+
+- 테이블 상의 Primary Key
+
+@GeneratedValue
+
+- PK 컬럼의 데이터 형식은 유일하고, 데드락 방지를 위해 Java에서는 Long을 주로 사용
+
+- GenerateType
+
+  - IDENTITY : MySQL의 auto increment 방식 채택
+
+    > 자동으로 새로운 레코드 생성이 될때마다 마지막 PK 값 +1 해주는 방식
+
+  - SEQUENCE : ORACLE의 sequence 방식 채택
+
+    > sequence ORACLE 객체를 생성해 두고 해당 sequence를 호출 할 때마다 기존 값 +1 반환 해주는 방식
+
+
+
+###### 연관관계 매핑
+
+- @OneToOne - 일대일( 1 : 1 )
+- @OneToMany - 일대다( 1 : N )
+- @ManyToOne - 다대일( N : 1 )
+- @ManyToMany - 다대다( N : N )
