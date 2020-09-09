@@ -156,3 +156,110 @@ mysql> show tables;
 - @OneToMany - 일대다( 1 : N )
 - @ManyToOne - 다대일( N : 1 )
 - @ManyToMany - 다대다( N : N )
+
+
+
+## 20.09.09
+
+### 오늘 한 일
+
+- 명세서 학습
+
+
+
+#### 스켈레톤 구조 학습
+
+##### Frontend
+
+###### public 폴더
+
+- public 폴더 안에 있는 것들은 정적 자원
+
+- 접근을 위해 앱의 배포 경로를 고려해 절대 경로를 사용해야 함
+
+- 이를 고려하지 않고 접근할 수 있도록 BASE_URL을 사용
+
+  - public/index.html 에서는 <%= BASE_URL %>
+
+  ```
+  <link rel="icon" href="<%= BASE_URL %>images/rocket.svg">
+  ```
+
+  - javascrip 코드에서는 process.env.BASE_URL 과 같이 사용한 것 확인 가능 
+
+  ```
+  return process.env.BASE_URL + "images/" + name;
+  ```
+
+###### src 폴더
+
+- src/api/ : API 호출을 위해 axios라이브러리 사용. index.js 파일에 baseurl, http header 설정을 해 둠. axios 인스턴스 생섬 함수, API 호출 기능 함수 등이 있다.
+
+- src/views/, src/components/ : views 폴더는 웹 화면 별 컴포넌트, components 폴더에는 각 화면 별 자식 컴포넌트와 공통 컴포넌트를 작성하도록 되어 있다.
+- src/config/ : 필요한 URL, 컨트랙트 주소, 스마트 컨트랙트 ABI 등 구동 환경 및 설정에 대한 변수 및 상수 정보
+- src/utils/ : 스마트 컨트랙트 메서드 호출, 가스 단위 변환 등 개발 시 자주 사용되는 기능의 함수들이 있다.
+
+
+
+##### Backend
+
+###### com.ecommerce.api
+
+API 정의 
+
+@Controller
+
+
+
+###### com.ecommerce.application
+
+실제 비즈니스 로직
+
+@Service
+
+
+
+###### com.ecommerce.domain.*
+
+com.ecommerce.domain - 데이터 클래스 (DTO)
+
+com.ecommerce.domain.repository - CRUD 레포지토리 인터페이스 (DAO)
+
+com.ecommerce.domain.wrapper - 스마트 컨트랙트 호출 및 블록 동기화 기능 구현
+
+
+
+###### com.ecommerce.infrastructure.repository
+
+MySQL DB에 객체의 CRUD를 실제로 수행하는 SQL 구현부. DB구조, Domain Layer와 밀접한 연관.
+
+
+
+
+
+#### 지갑 관련 기능 구현
+
+web3 라이브러리를 이용하여 지갑 생성/회원의 지갑 정보를 서버로 등록
+
+> vue에서 npm install web3 명령으로 라이브러리 설치 (이미 되어있는 것 같군)
+>
+> ```
+> createWallet: function() {
+> 
+>       let account = web3.eth.accounts.create()
+>       this.privateKey = account.privateKey;
+>       this.walletAddress = account.address;
+>     
+>       alert("지갑 생성이 완료되었습니다.");
+>       
+>       this.step += 1;
+> }
+> ```
+>
+> web3 api를 사용하여 지갑 생성
+
+
+
+### ! 지갑이 Geth에는 생성되지 않는 문제
+
+### ! DB에 지갑이 저장되고 후 조회 안됨 -> 정상 생성 기능이 안되는 문제
