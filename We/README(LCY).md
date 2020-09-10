@@ -28,3 +28,15 @@
 * vue를 통한 지갑 만들기 관련 삽질 - 현수가 해결
 * 다른 것 보다 vue를 너무 모름.. 
 * 거지같은 vagrant. 걔 때문에 되는것도 안된다 ^^
+
+
+
+## 9월 10일(목) 오늘 할 일 :deciduous_tree:
+
+* 로고 투표
+
+  https://hatchful.shopify.com/
+
+* JIRA 재설계
+
+* 프론트 공부
