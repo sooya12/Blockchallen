@@ -7,5 +7,5 @@ import com.ssafy.blockchallen.entity.Wallet;
 
 @Repository
 public interface WalletRepository extends JpaRepository<Wallet, Long> {
-
+	
 }
