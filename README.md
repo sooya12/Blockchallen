@@ -31,3 +31,16 @@
 > BC : 블록체인
 
 ##### README(이름)
+
+
+
+-----
+
+### :page_facing_up: Branch 규칙
+
+##### feature/기능명 으로 develop에서 분기해서 사용하고, 기능 개발 완료 후 develop에 머지!
+
+
+
+----
+
