@@ -155,3 +155,56 @@ bd.divide(new BigDecimal(2)); // 나누기
 
 ------
 
+
+
+### :scroll: 20.09.10
+
+##### 프론트, 백 파트 분배
+
+- 프론트 : 형민, 채영, 현수
+- 백 : 진섭, 유진
+
+##### Logo 선정
+
+##### 시작 페이지 프론트 구성
+
+- codepen에서 찾은 블록 로딩 화면 삽입
+
+  - animation을 json 형태로 변환한 거라서 lottie를 이용해서 삽입
+
+  ```lottie
+  $ npm install lottie-web
+  
+  <script>
+  	import lottie from 'lottie-web'
+  	
+  	...
+  	
+  	mounted() {
+      this.anim = lottie.loadAnimation({
+        wrapper: document.querySelector('#animationWindow'),
+        animType: 'svg',
+        loop: true,
+        prerender: true,
+        autoplay: true,
+        path: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/35984/LEGO_loader.json'
+      })
+      this.$emit('animCreated', this.anim)
+    }
+  </script>
+  ```
+
+- 서비스명 삽입
+
+- 카카오 소셜 로그인을 위해서 로그인 버튼 이미지 삽입
+
+
+
+### :thinking: 내일 할 일
+
+##### 모바일 웹 사이즈에 맞게 시작 페이지 조정
+
+##### 카카오 소셜 로그인 구현
+
+-----
+
