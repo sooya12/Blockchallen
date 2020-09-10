@@ -9,8 +9,11 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "lottie-vuejs": "^0.3.7",
+    "lottie-web": "^5.7.3",
     "router-view": "^1.1.7",
     "vue": "^2.6.11",
+    "vue-lottie": "^0.2.1",
     "vue-router": "^3.4.3",
     "vuetify": "^2.3.10",
     "vuex": "^3.5.1",
