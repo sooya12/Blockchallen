@@ -123,10 +123,22 @@
 - ## Done
     
      - #### 명세서 지갑 생성 구현중
-     
+
+# 2020-09-10
+
+- ## Doing
+    
+    - #### 지갑 조회, 생성 REST API 구현중
+
+- ## Issue
+
+    - #### push 과정에서 src/main/resources(application.properties)가 손실 됨!
+    
+    - #### 지갑 조회 시 회원 번호가 필요!
+    
 - ## To Do
 
   - ### JPA 공부
   
-  - ### 스마트 컨트랙트 공부
+  - ### 지갑 조회, 생성 REST API 구현 완성하기
 
