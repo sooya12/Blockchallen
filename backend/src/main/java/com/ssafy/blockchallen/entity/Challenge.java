@@ -1,6 +1,5 @@
 package com.ssafy.blockchallen.entity;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,11 +9,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,12 @@ public class Challenge {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@ApiModelProperty(value = "챌린지 ID")
 	private Long id;
+	
+	@ManyToOne
+	@JoinColumn(name = "captain_id")
+	@JsonManagedReference
+	@ApiModelProperty(required = true, value = "챌린지 방장")
+	private Account captain;
 	
 	@ApiModelProperty(required = true, value = "챌린지 주제")
 	private String name;
@@ -60,11 +67,13 @@ public class Challenge {
     
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
     @JsonBackReference
+    @ApiModelProperty(value = "인증 set")
     private Set<Certification> certifications;
     
-    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "challenges", cascade = CascadeType.ALL)
     @JsonBackReference
-	private Set<ChallengeAccount> challengeAccounts;
+    @ApiModelProperty(value = "참여한 회원 계정 set")
+	private Set<Account> accounts;
 
 	protected Set<Certification> getCertificationsInternal() {
 		if(this.certifications == null)
@@ -77,18 +86,18 @@ public class Challenge {
 		certification.setChallenge(this);
 	}
 	
-	protected Set<ChallengeAccount> getChallengeAccountInternal() {
-		if(this.challengeAccounts == null)
-			this.challengeAccounts = new HashSet<ChallengeAccount>();
-		return challengeAccounts;
+	protected Set<Account> getAccountsInternal() {
+		if(this.accounts == null)
+			this.accounts = new HashSet<Account>();
+		return accounts;
 	}
 	
-	public void addChallengeAccount(ChallengeAccount challengeAccount) {
-		this.getChallengeAccountInternal().add(challengeAccount);
-		challengeAccount.setChallenge(this);
+	public void addAccount(Account account) {
+		this.getAccountsInternal().add(account);
 	}
 	
 	public static class Builder {
+		private Account captain;
 		private String name = "";
 		private String expireDate = "";
 		private String startDate = "";
@@ -97,10 +106,14 @@ public class Challenge {
 		private Boolean isRandom = false;
 		private String certificationCondition = "";
 		private Set<Certification> certifications;
-		private Set<ChallengeAccount> challengeAccounts;
+		private Set<Account> accounts;
 		
 		public Builder() {
 			
+		}
+		public Builder captain(Account captain) {
+			this.captain = captain;
+			return this;
 		}
 		public Builder name(String name) {
 			this.name = name;
@@ -134,8 +147,8 @@ public class Challenge {
 			this.certifications = certifications;
 			return this;
 		}
-		public Builder challengeAccounts(Set<ChallengeAccount> challengeAccounts) {
-			this.challengeAccounts = challengeAccounts;
+		public Builder accounts(Set<Account> accounts) {
+			this.accounts = accounts;
 			return this;
 		}
 		public Challenge build() {
@@ -143,6 +156,7 @@ public class Challenge {
 		}
 	}
 	private Challenge(Builder builder) {
+		captain = builder.captain;
 		name = builder.name;
 		expireDate = builder.expireDate;
 		startDate = builder.startDate;
@@ -151,7 +165,7 @@ public class Challenge {
 		isRandom = builder.isRandom;
 		certificationCondition = builder.certificationCondition;
 		certifications = builder.certifications;
-		challengeAccounts = builder.challengeAccounts;
+		accounts = builder.accounts;
 	}
 	
 }

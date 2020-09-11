@@ -8,10 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -44,13 +48,35 @@ public class Account {
 	@ApiModelProperty(value = "지갑 ID")
 	private Wallet wallet;
 	
-	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "captain", cascade = CascadeType.ALL)
 	@JsonBackReference
-	private Set<Certification> certifications;
+	@ApiModelProperty(value = "방장인 챌린지 set")
+	private Set<Challenge> captainChallenges;
 	
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
 	@JsonBackReference
-	private Set<ChallengeAccount> challengeAccounts;
+	@ApiModelProperty(value = "인증 set")
+	private Set<Certification> certifications;
+	
+	@ManyToMany
+	@JoinTable(
+			name = "account_challenge", 
+			joinColumns = @JoinColumn(name = "account_id"),
+			inverseJoinColumns = @JoinColumn(name = "challenge_id"))
+	@JsonManagedReference
+	@ApiModelProperty(value = "참여한 챌린지 set")
+	private Set<Challenge> challenges;
+	
+	protected Set<Challenge> getCaptainChallengesInternal() {
+		if(this.captainChallenges == null)
+			this.captainChallenges = new HashSet<Challenge>();
+		return captainChallenges;
+	}
+	
+	public void addCaptainChallenge(Challenge challenge) {
+		this.getCaptainChallengesInternal().add(challenge);
+		challenge.setCaptain(this);
+	}
 	
 	protected Set<Certification> getCertificationsInternal() {
 		if(this.certifications == null)
@@ -63,15 +89,15 @@ public class Account {
 		certification.setAccount(this);
 	}
 	
-	protected Set<ChallengeAccount> getChallengeAccountInternal() {
-		if(this.challengeAccounts == null)
-			this.challengeAccounts = new HashSet<ChallengeAccount>();
-		return challengeAccounts;
+	protected Set<Challenge> getChallengesInternal() {
+		if(this.challenges == null)
+			this.challenges = new HashSet<Challenge>();
+		return challenges;
 	}
 	
-	public void addChallengeAccount(ChallengeAccount challengeAccount) {
-		this.getChallengeAccountInternal().add(challengeAccount);
-		challengeAccount.setAccount(this);
+	public void addChallengeAccount(Challenge challenge) {
+		this.getChallengesInternal().add(challenge);
+		challenge.getAccounts().add(this);
 	}
 	
 	
@@ -80,8 +106,9 @@ public class Account {
 		private String nickname = "";
 		private String access_token = "";
 		private Wallet wallet;
+		private Set<Challenge> captainChallenges;
 		private Set<Certification> certifications;
-		private Set<ChallengeAccount> challengeAccounts;
+		private Set<Challenge> challenges;
 		
 		public Builder() {
 			
@@ -102,12 +129,16 @@ public class Account {
 			this.wallet = wallet;
 			return this;
 		}
+		public Builder captainChallenges(Set<Challenge> captainChallenges) {
+			this.captainChallenges = captainChallenges;
+			return this;
+		}
 		public Builder certifications(Set<Certification> certifications) {
 			this.certifications = certifications;
 			return this;
 		}
-		public Builder challengeAccounts(Set<ChallengeAccount> challengeAccounts) {
-			this.challengeAccounts = challengeAccounts;
+		public Builder challenges(Set<Challenge> challenges) {
+			this.challenges = challenges;
 			return this;
 		}
 		public Account build() {
@@ -119,7 +150,8 @@ public class Account {
 		nickname = builder.nickname;
 		access_token = builder.access_token;
 		wallet = builder.wallet;
+		captainChallenges = builder.captainChallenges;
 		certifications = builder.certifications;
-		challengeAccounts = builder.challengeAccounts;
+		challenges = builder.challenges;
 	}
 }
