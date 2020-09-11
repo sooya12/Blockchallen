@@ -8,9 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -39,13 +40,16 @@ public class Account {
 	private String access_token;
 	
 	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+	@JsonBackReference
 	@ApiModelProperty(value = "지갑 ID")
 	private Wallet wallet;
 	
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	@JsonBackReference
 	private Set<Certification> certifications;
 	
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	@JsonBackReference
 	private Set<ChallengeAccount> challengeAccounts;
 	
 	protected Set<Certification> getCertificationsInternal() {

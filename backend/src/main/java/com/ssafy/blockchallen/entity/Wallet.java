@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
-import com.ssafy.blockchallen.entity.Certification.Builder;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -30,6 +30,7 @@ public class Wallet {
 	
 	@OneToOne
 	@JoinColumn(name = "account_id")
+	@JsonManagedReference
 	@ApiModelProperty(required = true, value="회원 번호")
 	private Account account;
 	
