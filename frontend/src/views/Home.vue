@@ -4,12 +4,12 @@
       <div id="animationWindow">
       </div>
       <div id="title">
-        <p style="font-size:4vw;">
+        <p>
           <b>BlockChallen</b>
         </p>
       </div>
       <div id="kakaoLogin">
-        <img :src="require('@/assets/kakao_login_large_narrow.png')" @click="함수이름">
+        <img :src="require('@/assets/kakao_login_large_narrow.png')" @click=kakaoLogin>
       </div>
     </v-content>
   </div>
@@ -30,8 +30,12 @@ export default {
       path: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/35984/LEGO_loader.json'
     })
     this.$emit('animCreated', this.anim)
+  },
+  methods: {
+    kakaoLogin() {
+      window.location.href = 'https://kauth.kakao.com/oauth/authorize?client_id=28c57e4dec8be27db1832926dba21bb0&redirect_uri=http://localhost:3030&response_type=code'
+    }
   }
-
 }
 </script>
 
@@ -39,21 +43,26 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@700&display=swap');
 
 #app {
-  width: 70%;
-  height: auto;
+  width: 100%;
+  height: 1vh;
   margin: 0 auto;
   font-family: 'Kalam', cursive;
 }
 
 #animationWindow {
-  width: auto;
-  height: 70%;
+  width: 100%;
+  height: 60vh;
+  margin: 0 auto;
 }
 
 #title {
   position: relative;
-  top: -13%;
+  top: -15vh;
   text-align: center;
+}
+
+#title p {
+  font-size: 6vw;
 }
 
 #kakaoLogin {
@@ -63,8 +72,8 @@ export default {
 }
 
 #kakaoLogin img {
-  width: 30%;
-  height: auto;
+  width: auto;
+  height: 6vh;
 }
 
 </style>
