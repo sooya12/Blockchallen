@@ -4,6 +4,8 @@ import com.ssafy.blockchallen.service.IWalletService;
 import com.ssafy.blockchallen.entity.Wallet;
 import com.ssafy.blockchallen.repository.WalletRepository;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,22 @@ public class WalletService implements IWalletService {
 		newWallet.setId(wallet.getId());
 		newWallet.setAddress(wallet.getAddress());
 		newWallet.setOwnerId(wallet.getOwnerId());
+		return newWallet;
+	}
+	@Override
+	public Wallet syncBalance(String walletAddress, BigDecimal balance, int cash) {
+		return null;
+	}
+	
+	@Override
+	public Wallet requestEth(String walletAddress) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Wallet get(String address) {
+		Wallet newWallet = new Wallet();
+		newWallet = walletRepository.findByAddress(address);
 		return newWallet;
 	}
 }
