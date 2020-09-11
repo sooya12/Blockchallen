@@ -1,8 +1,6 @@
 <template>
   <v-app>
 
-
-
     <v-main>
       <router-view :key="$route.fullPath"/>
     </v-main>
@@ -14,6 +12,7 @@
 
 export default {
   name: 'App',
+
 
   components: {
 
