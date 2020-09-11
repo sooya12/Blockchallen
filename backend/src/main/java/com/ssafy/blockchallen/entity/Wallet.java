@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -21,11 +22,12 @@ import lombok.Setter;
 public class Wallet {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@ApiModelProperty(required = true, value="지갑 번호")
+	@ApiModelProperty(value="지갑 번호")
 	private Long id;
 	
+	@OneToOne
 	@ApiModelProperty(required = true, value="회원 번호")
-	private long ownerId;
+	private Account account;
 	
 	@ApiModelProperty(required = true, value="지갑 주소")
 	private String address;
