@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -25,9 +27,13 @@ public class Certification {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-//	private Challenge challenge;
-//	
-//	private Account account;
+	@ManyToOne
+	@JoinColumn(name = "challenge_id")
+	private Challenge challenge;
+	
+	@ManyToOne
+	@JoinColumn(name = "account_id")
+	private Account account;
 	
 	private String picture;
 	
@@ -35,5 +41,6 @@ public class Certification {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date regDate;
 	
+	@Column(name = "is_reported")
 	private Boolean isReported;
 }
