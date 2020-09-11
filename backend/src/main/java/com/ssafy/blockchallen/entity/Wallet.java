@@ -1,5 +1,7 @@
 package com.ssafy.blockchallen.entity;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +21,7 @@ import lombok.Setter;
 public class Wallet {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@ApiModelProperty(value="지갑 번호")
+	@ApiModelProperty(required = true, value="지갑 번호")
 	private Long id;
 	
 	@ApiModelProperty(required = true, value="회원 번호")
@@ -28,4 +30,6 @@ public class Wallet {
 	@ApiModelProperty(required = true, value="지갑 주소")
 	private String address;
 
+	@ApiModelProperty(required = true, value="지갑 잔고")
+	private BigDecimal balance = BigDecimal.valueOf(0);
 }

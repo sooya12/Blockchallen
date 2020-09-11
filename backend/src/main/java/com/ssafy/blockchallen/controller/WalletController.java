@@ -38,17 +38,17 @@ public class WalletController {
 		return newWallet;
 	}
 
-//	/**
-//	 * TODO Sub PJT Ⅱ 과제 1
-//	 * 지갑 조회 by address
-//	 * @param address 지갑 주소
-//	 */
-//	@ApiOperation(value = "Fetch wallet by address")
-//	@RequestMapping(value = "/wallets/{address}", method = RequestMethod.GET)
-//	public Wallet get(@PathVariable String address) {
-//		
-//		return null;
-//	}
+	/**
+	 * TODO Sub PJT Ⅱ 과제 1
+	 * 지갑 조회 by address
+	 * @param address 지갑 주소
+	 */
+	@ApiOperation(value = "Fetch wallet by address")
+	@RequestMapping(value = "/wallets/{address}", method = RequestMethod.GET)
+	public Wallet get(@PathVariable String address) {
+		Wallet newWallet = walletService.get(address);
+		return newWallet;
+	}
 
 	/**
 	 * TODO Sub PJT Ⅱ 과제 1
@@ -59,12 +59,24 @@ public class WalletController {
 	@RequestMapping(value = "/wallets/of/{uid}", method = RequestMethod.GET)
 	public Wallet getByUser(@PathVariable long uid) {
 		System.out.println(uid);
-		Wallet newWallet = this.walletService.get(uid);
+		Wallet newWallet = walletService.get(uid);
 		 if (newWallet == null) {
 	            logger.error("NOT FOUND ID: ", uid);
 	           // throw new NotFoundException(uid + " 회원 정보를 찾을 수 없습니다.");
 	        }
 		return newWallet;
+	}
+	
+	/**
+	 * TODO Sub PJT Ⅱ 과제 1
+	 * 이더 충전 요청
+	 * @param address 지갑 주소
+	 */
+	@ApiOperation(value = "Request ether")
+	@RequestMapping(value ="/wallets/{address}", method = RequestMethod.PUT)
+	public Wallet requestEth(@PathVariable String address){ // 테스트 가능하도록 일정 개수의 코인을 충전해준다.
+		//Wallet newWallet = this.walletService.get(address);
+		return null;
 	}
 
 }
