@@ -12,19 +12,34 @@
         </div>
 
         <!-- 검색 -->
-        <div class="search">
-            <v-text-field
+        <v-form class="mt-3 px-3 d-flex">
+            
+             <v-text-field
                 label="어떤 챌린지를 찾고 계신가요?"
                 outlined
-                append-icon="mdi-magnify"
                 v-model="searchText"
                 class="col-12 px-3"
                 color="#5858FA"
-                style="padding:10px"
-                @click="find"
+                style="padding:10px;"
+
             >
             </v-text-field>
-        </div>
+            <!-- <div>
+                <v-icon 
+                    @click="find" 
+                    color="#5858FA"
+                    >fas fa-search</v-icon>
+                
+            </div> -->
+            <div>
+                <v-btn 
+                    @click="find" 
+                    text class="mt-3 font-weight-bold" 
+                    color="#5858FA"
+                    ><font-awesome-icon icon="search"  
+                        color="#5858FA" size='2x'/></v-btn>
+            </div>
+        </v-form>
 
         <!-- 챌린지 목록 -->
         <v-container>
@@ -65,7 +80,8 @@ export default{
         ToMyPage:function(){
             this.$router.push('/MyPage')
         },
-        find:function(){
+        find:function(event){
+            if(event)
             alert("찾기")
         }
     }
@@ -75,7 +91,7 @@ export default{
 </script>
 <style scoped>
     .ChallengeList{width:70%; text-align:center; margin:0px auto; padding:20px}
-    .high{width:100%;}
+    .high{width:100%;padding:20px;margin:20px}
     .name{float:left}
     .topbutton{float:right}
     
