@@ -32,7 +32,7 @@ public class Account {
 	private String email;
 	
 	@ApiModelProperty(required = true, value = "별명")
-	private String neckname;
+	private String nickname;
 	
 	@ApiModelProperty(required = true, value = "토큰")
 	private String access_token;

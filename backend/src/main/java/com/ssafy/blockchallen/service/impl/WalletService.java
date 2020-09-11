@@ -30,7 +30,7 @@ public class WalletService implements IWalletService {
 		Wallet newWallet = new Wallet();
 		newWallet.setId(wallet.getId());
 		newWallet.setAddress(wallet.getAddress());
-		newWallet.setOwnerId(wallet.getOwnerId());
+		newWallet.setId(wallet.getAccount().getId());
 		return newWallet;
 	}
 	@Override
