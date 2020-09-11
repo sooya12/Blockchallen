@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.ssafy.blockchallen.entity.Account.Builder;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -53,11 +56,11 @@ public class Challenge {
     @ApiModelProperty(required = true, value = "사진인증조건")
     private String certificationCondition;
     
-    @OneToMany(mappedBy = "challenge")
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
     private Set<Certification> certifications;
     
-    @OneToMany(mappedBy = "challenge")
-	private Set<ChallengeAccount> challengeaccounts;
+    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
+	private Set<ChallengeAccount> challengeAccounts;
 
 	protected Set<Certification> getCertificationsInternal() {
 		if(this.certifications == null)
@@ -71,13 +74,74 @@ public class Challenge {
 	}
 	
 	protected Set<ChallengeAccount> getChallengeAccountInternal() {
-		if(this.challengeaccounts == null)
-			this.challengeaccounts = new HashSet<ChallengeAccount>();
-		return challengeaccounts;
+		if(this.challengeAccounts == null)
+			this.challengeAccounts = new HashSet<ChallengeAccount>();
+		return challengeAccounts;
 	}
 	
-	public void addChallengeAccount(ChallengeAccount challengeaccount) {
-		this.getChallengeAccountInternal().add(challengeaccount);
-		challengeaccount.setChallenge(this);
+	public void addChallengeAccount(ChallengeAccount challengeAccount) {
+		this.getChallengeAccountInternal().add(challengeAccount);
+		challengeAccount.setChallenge(this);
 	}
+	
+	public static class Builder {
+		private String name = "";
+		private Date startDate;
+		private Date endDate;
+		private Integer fee = 0;
+		private Boolean isRandom = false;
+		private String certificationCondition = "";
+		private Set<Certification> certifications;
+		private Set<ChallengeAccount> challengeAccounts;
+		
+		public Builder() {
+			
+		}
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+		public Builder startDate(Date starDate) {
+			this.startDate = starDate;
+			return this;
+		}
+		public Builder endDate(Date endDate) {
+			this.endDate = endDate;
+			return this;
+		}
+		public Builder fee(int fee) {
+			this.fee = fee;
+			return this;
+		}
+		public Builder isRandom(boolean isRandom) {
+			this.isRandom = isRandom;
+			return this;
+		}
+		public Builder certificationCondition(String certificationCondition) {
+			this.certificationCondition = certificationCondition;
+			return this;
+		}
+		public Builder certifications(Set<Certification> certifications) {
+			this.certifications = certifications;
+			return this;
+		}
+		public Builder challengeAccounts(Set<ChallengeAccount> challengeAccounts) {
+			this.challengeAccounts = challengeAccounts;
+			return this;
+		}
+		public Challenge build() {
+			return new Challenge(this);
+		}
+	}
+	private Challenge(Builder builder) {
+		name = builder.name;
+		startDate = builder.startDate;
+		endDate = builder.endDate;
+		fee = builder.fee;
+		isRandom = builder.isRandom;
+		certificationCondition = builder.certificationCondition;
+		certifications = builder.certifications;
+		challengeAccounts = builder.challengeAccounts;
+	}
+	
 }

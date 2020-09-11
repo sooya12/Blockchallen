@@ -3,6 +3,7 @@ package com.ssafy.blockchallen.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,20 +33,20 @@ public class Account {
 	private String email;
 	
 	@ApiModelProperty(required = true, value = "별명")
-	private String neckname;
+	private String nickname;
 	
 	@ApiModelProperty(required = true, value = "토큰")
 	private String access_token;
 	
-	@OneToOne(mappedBy = "account")
+	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
 	@ApiModelProperty(value = "지갑 ID")
 	private Wallet wallet;
 	
-	@OneToMany(mappedBy = "account")
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
 	private Set<Certification> certifications;
 	
-	@OneToMany(mappedBy = "account")
-	private Set<ChallengeAccount> challengeaccounts;
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	private Set<ChallengeAccount> challengeAccounts;
 	
 	protected Set<Certification> getCertificationsInternal() {
 		if(this.certifications == null)
@@ -59,13 +60,62 @@ public class Account {
 	}
 	
 	protected Set<ChallengeAccount> getChallengeAccountInternal() {
-		if(this.challengeaccounts == null)
-			this.challengeaccounts = new HashSet<ChallengeAccount>();
-		return challengeaccounts;
+		if(this.challengeAccounts == null)
+			this.challengeAccounts = new HashSet<ChallengeAccount>();
+		return challengeAccounts;
 	}
 	
-	public void addChallengeAccount(ChallengeAccount challengeaccount) {
-		this.getChallengeAccountInternal().add(challengeaccount);
-		challengeaccount.setAccount(this);
+	public void addChallengeAccount(ChallengeAccount challengeAccount) {
+		this.getChallengeAccountInternal().add(challengeAccount);
+		challengeAccount.setAccount(this);
+	}
+	
+	
+	public static class Builder {
+		private String email = "";
+		private String nickname = "";
+		private String access_token = "";
+		private Wallet wallet;
+		private Set<Certification> certifications;
+		private Set<ChallengeAccount> challengeAccounts;
+		
+		public Builder() {
+			
+		}
+		public Builder email(String email) {
+			this.email = email;
+			return this;
+		}
+		public Builder nickname(String nickname) {
+			this.nickname = nickname;
+			return this;
+		}
+		public Builder access_token(String access_token) {
+			this.access_token = access_token;
+			return this;
+		}
+		public Builder wallet(Wallet wallet) {
+			this.wallet = wallet;
+			return this;
+		}
+		public Builder certifications(Set<Certification> certifications) {
+			this.certifications = certifications;
+			return this;
+		}
+		public Builder challengeAccounts(Set<ChallengeAccount> challengeAccounts) {
+			this.challengeAccounts = challengeAccounts;
+			return this;
+		}
+		public Account build() {
+			return new Account(this);
+		}
+	}
+	private Account(Builder builder) {
+		email = builder.email;
+		nickname = builder.nickname;
+		access_token = builder.access_token;
+		wallet = builder.wallet;
+		certifications = builder.certifications;
+		challengeAccounts = builder.challengeAccounts;
 	}
 }

@@ -50,4 +50,47 @@ public class Certification {
 	@Column(name = "is_reported")
 	@ApiModelProperty(required = true, value = "신고여부")
 	private Boolean isReported;
+	
+	public static class Builder {
+		private Challenge challenge;
+		private Account account;
+		private String picture = "";
+		private Date regDate;
+		private Boolean isReported = false;
+		
+		public Builder() {
+			
+		}
+		public Builder challenge(Challenge challenge) {
+			this.challenge = challenge;
+			return this;
+		}
+		public Builder account(Account account) {
+			this.account = account;
+			return this;
+		}
+		public Builder picture(String picture) {
+			this.picture = picture;
+			return this;
+		}
+		public Builder regDate(Date regDate) {
+			this.regDate = regDate;
+			return this;
+		}
+		public Builder isReported(boolean isReported) {
+			this.isReported = isReported;
+			return this;
+		}
+		public Certification build() {
+			return new Certification(this);
+		}
+	}
+	private Certification(Builder builder) {
+		challenge = builder.challenge;
+		account = builder.account;
+		picture = builder.picture;
+		regDate = builder.regDate;
+		isReported = builder.isReported;
+	}
+	
 }
