@@ -215,6 +215,7 @@
                   name:this.title,
                   startDate:this.startdate,
                   endDate:this.enddate,
+                  expireDate:this.expiredate,
                   fee : this.bet,
                   isRandom:this.isRandom,
                   certificationCondition:this.certificateCondition,
