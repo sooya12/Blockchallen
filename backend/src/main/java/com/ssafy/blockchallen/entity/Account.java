@@ -37,7 +37,7 @@ public class Account {
 	@ApiModelProperty(required = true, value = "토큰")
 	private String access_token;
 	
-	@OneToOne
+	@OneToOne(mappedBy = "account")
 	@ApiModelProperty(value = "지갑 ID")
 	private Wallet wallet;
 	

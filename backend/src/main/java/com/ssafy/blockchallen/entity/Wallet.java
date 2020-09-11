@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -26,6 +27,7 @@ public class Wallet {
 	private Long id;
 	
 	@OneToOne
+	@JoinColumn(name = "account_id")
 	@ApiModelProperty(required = true, value="회원 번호")
 	private Account account;
 	
