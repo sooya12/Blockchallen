@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import ChallengeCreate from '@/views/ChallengeCreate.vue'
+import ChallengeDetail from '@/views/ChallengeDetail.vue'
 import Home from '@/views/Home.vue'
 import SignUp from '@/views/SignUp.vue'
 
@@ -21,6 +22,12 @@ const routes = [
         path: '/challenges/create',
         name: "ChallengeCreate",
         component: ChallengeCreate
+    },
+    {
+        path: '/challenges/:cid',
+        name: "ChallengeDetail",
+        component: ChallengeDetail,
+        props: true
     },
 ]
 
