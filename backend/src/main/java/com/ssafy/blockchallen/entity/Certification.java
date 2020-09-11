@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,23 +33,67 @@ public class Certification {
 	
 	@ManyToOne
 	@JoinColumn(name = "challenge_id")
+	@JsonManagedReference
 	@ApiModelProperty(required = true, value = "챌린지 ID")
 	private Challenge challenge;
 	
 	@ManyToOne
 	@JoinColumn(name = "account_id")
+	@JsonManagedReference
 	@ApiModelProperty(required = true, value = "회원 계정 ID")
 	private Account account;
 	
 	@ApiModelProperty(required = true, value = "인증 사진")
 	private String picture;
-	
-	@Column(columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-	@Temporal(TemporalType.TIMESTAMP)
+
+	@Column(name = "reg_date")
 	@ApiModelProperty(required = true, value = "등록시간")
-	private Date regDate;
+	private String regDate;
 	
 	@Column(name = "is_reported")
 	@ApiModelProperty(required = true, value = "신고여부")
 	private Boolean isReported;
+	
+	public static class Builder {
+		private Challenge challenge;
+		private Account account;
+		private String picture = "";
+		private String regDate;
+		private Boolean isReported = false;
+		
+		public Builder() {
+			
+		}
+		public Builder challenge(Challenge challenge) {
+			this.challenge = challenge;
+			return this;
+		}
+		public Builder account(Account account) {
+			this.account = account;
+			return this;
+		}
+		public Builder picture(String picture) {
+			this.picture = picture;
+			return this;
+		}
+		public Builder regDate(String regDate) {
+			this.regDate = regDate;
+			return this;
+		}
+		public Builder isReported(boolean isReported) {
+			this.isReported = isReported;
+			return this;
+		}
+		public Certification build() {
+			return new Certification(this);
+		}
+	}
+	private Certification(Builder builder) {
+		challenge = builder.challenge;
+		account = builder.account;
+		picture = builder.picture;
+		regDate = builder.regDate;
+		isReported = builder.isReported;
+	}
+	
 }

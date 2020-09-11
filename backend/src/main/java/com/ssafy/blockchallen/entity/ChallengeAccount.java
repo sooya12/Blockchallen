@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,11 +28,13 @@ public class ChallengeAccount {
 	
 	@ManyToOne
 	@JoinColumn(name = "challenge_id")
+	@JsonManagedReference
 	@ApiModelProperty(required = true, value = "챌린지 ID")
 	private Challenge challenge;
 	
 	@ManyToOne
 	@JoinColumn(name = "account_id")
+	@JsonManagedReference
 	@ApiModelProperty(required = true, value = "회원 계정 ID")
 	private Account account;
 	
