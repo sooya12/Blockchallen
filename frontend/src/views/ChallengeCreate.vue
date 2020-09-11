@@ -92,6 +92,7 @@
                                 :items="bets"
                                 label="베팅 금액"
                                 outlined
+                                v-model="bet"
                         ></v-select>
                     </v-flex>
                 </div>
@@ -103,7 +104,7 @@
                     </v-radio-group>
                 </div>
                 <div style="margin-top: 2%;">
-                    <p style="text-align: left;">사진 인증 조건</p>
+                    <p style="text-align: left;">사진 인증 조건 (선택)</p>
                     <v-text-field
                             v-model="certificateCondition"
                             :rules="rules"
@@ -137,7 +138,7 @@
                                     v-on="on"
                             ></v-text-field>
                         </template>
-                        <v-date-picker v-model="startdate" no-title scrollable>
+                        <v-date-picker v-model="expiredate" no-title scrollable>
                             <v-spacer></v-spacer>
                             <v-btn color="primary" @click="menu = false">Cancel</v-btn>
                             <v-btn color="primary" @click="$refs.expire.save(expiredate)" >OK</v-btn>
@@ -168,11 +169,17 @@
             </v-snackbar>
 
 
+            <v-btn class="ma-2" color="primary" :disabled="!(checktitle&&(bet>0)&&checkdate)"
+            >
+                챌린지 만들기
+                <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
+            </v-btn>
         </div>
     </div>
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
         name: "challengeCreate",
         data () {
@@ -186,6 +193,7 @@
                 enddate: new Date().toISOString().substr(0, 10),
                 endmenu: false,
                 bets: [1000,2000,3000,5000,10000,20000],
+                bet:0,
                 isRandom:true,
                 certificateCondition:'',
                 expiredate:new Date().toISOString().substr(0, 10),
@@ -195,19 +203,45 @@
                 snackbarmode: 'vertical',
                 snackbartimeout: 3000,
                 snackbarmsg: '정보 없음',
+                checktitle:false,
+                checkdate:false,
 
 
             }
         },
+        methods:{
+          register:function () {
+              axios.post('/blockchallen/challenge',{
+                  name:this.title,
+                  startDate:this.startdate,
+                  endDate:this.enddate,
+                  fee : this.bet,
+                  isRandom:this.isRandom,
+                  certificationCondition:this.certificateCondition,
+                  uid:'로그인 이후 구현',
+              })
+              .then(()=>{
+                  this.$router.push('/') //상세페이지로 이동하자
+              })
+          }
+        },
         watch:{
+            title: function(newVal){
+                if(newVal!=null&&newVal.length>0){
+                    this.checktitle=true;
+                }else{
+                    this.checktitle=false;
+                }
+            },
             startdate: function(newVal) {
 
                 let curDate = new Date().toISOString().substr(0, 10)
 
-                if(curDate>newVal){
-                    this.snackbarmsg='현재 날짜 보다 이전 일 수는 없습니다.'
+                if(curDate>=newVal){
+                    this.snackbarmsg='시작 일은 현재 날짜 보다 최소 1일 이후 여야 합니다.'
                     this.snackbar=true;
                     this.startdate= curDate
+                    this.checkdate=false;
                     return;
                 }else{
                     if(this.enddate<newVal){
@@ -222,14 +256,14 @@
                 }
             },
             enddate: function (newVal) {
-                if(this.startdate>newVal){
+                if(this.startdate>=newVal){
 
                     this.snackbarmsg='종료 날짜는 시작 날짜 이후여야 합니다.'
                     this.snackbar=true;
                     let tempDate=new Date(this.startdate)
                     tempDate.setDate(tempDate.getDate()+1)
                     this.enddate=tempDate.toISOString().substr(0,10)
-
+                    this.checkdate=false;
                     return;
                 }else{
                     let from=new Date(this.startdate)
@@ -245,8 +279,20 @@
                     }else{
                         differ=differ+'일'
                     }
+                    this.checkdate=true;
                     this.periods=differ
                 }
+            },
+            expiredate: function (newVal) {
+                if(newVal>=this.startdate){
+                    this.snackbarmsg='마감일은 시작일보다 최소 하루 전이여야 합니다.'
+                    this.snackbar=true;
+                    let tempDate=new Date(this.startdate)
+                    tempDate.setDate(tempDate.getDate()-1)
+                    this.expiredate=tempDate.toISOString().substr(0,10)
+                }
+
+                console.log(this.bet)
             }
 
         }
