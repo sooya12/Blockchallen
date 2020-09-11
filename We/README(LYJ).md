@@ -298,3 +298,49 @@ web3 라이브러리를 이용하여 지갑 생성/회원의 지갑 정보를 �
 
 #### 내일은 좀 더 열심히 살아보자...
 
+
+
+## 20.09.11
+
+### 오늘 한 일
+
+- 엔티티 수정
+- 엔티티 연관관계 매핑
+- 엔티티 빌더 생성
+- 엔티티 순환 참조 방지
+
+
+
+#### ManyToMany
+
+양 쪽 모두 Set의 형태로 데이터를 가지게 한다.
+
+연관관계의 주인 쪽에 관계를 구성
+
+@JoinTable 어노테이션 이용 
+
+- name = "조인 테이블 이름"
+- joincolumns = @JoinColumn(name = "주인쪽 외래키 id")
+- inverseJoinColumn(name = "다른쪽 외래키 id")
+
+주인이 아닌쪽에 mappedBy 설정
+
+[ManyToMany 레퍼런스](https://www.baeldung.com/jpa-many-to-many)
+
+[ManyToMany 예제](https://thorben-janssen.com/best-practices-for-many-to-many-associations-with-hibernate-and-jpa/)
+
+
+
+#### JPA 순환 참조 방지
+
+@JsonIgnore 
+
+- 실제로 property에 null을 할당하는 방식
+
+@JsonManagedReference / @JsonBackReference 
+
+- 본질적으로 순환참조를 방어하기 위한 Annotation
+- 객체의 상위/하위 관계 처리 명시
+
+- 부모 클래스측에(주인쪽에 사용했음 난) @JsonManagedReference 자식측에 @JsonBackReference
+
