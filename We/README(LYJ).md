@@ -344,3 +344,15 @@ web3 라이브러리를 이용하여 지갑 생성/회원의 지갑 정보를 �
 
 - 부모 클래스측에(주인쪽에 사용했음 난) @JsonManagedReference 자식측에 @JsonBackReference
 
+
+
+## 20.09.14
+
+### 오늘 한 일
+
+- 소셜 로그인(카카오) 구현중...
+
+
+
+#### java.net.URL / java.net.HttpURLConnection
+
