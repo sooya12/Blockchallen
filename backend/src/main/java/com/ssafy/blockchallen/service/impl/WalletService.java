@@ -19,19 +19,18 @@ public class WalletService implements IWalletService {
 		this.walletRepository = walletRepository;
 	}
 	@Override
-	public Wallet get(long userId) {
-		Wallet newWallet = new Wallet();
-		newWallet = walletRepository.findById(userId).orElse(null);
-		return newWallet;
+	public Wallet findUserId(long userId) {
+		return walletRepository.findById(userId).orElse(null);
 	}
-
+	
 	@Override
-	public Wallet register(Wallet wallet) {
-		Wallet newWallet = new Wallet();
-		newWallet.setId(wallet.getId());
-		newWallet.setAddress(wallet.getAddress());
-		newWallet.setId(wallet.getAccount().getId());
-		return newWallet;
+	public Wallet findAddress(String address) {
+		return walletRepository.findByAddress(address);
+	}
+	
+	@Override
+	public Wallet create(Wallet wallet) {
+		return walletRepository.save(wallet);
 	}
 	@Override
 	public Wallet syncBalance(String walletAddress, BigDecimal balance, int cash) {
@@ -43,10 +42,5 @@ public class WalletService implements IWalletService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
-	public Wallet get(String address) {
-		Wallet newWallet = new Wallet();
-		newWallet = walletRepository.findByAddress(address);
-		return newWallet;
-	}
+	
 }

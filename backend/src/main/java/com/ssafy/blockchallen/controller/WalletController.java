@@ -30,12 +30,8 @@ public class WalletController {
 	 */
 	@ApiOperation(value = "Register wallet of user")
 	@RequestMapping(value = "/wallet/create", method = RequestMethod.POST)
-	public Wallet register(@Valid @RequestBody Wallet wallet) {
-		Wallet newWallet = this.walletService.register(wallet);
-		if(newWallet == null) {
-			//throw new ApplicationException("지갑 정보를 등록할 수 없습니다!");
-		}
-		return newWallet;
+	public Wallet create(@Valid @RequestBody Wallet wallet) {
+		return walletService.create(wallet);
 	}
 
 	/**
@@ -45,9 +41,8 @@ public class WalletController {
 	 */
 	@ApiOperation(value = "Fetch wallet by address")
 	@RequestMapping(value = "/wallets/{address}", method = RequestMethod.GET)
-	public Wallet get(@PathVariable String address) {
-		Wallet newWallet = walletService.get(address);
-		return newWallet;
+	public Wallet findAddress(@PathVariable String address) { // 지갑 주소 전달(address)
+		return walletService.findAddress(address);
 	}
 
 	/**
@@ -57,14 +52,8 @@ public class WalletController {
 	 */
 	@ApiOperation(value = "Fetch wallet of user")
 	@RequestMapping(value = "/wallets/of/{uid}", method = RequestMethod.GET)
-	public Wallet getByUser(@PathVariable long uid) {
-		System.out.println(uid);
-		Wallet newWallet = walletService.get(uid);
-		 if (newWallet == null) {
-	            logger.error("NOT FOUND ID: ", uid);
-	           // throw new NotFoundException(uid + " 회원 정보를 찾을 수 없습니다.");
-	        }
-		return newWallet;
+	public Wallet findUserId(@PathVariable long userId) {
+		return walletService.findUserId(userId);
 	}
 	
 	/**

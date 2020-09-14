@@ -157,6 +157,7 @@ public class Challenge {
 	}
 	private Challenge(Builder builder) {
 		captain = builder.captain;
+		captain.addCaptainChallenge(this);
 		name = builder.name;
 		expireDate = builder.expireDate;
 		startDate = builder.startDate;

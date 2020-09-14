@@ -1,5 +1,7 @@
 package com.ssafy.blockchallen.service;
 
-public interface ICertificationService {
+import com.ssafy.blockchallen.entity.Certification;
 
+public interface ICertificationService {
+	Certification register(Certification certification);
 }
