@@ -11,11 +11,13 @@
       <div id="wallet">
         <h2>나의 지갑</h2>
         <!--<div v-if="myWallet == null">-->
-        <div>
+        <div v-if="!flag">
           <v-btn @click="createWallet">생성하기</v-btn>
         </div>
         <!--<div v-else>-->
-        <div>
+        <div v-else>
+          <p>나의 비밀키 {{ myWallet.privateKey }}</p>
+          <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
           <p>나의 잔고는 {{ myEth }} 입니다.</p>
           <v-btn @click="charge">충전하기</v-btn>
         </div>
@@ -38,13 +40,18 @@
 import Chart from 'chart.js'
 import Web3 from 'web3'
 
+var web3 = new Web3(Web3.givenProvider || 'http://localhost:8545')
+
 export default {
   name: "MyPage",
   data: () => ({
     user: "블록챌린",
     myEth: "100000",
-    myWallet: null,
-
+    flag: false,
+    myWallet: {
+      privateKey: "",
+      walletAddress: "",
+    },
   }),
   methods: {
     backHome() {
@@ -52,8 +59,17 @@ export default {
     },
     createWallet() {
       alert("지갑 생성")
-      // let web3 = new Web3(Web3.givenProvider || 'rpc:http://localhost:8545')
-      
+
+      let wallet = web3.eth.accounts.create();
+
+      console.log(wallet)
+      console.log(wallet.privateKey)
+      console.log(wallet.address)
+
+      this.myWallet.privateKey = wallet.privateKey
+      this.myWallet.walletAddress = wallet.address
+
+      this.flag = true
     },
     charge() {
       alert("충전")
