@@ -28,8 +28,23 @@
           <canvas id="myChart" width="100" height="100"></canvas>
         </div>
         <div id="progressBars">
-          <div>
-
+          <div class="progressSet">
+            <div class="challengeName"><p>6시 기상 챌린지</p></div>
+            <v-progress-linear
+                class="challengeProgress"
+                color="red lighten-2"
+                buffer-value="50"
+                stream
+            ></v-progress-linear>
+          </div>
+          <div class="progressSet">
+            <div class="challengeName"><p>30일 홈트 챌린지</p></div>
+            <v-progress-linear
+                class="challengeProgress"
+                color="teal"
+                buffer-value="70"
+                stream
+            ></v-progress-linear>
           </div>
         </div>
       </div>
@@ -81,33 +96,23 @@ export default {
         data: {
           datasets: [{
             data: [
-              20,
-              20,
-              20,
-              20,
-              10,
-              10
+                80,
+                20
             ],
             backgroundColor: [
-              'rgb(236, 208, 120)',
-              'rgba(217, 91, 67, 0.7)',
-              'rgba(192, 41, 66, 0.7)',
-              'rgba(84, 36, 55, 0.7)',
-              'rgba(83, 119, 122, 0.7)',
-              'rgba(119, 146, 174, 0.7)'
+              // 'rgba(119, 146, 174, 0.7)',
+              // 'rgba(192, 41, 66, 0.7)'
+                'rgb(91, 132, 177)',
+                'rgb(252, 118, 106)'
             ],
           }],
           labels: [
-            '챙',
-            '몰라',
-            '감자',
-            '코섭',
-            '쑤',
-            '그나링'
+            '성공',
+            '실패'
           ],
         },
         options: {
-          responsive: true
+          responsive: true,
         }
       })
     }
@@ -152,6 +157,36 @@ export default {
   min-width: 212px;
   min-height: 212px;
   margin: 0 auto;
+  margin-bottom: 3%;
+}
+
+#progressBars {
+  width: 100%;
+  height: 10vh;
+  padding-top: 3vh;
+  margin: 0 auto;
+}
+
+.progressSet {
+  width: 100%;
+  height: 5vh;
+  margin-top: 1%;
+  maring: 0 auto;
+  float: none;
+}
+
+.challengeName {
+  float: left;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.challengeProgress {
+  width: 80%;
+  float: right;
+  margin-left: 3vw;
+  margin-top: 1%;
+  vertical-align: center;
 }
 
 </style>
