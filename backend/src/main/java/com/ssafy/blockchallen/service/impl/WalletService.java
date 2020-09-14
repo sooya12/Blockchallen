@@ -18,6 +18,7 @@ public class WalletService implements IWalletService {
 	public WalletService(WalletRepository walletRepository) {
 		this.walletRepository = walletRepository;
 	}
+	
 	@Override
 	public Wallet findUserId(long userId) {
 		return walletRepository.findById(userId).orElse(null);

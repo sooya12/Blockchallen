@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface IWalletService {
-	
 	Wallet findUserId(long userId);
 	
 	Wallet findAddress(String address);

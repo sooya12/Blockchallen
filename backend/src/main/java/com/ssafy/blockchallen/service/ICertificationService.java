@@ -4,4 +4,6 @@ import com.ssafy.blockchallen.entity.Certification;
 
 public interface ICertificationService {
 	Certification register(Certification certification);
+	
+	Certification declaration(Long id, Certification certification);
 }

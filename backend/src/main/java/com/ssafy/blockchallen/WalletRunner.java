@@ -13,7 +13,6 @@ import com.ssafy.blockchallen.repository.WalletRepository;
 
 @Component
 public class WalletRunner implements ApplicationRunner{
-
 	@Autowired
 	WalletRepository walletRepository;
 	

@@ -28,6 +28,7 @@ public class WalletController {
 	 * 지갑 등록
 	 * @param wallet
 	 */
+	
 	@ApiOperation(value = "Register wallet of user")
 	@RequestMapping(value = "/wallet/create", method = RequestMethod.POST)
 	public Wallet create(@Valid @RequestBody Wallet wallet) {
