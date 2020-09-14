@@ -33,8 +33,10 @@
 
             </v-card>
             <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
-            <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">마감까지 {{remain}}</p>
 
+              <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" v-if="challengeState=='before'">마감까지 {{remain}}</p>
+              <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" v-if="challengeState=='doing'">본 챌린지는 진행중입니다. {{remain}}</p>
+              <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" v-if="challengeState=='done'">본 챌린지는 마감되었습니다. {{remain}}</p>
             </v-card>
             <div style="width:70%; padding: 1% 2%; margin-top: 3%; text-align: center;">
                 <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;">참여하기</v-btn>
@@ -70,6 +72,7 @@
                 expire:'',
                 remain:'',
                 gather:0,
+
             }
         },
         mounted() {
@@ -108,7 +111,7 @@
                     this.challengeState='doing'
                 }
                 else{
-                    this.challengeState='end'
+                    this.challengeState='done'
                 }
                 this.gather=this.fee*this.users.length;
                 let len = String(this.gather).length;
@@ -190,7 +193,9 @@
 
 
                 }
-            }
+            },
+
+
         }
 
     }
