@@ -57,7 +57,7 @@ public class AccountController {
 	
 	
 	@RequestMapping(value = "/account/{id}", method = RequestMethod.GET)
-	public Object findAccount(@PathVariable("id") long id) {
+	public Object findAccount(@PathVariable("id") int id) {
 		
 		Account account = accountService.findAccount(id);
 		if(account != null)
@@ -65,6 +65,11 @@ public class AccountController {
 		else
 			return new ResponseEntity<>("존재하지 않는 회원",HttpStatus.NO_CONTENT);
 			
+	}
+	
+	@RequestMapping(value = "/account/nickname/{nickname}")
+	public Object duplicateNicknameCheck(@PathVariable("nickname") String nickname) {
+		return new ResponseEntity<>(accountService.duplicateCheck(nickname), HttpStatus.OK);
 	}
 	
 	

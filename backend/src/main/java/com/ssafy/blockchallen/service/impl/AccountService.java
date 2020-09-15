@@ -40,5 +40,12 @@ public class AccountService implements IAccountService {
 			return null;
 	}
 	
+	public boolean duplicateCheck(String nickname) {
+		Optional<Account> account = accountRepository.findByNickname(nickname);
+		if(!account.isPresent()) // 사용 가능 닉네임
+			return true;
+		else // 사용 불가능 닉네임 (이미 존재)
+			return false;
+	}
 	
 }

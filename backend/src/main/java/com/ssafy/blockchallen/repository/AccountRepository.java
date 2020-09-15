@@ -11,4 +11,5 @@ import com.ssafy.blockchallen.entity.Account;
 public interface AccountRepository extends JpaRepository<Account, Long>{
 	Optional<Account> findByEmail(String email);
 	Optional<Account> findById(Long id);
+	Optional<Account> findByNickname(String nickname);
 }
