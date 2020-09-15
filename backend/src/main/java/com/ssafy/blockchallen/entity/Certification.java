@@ -53,6 +53,7 @@ public class Certification {
 	private Boolean isReported;
 	
 	@OneToOne
+	@ApiModelProperty(value = "신고자")
 	private Account reporter;
 	
 	
@@ -62,6 +63,7 @@ public class Certification {
 		private String picture = "";
 		private String regDate;
 		private Boolean isReported = false;
+		private Account reporter;
 		
 		public Builder() {
 			
@@ -86,6 +88,10 @@ public class Certification {
 			this.isReported = isReported;
 			return this;
 		}
+		public Builder reporter(Account reporter) {
+			this.reporter = reporter;
+			return this;
+		}
 		public Certification build() {
 			return new Certification(this);
 		}
@@ -96,6 +102,7 @@ public class Certification {
 		picture = builder.picture;
 		regDate = builder.regDate;
 		isReported = builder.isReported;
+		reporter = builder.reporter;
 	}
 	
 }
