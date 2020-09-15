@@ -354,5 +354,27 @@ web3 라이브러리를 이용하여 지갑 생성/회원의 지갑 정보를 �
 
 
 
-#### java.net.URL / java.net.HttpURLConnection
+[java.net.URL / java.net.HttpURLConnection 참고](https://ggoreb.tistory.com/114)
 
+[카카오 소셜 로그인 참고](https://m.blog.naver.com/lcy707/222073884681)
+
+
+
+## 20.09.15
+
+### 오늘 한 일
+
+- 소셜 로그인(카카오) 구현 중...
+
+
+
+### 오전 미팅 내용
+
+JWT를 쓰는 이유?
+
+1. API 서버가 여러개가 되었기 때문
+2. 모바일 환경 -> 안드로이드 or IOS 안전 영역 -> 토큰(JWT)
+
+> Spring에서 JWT를 사용해서 filter단에서 인증되지 않는 것들을 걸러낸다 (403 error)
+>
+> ViewResolvers는 SPA(우리는 Vue.js에서 라우터 사용)를 사용하면서 역할이 작아짐.
