@@ -45,13 +45,13 @@
 
                 </p>
                 <div v-for="participant of userlist" v-bind:key="participant.id">
-                  <v-card style="margin : 5% 1%; margin-top : 1%;">
+                  <v-card style="margin : 5% 1%; margin-top : 1%; min-height: 32vh;" @click="clickParicipant(participant,total)">
                     <div >
 
                         <div style="float:left; width:40%; height : 20vh;">
                           <v-img
-                              :src=participant.feed.picture
-                              height="37vh"
+                              :src=participant.certification.picture
+                              height="30vh"
                               style="margin: 2%;"
 
                           >
@@ -59,20 +59,32 @@
                         </div>
 
                         <div style="float:left; padding-left : 5%; width:60%;">
-                          <div style=" margin-top: 5%; ">
-                            <i ><img src="/lego.png" style="height:8vh;"></i><p style="font-size:2vh;  font-weight: bold;">{{participant.nickname}}</p>
-                          </div>
-                          <i>upload at</i>
-                          <p>{{participant.feed.regDate}}</p>
-
                             <v-img
                                 src="/certification.jpg"
                                 height="15vh"
                                 width="15vh"
-                                style=" float: right;  margin-right: 2%; margin-bottom: 2%;"
-
+                                style=" float: right;  margin-right: 2%; margin-top: 2%;"
+                                v-if="!participant.certification.isReported"
                             >
                             </v-img>
+                          <v-img
+                              src="/uncertification.jpg"
+                              height="15vh"
+                              width="15vh"
+                              style=" float: right;  margin-right: 2%; margin-top: 2%;"
+                              v-if="participant.certification.isReported"
+                          >
+                          </v-img>
+                          <div style=" margin-top: 5%; ">
+                            <i ><img src="/lego.png" style="height:8vh;"></i><p style="font-size:2vh;  font-weight: bold;">{{participant.nickname}}</p>
+                          </div>
+
+                          <i>upload at</i>
+                          <p>{{participant.certification.regDate}}</p>
+                          <p style="font-size:2vh;  font-weight: bold;">진행도 : <span style="color:#ff5555;">{{participant.progress}} / {{total}}</span></p>
+                          <block-progress :progress="participant.progress" :total="total" ></block-progress>
+
+
                         </div>
                         <br style="clear:both;"/>
 
@@ -97,10 +109,14 @@
 
 <script>
     import axios from 'axios'
-
+    import BlockProgress from "@/components/BlockProgress";
+    import ChallengeModal from "@/components/ChallengeModal";
     export default {
         name: "challengeDetail",
-        props:{
+        components : {
+          BlockProgress
+        },
+      props:{
             cid:{
                 type:Number
             }
@@ -122,11 +138,12 @@
                 remain:'',
                 gather:0,
                 userlist:[],
+                total: 0,
 
             }
         },
         mounted() {
-          console.log(new Date())
+
             /*
             TODO : 추후 URL 수정 필요
             */
@@ -179,6 +196,7 @@
                 let from=new Date(res.data.startDate)
                 let to = new Date(res.data.endDate)
                 let differ= (to-from)/(24*60*60*1000)
+                this.total=differ
                 if(differ>=7){
                     if((differ%7)==0){
                         differ=Math.floor((differ/7))+'주'
@@ -251,7 +269,7 @@
            * TODO : URL 수정
            */
           doing() {
-                console.log("hi")
+
                 axios.get('/mock/userfeed'+this.cid+'.json',{
                   params: {
                     "id": Number(this.cid)
@@ -265,6 +283,18 @@
             },
             done(){
 
+            },
+
+            clickParicipant(participant,total){
+              this.$modal.show(ChallengeModal,{
+                participant : participant,
+                total : total,
+                modal : this.$modal },{
+                name: 'dynamic-modal',
+                width : '50%',
+                height : '40%',
+                draggable: false,
+              })
             },
 
 
