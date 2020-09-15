@@ -42,19 +42,19 @@ public class AccountController {
 //	private final String kakaoNicknameRedirectFrontURI = FRONT_SERVER_URI + "";
 	
 	
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	public Object test() throws UnsupportedEncodingException {
-		String client_id = "28c57e4dec8be27db1832926dba21bb0";
-		String redirectURI = URLEncoder.encode(kakaoRedirectBackURI, "UTF-8");
-		
-		String apiURL = "https://kauth.kakao.com/oauth/authorize?";
-		apiURL += "client_id=" + client_id;
-		apiURL += "&redirect_uri=" + redirectURI;
-		apiURL += "&response_type=code";
-		
-		return new ResponseEntity<String>(apiURL, HttpStatus.OK);
-	}
-	
+//	@RequestMapping(value = "/test", method = RequestMethod.GET)
+//	public Object test() throws UnsupportedEncodingException {
+//		String client_id = "28c57e4dec8be27db1832926dba21bb0";
+//		String redirectURI = URLEncoder.encode(kakaoRedirectBackURI, "UTF-8");
+//		
+//		String apiURL = "https://kauth.kakao.com/oauth/authorize?";
+//		apiURL += "client_id=" + client_id;
+//		apiURL += "&redirect_uri=" + redirectURI;
+//		apiURL += "&response_type=code";
+//		
+//		return new ResponseEntity<String>(apiURL, HttpStatus.OK);
+//	}
+
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public Object login(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -69,15 +69,25 @@ public class AccountController {
 		
 		Account account = null;
 		
-		if((account = accountService.findAccount(userEmail))!=null) {
+		if((account = accountService.findAccount(userEmail))!=null) { // 이미 정보가 있는 회원
 			
-			// 토큰 대신 뭘로 리다이렉트 해야하지...? PK, email, 지갑? 사람 객체를 담아줘
 			response.sendRedirect(FRONT_SERVER_URI + "?id=" + account.getId());
-			return new ResponseEntity<>("success",HttpStatus.OK);
+			return new ResponseEntity<>("기존 회원 success",HttpStatus.OK);
+		} else {
+			account = new Account.Builder()
+					.email(userEmail)
+					.access_token(access_token)
+					.build();
+			if((account = accountService.createAccount(account))!=null) { // 새로 가입 성공
+				response.sendRedirect(FRONT_SERVER_URI + "?id=" + account.getId());
+				return new ResponseEntity<>("새로운 회원 success", HttpStatus.OK);
+				
+			} else { // 새로 가입 실패
+				response.sendRedirect(FRONT_SERVER_URI);
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		}
 		
-		response.sendRedirect(FRONT_SERVER_URI);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	

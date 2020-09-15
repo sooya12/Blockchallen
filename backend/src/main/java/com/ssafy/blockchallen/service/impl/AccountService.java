@@ -22,5 +22,23 @@ public class AccountService implements IAccountService {
 		else
 			return null;
 	}
+
+	public Account findAccount(long id) {
+		Optional<Account> account = accountRepository.findById(id);
+		if(account.isPresent())
+			return account.get();
+		else
+			return null;
+	}
+
+	public Account createAccount(Account account) {
+		accountRepository.save(account);
+		Optional<Account> newAccount = accountRepository.findByEmail(account.getEmail());
+		if(newAccount.isPresent())
+			return newAccount.get();
+		else
+			return null;
+	}
+	
 	
 }

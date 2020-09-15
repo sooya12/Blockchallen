@@ -4,5 +4,6 @@ import com.ssafy.blockchallen.entity.Account;
 
 public interface IAccountService {
 	Account findAccount(String email);
-	
+	Account findAccount(long id);
+	Account createAccount(Account account);
 }

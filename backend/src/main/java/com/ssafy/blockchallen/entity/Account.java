@@ -37,7 +37,7 @@ public class Account {
 	@ApiModelProperty(required = true, value = "이메일")
 	private String email;
 	
-	@ApiModelProperty(required = true, value = "별명")
+	@ApiModelProperty(value = "별명")
 	private String nickname;
 	
 	@ApiModelProperty(required = true, value = "토큰")
