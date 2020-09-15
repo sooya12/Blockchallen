@@ -58,20 +58,29 @@
     </div>
 </template>
 <script>
-// import axios from 'axios'
+import axios from 'axios'
 
 export default{
 
         name:'ChallengeList',
         data(){
             return{
-            user:'사랑하는 고객',
+            user:'',
             searchText:'',
             challengelist:['챌린지1','챌린지2','챌린지3','챌린지4']
             }
         },
         created(){
           // axios
+          axios.get('/jsontest/Account.json')
+            then(res=> {
+                console.log(res) 
+                this.user = res.data.user
+            }),
+          axios.get('/jsontest/Challenge.json')
+            .then(res=> {
+                this.name = res.name
+            })
         },
          methods:{
         logout:function(){
