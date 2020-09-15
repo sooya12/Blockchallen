@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,19 +56,14 @@ public class AccountController {
 	}
 	
 	
-	 
-	
-	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public Object login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		String code = request.getParameter("code"); // authorize_code
 		String access_token = getKakaoAccessToken(code); // 토큰 얻어오기
-		System.out.println("토큰 : " + access_token);
 		
 		// 이메일 정보 얻어오기
 		String userEmail = getKakaoUserInfo(access_token);
-		System.out.println("이메일 : " +userEmail);
 		
 		String token = "";
 		
@@ -76,18 +72,17 @@ public class AccountController {
 		if((account = accountService.findAccount(userEmail))!=null) {
 			
 			// 토큰 대신 뭘로 리다이렉트 해야하지...? PK, email, 지갑? 사람 객체를 담아줘
-			response.sendRedirect(BACK_SERVER_URI+ "/blockchallen/test "+ "?account=" + account);
+			response.sendRedirect(FRONT_SERVER_URI + "?id=" + account.getId());
 			return new ResponseEntity<>("success",HttpStatus.OK);
 		}
 		
-		
-		return new ResponseEntity<>(HttpStatus.OK);
+		response.sendRedirect(FRONT_SERVER_URI);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	
 	// 로그인 토큰 가져오는 함수
 	private String getKakaoAccessToken(String authorize_code) {
-		System.out.println("인증코드 : " + authorize_code);
 		String access_token = "";
 		String reqURL = "https://kauth.kakao.com/oauth/token";
 
@@ -102,8 +97,8 @@ public class AccountController {
 			// POST 요청에 필요한 파라미터를 스트림을 통해 전송
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
 			StringBuilder sb = new StringBuilder();
-			sb.append("grant_type=authrization_code");
-			sb.append("&cliend_id=28c57e4dec8be27db1832926dba21bb0");
+			sb.append("grant_type=authorization_code");
+			sb.append("&client_id=28c57e4dec8be27db1832926dba21bb0");
 			sb.append("&redirect_uri=" + kakaoRedirectBackURI); // 로그인 함수로 리다이렉트 하게 해 줌
 			sb.append("&code=" + authorize_code);
 			sb.append("&client_secret=9hw1Iw1vK4fJtLTg2PQaWGeWVDZiMtgR");
@@ -112,7 +107,6 @@ public class AccountController {
 			bw.flush();
 			
 			int responseCode = con.getResponseCode(); // 성공 : 200
-			System.out.println("토큰 얻기 성공? " + responseCode);
 			
 			// 요청을 통해 얻은 json 형식 response 읽기
 			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -120,7 +114,7 @@ public class AccountController {
 			String result = "";
 			
 			while((line=br.readLine()) != null) {
-				result += null;
+				result += line;
 			}
 			
 			// gson 라이브러리의 클래스로 json 파싱 객체 생성
@@ -150,10 +144,9 @@ public class AccountController {
 			con.setRequestMethod("POST");
 			
 			// 요청에 필요한 header에 포함될 내용
-			con.setRequestProperty("Authorizaion", "Bearer "+access_token);
+			con.setRequestProperty("Authorization", "Bearer "+access_token);
 	
 			int responseCode = con.getResponseCode(); // 성공 : 200
-			System.out.println("로그인 정보 얻기 성공? " + responseCode);
 			
 			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			
