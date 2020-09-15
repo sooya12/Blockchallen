@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     kakaoLogin() {
-      window.location.href = 'https://kauth.kakao.com/oauth/authorize?client_id=28c57e4dec8be27db1832926dba21bb0&redirect_uri=http://localhost:8080/login&response_type=code'
+      window.location.href = 'https://kauth.kakao.com/oauth/authorize?client_id=28c57e4dec8be27db1832926dba21bb0&redirect_uri=http://localhost:8080/blockchallen&response_type=code'
     }
   }
 }
