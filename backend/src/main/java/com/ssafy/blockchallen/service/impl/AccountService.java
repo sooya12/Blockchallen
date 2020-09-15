@@ -48,14 +48,24 @@ public class AccountService implements IAccountService {
 			return false;
 	}
 
-	public Account setNickname(long id, String nickname) {
-		Optional<Account> account = accountRepository.findById(id);
-		if(account.isPresent()) {
-			account.get().setNickname(nickname);
-			accountRepository.save(account.get());
-			return account.get();
+	public Account setNickname(Account account) {
+		Optional<Account> setAccount = accountRepository.findById(account.getId());
+		if(setAccount.isPresent()) {
+			setAccount.get().setNickname(account.getNickname());
+			accountRepository.save(setAccount.get());
+			return setAccount.get();
 		} else {
 			return null;
+		}
+	}
+
+	public boolean signout(Account account) {
+		Optional<Account> delAccount = accountRepository.findById(account.getId());
+		if(delAccount.isPresent()) {
+			accountRepository.deleteById(account.getId());
+			return true;
+		} else {
+			return false;
 		}
 	}
 	

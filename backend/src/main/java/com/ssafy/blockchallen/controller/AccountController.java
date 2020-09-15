@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,7 +59,7 @@ public class AccountController {
 	
 	
 	@RequestMapping(value = "/account/{id}", method = RequestMethod.GET)
-	public Object findAccount(@PathVariable("id") int id) {
+	public Object findAccount(@PathVariable("id") long id) {
 		
 		Account account = accountService.findAccount(id);
 		if(account != null)
@@ -74,13 +75,21 @@ public class AccountController {
 	}
 	
 	@RequestMapping(value = "/account", method = RequestMethod.PUT)
-	public Object setNickname(@RequestParam int id, @RequestParam String nickname) {
-		Account account = accountService.setNickname(id, nickname);
-		if(account != null) {
-			return new ResponseEntity<>(account, HttpStatus.OK);
+	public Object setNickname(@RequestBody Account account) {
+		Account setAccount = accountService.setNickname(account);
+		if(setAccount != null) {
+			return new ResponseEntity<>(setAccount, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>("존재하지 않는 회원", HttpStatus.NO_CONTENT);
 		}
+	}
+
+	@RequestMapping(value = "/account", method = RequestMethod.DELETE)
+	public Object signout(@RequestBody Account account) {
+		if(accountService.signout(account))
+			return new ResponseEntity<>("success", HttpStatus.OK);
+		else
+			return new ResponseEntity<>("fail", HttpStatus.NO_CONTENT);
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
