@@ -51,7 +51,7 @@
     </div>
 </template>
 
-<script scoped>
+<script>
 import Chart from 'chart.js'
 import Web3 from 'web3'
 
@@ -123,7 +123,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   width: 100%;
   height: 1vh;
