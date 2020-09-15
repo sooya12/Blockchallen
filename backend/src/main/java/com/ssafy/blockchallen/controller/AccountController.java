@@ -38,7 +38,7 @@ public class AccountController {
 	private final String BACK_SERVER_URI = "http://localhost:8080";
 	private final String FRONT_SERVER_URI = "http://localhost:3030";
 	private final String kakaoRedirectBackURI = BACK_SERVER_URI + "/blockchallen/login";
-	private final String kakaoRedirectFrontURI = FRONT_SERVER_URI + "";
+	private final String kakaoRedirectFrontURI = FRONT_SERVER_URI + "/login";
 //	private final String kakaoNicknameRedirectFrontURI = FRONT_SERVER_URI + "";
 	
 	
@@ -68,15 +68,18 @@ public class AccountController {
 		String token = "";
 		
 		Account account = null;
-		
+
+		System.out.println("login");
+
 		if((account = accountService.findAccount(userEmail))!=null) {
-			
+			System.out.println("account");
+			System.out.println(account.getId());
 			// 토큰 대신 뭘로 리다이렉트 해야하지...? PK, email, 지갑? 사람 객체를 담아줘
-			response.sendRedirect(FRONT_SERVER_URI + "?id=" + account.getId());
+			response.sendRedirect(kakaoRedirectFrontURI + "/" + account.getId());
 			return new ResponseEntity<>("success",HttpStatus.OK);
 		}
 		
-		response.sendRedirect(FRONT_SERVER_URI);
+		response.sendRedirect(kakaoRedirectFrontURI + "/" + account.getId());
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
