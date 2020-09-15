@@ -54,7 +54,19 @@ public class AccountController {
 //		
 //		return new ResponseEntity<String>(apiURL, HttpStatus.OK);
 //	}
-
+	
+	
+	@RequestMapping(value = "/account/{id}", method = RequestMethod.GET)
+	public Object findAccount(@PathVariable("id") long id) {
+		
+		Account account = accountService.findAccount(id);
+		if(account != null)
+			return new ResponseEntity<>(account, HttpStatus.OK);
+		else
+			return new ResponseEntity<>("존재하지 않는 회원",HttpStatus.NO_CONTENT);
+			
+	}
+	
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public Object login(HttpServletRequest request, HttpServletResponse response) throws IOException {
