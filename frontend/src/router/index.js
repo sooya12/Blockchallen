@@ -30,6 +30,7 @@ const routes = [
         path: '/signup',
         name: 'signup',
         component: SignUp,
+        props: true
     },
     {
         path: '/challenges/create',

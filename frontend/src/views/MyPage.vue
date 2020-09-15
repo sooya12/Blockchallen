@@ -6,7 +6,7 @@
         </v-btn>
       </div>
       <div id="header">
-        <h1>{{ user }}님의 마이페이지</h1>
+        <h1>{{ user.nickname }}님의 마이페이지</h1>
       </div>
       <div id="wallet">
         <h2>나의 지갑</h2>
@@ -60,7 +60,12 @@ var web3 = new Web3(Web3.givenProvider || 'http://localhost:8545')
 export default {
   name: "MyPage",
   data: () => ({
-    user: "블록챌린",
+    user: {
+      id: 0,
+      challenges: [],
+      email: "",
+      nickname: ""
+    },
     myEth: "100000",
     flag: false,
     myWallet: {
@@ -119,6 +124,8 @@ export default {
   },
   mounted() {
     this.createChart()
+
+    this.user.nickname = sessionStorage.getItem("user").nickname
   }
 }
 </script>
