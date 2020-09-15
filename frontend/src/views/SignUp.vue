@@ -20,6 +20,9 @@
         <v-btn small color="primary" @click="duplicationCheck">중복확인</v-btn>
       </div>
     </div>
+    <div id="signUp">
+      <v-btn large color="primary" @click="signUp" :disabled="!(nickname && nickname.length >= 1)">가입하기</v-btn>
+    </div>
   </div>
 </template>
 
@@ -94,5 +97,11 @@ export default {
 
 p {
   font-size: large;
+}
+
+#signUp {
+  width: 70%;
+  margin: 0 auto;
+  text-align: center;
 }
 </style>

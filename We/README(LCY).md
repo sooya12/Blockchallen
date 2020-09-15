@@ -31,7 +31,7 @@
 
 
 
-## 9월 10일(목) 오늘 할 일 :deciduous_tree:
+## 9월 10일(목) 오늘 한 일 :deciduous_tree:
 
 * 로고 투표
 
@@ -39,4 +39,45 @@
 
 * JIRA 재설계
 
-* 프론트 공부
+* 프론트 공부 - 순서를 지키자
+
+  ```
+  const routes = []
+  const router = new VueRouter({
+      mode: 'history',
+      base: process.env.BASE_URL,
+      routes
+  })
+  export default router
+  ```
+
+* 페이지 이동 완료
+
+
+
+## 9월 11일(금) 오늘 한 일 :eight_pointed_black_star:
+
+* 챌린지 리스트 목록 페이지 구성
+
+  > 챌린지들을 버튼으로 받아오기
+  >
+  > ![image-20200911190741424](C:\Users\multicampus\AppData\Roaming\Typora\typora-user-images\image-20200911190741424.png)
+  >
+  > 아이콘 변환시 필요한 추가들
+  >
+  > ```
+  > npm install @fortawesome/fontawesome-svg-core @fortawesome/vue-fontawesome @fortawesome/free-solid-svg-icons -D
+  > 
+  > npm install --save @fortawesome/free-regular-svg-icons
+  > ```
+  >
+  > ![image-20200911190853848](C:\Users\multicampus\AppData\Roaming\Typora\typora-user-images\image-20200911190853848.png)
+  >
+  > 이부분은 필요한지 잘 모르겠음 (확인 전)
+  >
+  > ![image-20200911190935589](C:\Users\multicampus\AppData\Roaming\Typora\typora-user-images\image-20200911190935589.png)
+  >
+  > 물음표 아이콘 추가 > 버튼화
+
+  
+
