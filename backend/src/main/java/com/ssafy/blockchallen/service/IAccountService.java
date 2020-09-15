@@ -1,5 +1,8 @@
 package com.ssafy.blockchallen.service;
 
-public interface IAccountService {
+import com.ssafy.blockchallen.entity.Account;
 
+public interface IAccountService {
+	Account findAccount(String email);
+	
 }

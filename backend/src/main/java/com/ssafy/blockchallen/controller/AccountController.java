@@ -5,12 +5,15 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,22 +23,62 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.ssafy.blockchallen.entity.Account;
+import com.ssafy.blockchallen.service.IAccountService;
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/blockchallen")
 public class AccountController {
 	
+	@Autowired
+	private IAccountService accountService;
+	
 	private final String BACK_SERVER_URI = "http://localhost:8080";
-	
+	private final String FRONT_SERVER_URI = "http://localhost:3030";
 	private final String kakaoRedirectBackURI = BACK_SERVER_URI + "/blockchallen/login";
+	private final String kakaoRedirectFrontURI = FRONT_SERVER_URI + "";
+//	private final String kakaoNicknameRedirectFrontURI = FRONT_SERVER_URI + "";
 	
 	
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public Object login(HttpServletRequest request, HttpServletRequest response) {
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	public Object test() throws UnsupportedEncodingException {
+		String client_id = "28c57e4dec8be27db1832926dba21bb0";
+		String redirectURI = URLEncoder.encode(kakaoRedirectBackURI, "UTF-8");
 		
-		String code = request.getParameter("code");
+		String apiURL = "https://kauth.kakao.com/oauth/authorize?";
+		apiURL += "client_id=" + client_id;
+		apiURL += "&redirect_uri=" + redirectURI;
+		apiURL += "&response_type=code";
 		
+		return new ResponseEntity<String>(apiURL, HttpStatus.OK);
+	}
+	
+	
+	 
+	
+	
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public Object login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		
+		String code = request.getParameter("code"); // authorize_code
+		String access_token = getKakaoAccessToken(code); // 토큰 얻어오기
+		System.out.println("토큰 : " + access_token);
+		
+		// 이메일 정보 얻어오기
+		String userEmail = getKakaoUserInfo(access_token);
+		System.out.println("이메일 : " +userEmail);
+		
+		String token = "";
+		
+		Account account = null;
+		
+		if((account = accountService.findAccount(userEmail))!=null) {
+			
+			// 토큰 대신 뭘로 리다이렉트 해야하지...? PK, email, 지갑? 사람 객체를 담아줘
+			response.sendRedirect(BACK_SERVER_URI+ "/blockchallen/test "+ "?account=" + account);
+			return new ResponseEntity<>("success",HttpStatus.OK);
+		}
 		
 		
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -44,6 +87,7 @@ public class AccountController {
 	
 	// 로그인 토큰 가져오는 함수
 	private String getKakaoAccessToken(String authorize_code) {
+		System.out.println("인증코드 : " + authorize_code);
 		String access_token = "";
 		String reqURL = "https://kauth.kakao.com/oauth/token";
 
