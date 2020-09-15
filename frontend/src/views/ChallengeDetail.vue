@@ -29,14 +29,63 @@
             </v-card>
             <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
                 <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;">현재 참여 인원 : {{users.length}}명</p>
-                <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;">현재 까지 {{gather}}원이 모였습니다.</p>
+                <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold; " v-if="challengeState=='before'">현재 까지 {{gather}}원이 모였습니다.</p>
+                <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold; " v-if="challengeState!='before'">도전 금액 : {{gather}}원</p>
 
             </v-card>
             <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
+              <div v-if="challengeState=='before'">
+                <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" >마감까지 {{remain}}</p>
 
-              <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" v-if="challengeState=='before'">마감까지 {{remain}}</p>
-              <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" v-if="challengeState=='doing'">본 챌린지는 진행중입니다. {{remain}}</p>
-              <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" v-if="challengeState=='done'">본 챌린지는 마감되었습니다. {{remain}}</p>
+              </div>
+              <div v-if="challengeState=='doing'">
+                <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" >본 챌린지는 진행중입니다. </p>
+                <p style="font-size:2.5vh; margin-top: 5%;  font-weight: bold;">
+                  챌린지 현황
+
+                </p>
+                <div v-for="participant of userlist" v-bind:key="participant.id">
+                  <v-card style="margin : 5% 1%; margin-top : 1%;">
+                    <div >
+
+                        <div style="float:left; width:40%; height : 20vh;">
+                          <v-img
+                              :src=participant.feed.picture
+                              height="37vh"
+                              style="margin: 2%;"
+
+                          >
+                          </v-img>
+                        </div>
+
+                        <div style="float:left; padding-left : 5%; width:60%;">
+                          <div style=" margin-top: 5%; ">
+                            <i ><img src="/lego.png" style="height:8vh;"></i><p style="font-size:2vh;  font-weight: bold;">{{participant.nickname}}</p>
+                          </div>
+                          <i>upload at</i>
+                          <p>{{participant.feed.regDate}}</p>
+
+                            <v-img
+                                src="/certification.jpg"
+                                height="15vh"
+                                width="15vh"
+                                style=" float: right;  margin-right: 2%; margin-bottom: 2%;"
+
+                            >
+                            </v-img>
+                        </div>
+                        <br style="clear:both;"/>
+
+                    </div>
+                  </v-card>
+                </div>
+
+
+              </div>
+              <div v-if="challengeState=='done'">
+                <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" >본 챌린지는 마감되었습니다.</p>
+
+              </div>
             </v-card>
             <div style="width:70%; padding: 1% 2%; margin-top: 3%; text-align: center;">
                 <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;">참여하기</v-btn>
@@ -72,10 +121,12 @@
                 expire:'',
                 remain:'',
                 gather:0,
+                userlist:[],
 
             }
         },
         mounted() {
+          console.log(new Date())
             /*
             TODO : 추후 URL 수정 필요
             */
@@ -109,6 +160,7 @@
                 }
                 else if(res.data.expireDate<today&&res.data.endDate>today){
                     this.challengeState='doing'
+                    this.doing()
                 }
                 else{
                     this.challengeState='done'
@@ -149,10 +201,11 @@
 
 
 
-
-            setInterval(()=>{
-                this.remainTime()
-            },1000); // 타이머 1초간격으로 수행
+            if(this.challengeState=='before'){
+              setInterval(()=>{
+                  this.remainTime()
+              },1000); // 타이머 1초간격으로 수행
+            }
 
         },
         methods:{
@@ -194,6 +247,27 @@
 
                 }
             },
+          /**
+           * TODO : URL 수정
+           */
+          doing() {
+                console.log("hi")
+                axios.get('/mock/userfeed'+this.cid+'.json',{
+                  params: {
+                    "id": Number(this.cid)
+                  }
+                })
+                .then((res)=>{
+                  this.userlist=res.data.list
+
+                })
+
+            },
+            done(){
+
+            },
+
+
 
 
         }

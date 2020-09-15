@@ -1,0 +1,13 @@
+{
+  "id" : 1,
+  "nickname" : "1번 유저",
+  "email" : "a@a.com",
+  "feeds" : [
+    {
+      "id" : 5,
+      "img" : "",
+      "createDate" : "2020-09-15"
+    }
+  ],
+  "progress" : 3
+}

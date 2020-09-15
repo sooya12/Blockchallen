@@ -1,0 +1,29 @@
+{
+  "list" : [
+    {
+      "id" : 1,
+      "nickname" : "도전 가득 인생 살이",
+      "email" : "a@a.com",
+      "feed" : {
+        "id": 5,
+        "picture": "https://user-images.githubusercontent.com/7456710/93187793-27439500-f77b-11ea-9dd5-6eea44ff8d69.jpg",
+        "regDate": " 2020-09-15 07:00:38",
+        "isReported": false
+      },
+      "progress" : 3
+    },
+    {
+      "id" : 4,
+      "nickname" : "IBM 신입",
+      "email" : "b@a.com",
+      "feed" :
+        {
+          "id" : 6,
+          "picture" : "https://user-images.githubusercontent.com/7456710/93187863-3a566500-f77b-11ea-970c-6766de20c540.jpg",
+          "regDate" : " 2020-09-15 06:35:38",
+          "isReported": true
+        },
+      "progress" : 3
+    }
+  ]
+}
