@@ -1,18 +1,22 @@
 package com.ssafy.blockchallen.controller;
 
-import com.ssafy.blockchallen.service.IWalletService;
-import com.ssafy.blockchallen.service.impl.WalletService;
-import com.ssafy.blockchallen.entity.Wallet;
-import com.ssafy.blockchallen.repository.WalletRepository;
+import javax.validation.Valid;
 
-import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import com.ssafy.blockchallen.entity.Account;
+import com.ssafy.blockchallen.entity.Wallet;
+import com.ssafy.blockchallen.service.IWalletService;
+
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -40,11 +44,13 @@ public class WalletController {
 	 * 지갑 조회 by address
 	 * @param address 지갑 주소
 	 */
-	@ApiOperation(value = "지갑 주소로 지갑 정보 찾기")
-	@RequestMapping(value = "/wallets/{address}", method = RequestMethod.GET)
-	public Wallet findAddress(@PathVariable String address) { // 지갑 주소 전달(address)
-		return walletService.findAddress(address);
-	}
+	
+	// 지갑 주소로 굳이 조회를 해야할 필요가 있을까 하는 의구심에 주석처리를 해 놓았습니다.
+//	@ApiOperation(value = "지갑 주소로 지갑 정보 찾기")
+//	@RequestMapping(value = "/wallets/info/address", method = RequestMethod.GET)
+//	public Wallet findAddress(@PathVariable String address) { // 지갑 주소 전달(address)
+//		return walletService.findByWallet(wallet);
+//	}
 
 	/**
 	 * TODO Sub PJT Ⅱ 과제 1
@@ -52,9 +58,9 @@ public class WalletController {
 	 * @param uid 사용자 id
 	 */
 	@ApiOperation(value = "유저 아이디로 지갑 정보 찾기")
-	@RequestMapping(value = "/wallets/of/{uid}", method = RequestMethod.GET)
-	public Wallet findUserId(@PathVariable long userId) {
-		return walletService.findUserId(userId);
+	@RequestMapping(value = "/wallets/info/id", method = RequestMethod.GET)
+	public Wallet findUserId(@RequestBody Account account) {
+		return walletService.findByAccount(account);
 	}
 	
 	/**

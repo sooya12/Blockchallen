@@ -18,9 +18,9 @@ public class CertificationRunner implements ApplicationRunner{
 		Certification ctf = new Certification();
 		ctf.setChallenge(null);
 		ctf.setAccount(null);
-		ctf.setPicture("test");
-		ctf.setRegDate("123");
-		ctf.setIsReported(false);
+		ctf.setPicture("aa");
+		ctf.setRegDate("12346");
+		ctf.setIsReported(true);
 		certificationrepository.save(ctf);
 	}
 }

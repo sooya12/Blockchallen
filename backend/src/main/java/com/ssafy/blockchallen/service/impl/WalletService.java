@@ -1,6 +1,7 @@
 package com.ssafy.blockchallen.service.impl;
 
 import com.ssafy.blockchallen.service.IWalletService;
+import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Wallet;
 import com.ssafy.blockchallen.repository.WalletRepository;
 
@@ -12,22 +13,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class WalletService implements IWalletService {
 
+	@Autowired
 	private WalletRepository walletRepository;
 
-	@Autowired
-	public WalletService(WalletRepository walletRepository) {
-		this.walletRepository = walletRepository;
-	}
-	
 	@Override
-	public Wallet findUserId(long userId) {
-		return walletRepository.findById(userId).orElse(null);
+	public Wallet findByAccount(Account account) {
+		return walletRepository.findByAccount(account);
 	}
-	
-	@Override
-	public Wallet findAddress(String address) {
-		return walletRepository.findByAddress(address);
-	}
+
+//	@Override
+//	public Wallet findByWallet(Wallet wallet) {
+//		return walletRepository.findByWallet(wallet);
+//	}
 	
 	@Override
 	public Wallet create(Wallet wallet) {

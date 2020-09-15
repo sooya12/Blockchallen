@@ -1,5 +1,6 @@
 package com.ssafy.blockchallen.service;
 
+import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Wallet;
 
 import java.math.BigDecimal;
@@ -7,9 +8,9 @@ import java.math.BigDecimal;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface IWalletService {
-	Wallet findUserId(long userId);
+	Wallet findByAccount(Account account);
 	
-	Wallet findAddress(String address);
+//	Wallet findByWallet(Wallet wallet);
 	
 	@Transactional
 	Wallet create(Wallet wallet);
