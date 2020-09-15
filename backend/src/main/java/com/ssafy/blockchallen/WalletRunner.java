@@ -13,27 +13,31 @@ import com.ssafy.blockchallen.repository.WalletRepository;
 
 @Component
 public class WalletRunner implements ApplicationRunner{
-
 	@Autowired
 	WalletRepository walletRepository;
+	
+	@Autowired
 	AccountRepository accountRepository;
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 //		Account account = new Account();
-//		account.setAccess_token("test");
-//		account.setCertifications();
-//		account.setChallengeaccounts(null);
-//		account.setEmail("aa");
-//		account.setNickname("js");
+//		account.setAccess_token("test2");
+//		account.setCertifications(null);
+//		account.setChallenges(null);
+//		account.setChallenges(null);
+//		account.setEmail("aaa");
+//		account.setNickname("jsl");
 //		accountRepository.save(account);
-		
-		
-		Wallet wallet = new Wallet();
-		wallet.setAddress("test1");
-		wallet.setBalance(BigDecimal.valueOf(123));
-		//wallet.setAccount(account);
-		walletRepository.save(wallet);
+//		
+//		Wallet wallet = new Wallet();
+//		wallet.setAddress("sadjfioasjio");
+//		wallet.setBalance(BigDecimal.valueOf(1231));
+//		wallet.setAccount(account);
+//		walletRepository.save(wallet);
+//		
+//
+//		walletRepository.findAll().forEach(System.out::println);
 	}
 
 }

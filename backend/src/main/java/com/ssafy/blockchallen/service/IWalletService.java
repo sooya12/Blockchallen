@@ -7,13 +7,12 @@ import java.math.BigDecimal;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface IWalletService {
+	Wallet findUserId(long userId);
 	
-	Wallet get(long userId);
-	
-	Wallet get(String address);
+	Wallet findAddress(String address);
 	
 	@Transactional
-	Wallet register(Wallet wallet);
+	Wallet create(Wallet wallet);
 
 	@Transactional
 	Wallet syncBalance(String walletAddress, BigDecimal balance, int cash);
