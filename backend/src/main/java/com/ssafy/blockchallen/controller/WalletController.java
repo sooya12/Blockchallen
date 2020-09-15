@@ -29,7 +29,7 @@ public class WalletController {
 	 * @param wallet
 	 */
 	
-	@ApiOperation(value = "Register wallet of user")
+	@ApiOperation(value = "유저의 지갑 등록")
 	@RequestMapping(value = "/wallet/create", method = RequestMethod.POST)
 	public Wallet create(@Valid @RequestBody Wallet wallet) {
 		return walletService.create(wallet);
@@ -40,7 +40,7 @@ public class WalletController {
 	 * 지갑 조회 by address
 	 * @param address 지갑 주소
 	 */
-	@ApiOperation(value = "Fetch wallet by address")
+	@ApiOperation(value = "지갑 주소로 지갑 정보 찾기")
 	@RequestMapping(value = "/wallets/{address}", method = RequestMethod.GET)
 	public Wallet findAddress(@PathVariable String address) { // 지갑 주소 전달(address)
 		return walletService.findAddress(address);
@@ -51,7 +51,7 @@ public class WalletController {
 	 * 지갑 조회 by user's id
 	 * @param uid 사용자 id
 	 */
-	@ApiOperation(value = "Fetch wallet of user")
+	@ApiOperation(value = "유저 아이디로 지갑 정보 찾기")
 	@RequestMapping(value = "/wallets/of/{uid}", method = RequestMethod.GET)
 	public Wallet findUserId(@PathVariable long userId) {
 		return walletService.findUserId(userId);
