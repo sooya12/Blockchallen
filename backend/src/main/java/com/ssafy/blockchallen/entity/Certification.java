@@ -1,5 +1,6 @@
 package com.ssafy.blockchallen.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -49,6 +51,10 @@ public class Certification {
 	@Column(name = "is_reported")
 	@ApiModelProperty(required = true, value = "신고여부")
 	private Boolean isReported;
+	
+	@OneToOne
+	private Account reporter;
+	
 	
 	public static class Builder {
 		private Challenge challenge;
