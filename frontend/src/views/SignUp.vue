@@ -39,6 +39,11 @@ export default {
         value => (value && value.length >= 1) || '한 글자 이상 입력해주세요'
     ]
   }),
+  props: {
+    id: {
+      type: Number
+    }
+  },
   methods: {
     backHome() {
       this.$router.push("/")
@@ -54,6 +59,16 @@ export default {
         console.log(err)
       })
     }
+  },
+  mounted() {
+    console.log(this.id)
+
+    axios.get('http://localhost:8080/blockchallen/member/'+this.id)
+    .then(res => {
+      if(res.data.account.nickname) {
+        sessionStorage.setItem("account", res.data.account)
+      }
+    })
   }
 }
 </script>

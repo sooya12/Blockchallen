@@ -25,9 +25,10 @@ const routes = [
         component:MyPage
     },
     {
-        path: '/signup',
+        path: '/signup/:id',
         name: 'signup',
         component: SignUp,
+        props: true
     },
     {
         path: '/challenges/create',
