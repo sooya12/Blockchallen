@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.gson.JsonElement;
@@ -63,7 +64,7 @@ public class AccountController {
 		if(account != null)
 			return new ResponseEntity<>(account, HttpStatus.OK);
 		else
-			return new ResponseEntity<>("존재하지 않는 회원",HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>("존재하지 않는 회원", HttpStatus.NO_CONTENT);
 			
 	}
 	
@@ -72,6 +73,15 @@ public class AccountController {
 		return new ResponseEntity<>(accountService.duplicateCheck(nickname), HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/account", method = RequestMethod.PUT)
+	public Object setNickname(@RequestParam int id, @RequestParam String nickname) {
+		Account account = accountService.setNickname(id, nickname);
+		if(account != null) {
+			return new ResponseEntity<>(account, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("존재하지 않는 회원", HttpStatus.NO_CONTENT);
+		}
+	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public Object login(HttpServletRequest request, HttpServletResponse response) throws IOException {

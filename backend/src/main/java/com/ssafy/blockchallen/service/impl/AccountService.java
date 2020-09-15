@@ -47,5 +47,16 @@ public class AccountService implements IAccountService {
 		else // 사용 불가능 닉네임 (이미 존재)
 			return false;
 	}
+
+	public Account setNickname(long id, String nickname) {
+		Optional<Account> account = accountRepository.findById(id);
+		if(account.isPresent()) {
+			account.get().setNickname(nickname);
+			accountRepository.save(account.get());
+			return account.get();
+		} else {
+			return null;
+		}
+	}
 	
 }
