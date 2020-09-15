@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "router-view": "^1.1.7",
     "vue": "^2.6.11",
+    "vue-infinite-loading": "^2.4.5",
     "vue-router": "^3.4.3",
     "vuetify": "^2.3.10",
     "vuex": "^3.5.1",
