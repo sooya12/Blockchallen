@@ -34,11 +34,16 @@ export default {
         this.user.email = res.data.email
         this.user.nickname = res.data.nickname
 
-        sessionStorage.setItem("user", this.user)
+        sessionStorage.setItem("user", JSON.stringify(this.user))
 
         this.$router.push("/ChallengeList")
       } else {
-        this.$router.push({path: "/SignUp", props: {id: Number(this.id)}})
+        this.user.id = this.id
+        this.user.challenges = res.data.challenges
+        this.user.email = res.data.email
+
+        sessionStorage.setItem("user", JSON.stringify(this.user))
+        this.$router.push("/signup")
       }
     })
   }
