@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class setNicknameDTO {
+public class accountDTO {
     long id;
     String nickname;
 }
