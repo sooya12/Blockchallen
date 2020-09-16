@@ -44,6 +44,7 @@
               style="float:right; margin-top:4%; margin-right: 4%;"
               v-bind="attrs"
               v-on="on"
+              @click="clickReport(participant)"
           >
             <p style="color:white; font-size:2vh;  font-weight: bold;">신고하기</p>
             <v-icon dark right style="color:white;">mdi-cancel</v-icon>
@@ -68,12 +69,14 @@
 
 <script>
 import BlockProgress from "@/components/BlockProgress";
+import CertificationReport from "@/components/CertificationReport";
 
 
 export default {
   name: "ChallengeModal",
   components : {
     BlockProgress,
+
 
   },
   props:{
@@ -89,6 +92,21 @@ export default {
 
 
 
+  },
+  methods :{
+    clickReport(participant){
+      this.$modal.show(CertificationReport,{
+        participant : participant,
+        total : Number(this.total),
+        modal : this.$modal },{
+        name: 'dynamic-modal',
+        width : '50%',
+        height : '50%',
+        draggable: true,
+
+      })
+      this.$emit('close')
+    },
   }
 }
 </script>
