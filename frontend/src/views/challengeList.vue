@@ -3,7 +3,7 @@
         <!-- 상단 -->
         <div class="high">
             <div class="name">
-                <strong>{{user}}님</strong>
+                <strong>{{user.nickname}}님</strong>
             </div>
             <div class="topbutton">
                 <v-btn @click="ToMyPage">마이페이지</v-btn>
@@ -24,13 +24,7 @@
 
             >
             </v-text-field>
-            <!-- <div>
-                <v-icon 
-                    @click="find" 
-                    color="#5858FA"
-                    >fas fa-search</v-icon>
-                
-            </div> -->
+
             <div>
                 <v-btn 
                     @click="find" 
@@ -40,16 +34,23 @@
                         color="#5858FA" size='2x'/></v-btn>
             </div>
         </v-form>
+        <!-- select box-->
+        <v-form class="mt-3 px-3 d-flex">
+            <v-select
+            :items="items"
+            label="정렬기준"
+            ></v-select>
+        </v-form>
 
         <!-- 챌린지 목록 -->
         <v-container>
             <v-slide-item
-                v-for="(challenge,index) in challengelist"
-                :key="index"
+                v-for="challenge in challengelist.filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)"
+                :key="challenge"
             >
                 <v-btn 
                  style="width:100%; height:300px; border-radius: 50px;"
-               >{{challenge}}
+               >{{challenge.name}}
                </v-btn>
             </v-slide-item>
         </v-container>
@@ -67,32 +68,45 @@ export default{
             return{
             user:'',
             searchText:'',
-            challengelist:['챌린지1','챌린지2','챌린지3','챌린지4']
+            challengelist:[],
+            items:['빠른시작','느린시작','비싼배팅','저렴한배팅']
             }
+        },
+        computed:{
+           
+            // challengelist: function(){
+            //     return  this.challengelist.filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)
+            // }
         },
         created(){
           // axios
-          axios.get('/jsontest/Account.json')
-            then(res=> {
+            axios.get('/jsontest/Account.json')
+            .then(res=> {
                 console.log(res) 
-                this.user = res.data.user
+                this.user = res.data
             }),
           axios.get('/jsontest/Challenge.json')
             .then(res=> {
-                this.name = res.name
+                console.log(res) 
+                this.challengelist = res.data.ChallengeList
             })
         },
          methods:{
-        logout:function(){
+            logout:function(){
 
-        },
-        ToMyPage:function(){
+             },
+             ToMyPage:function(){
             this.$router.push('/MyPage')
-        },
-        find:function(event){
-            if(event)
-            alert("찾기")
-        }
+            },
+              find:function(){
+                if(this.challengelist.name.includes(this.searchText)){
+
+                    alert("찾음")
+                }else{
+                    alert("없어")
+                }
+            }
+
     }
     
    
