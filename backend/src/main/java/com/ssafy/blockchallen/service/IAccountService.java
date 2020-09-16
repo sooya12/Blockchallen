@@ -7,6 +7,6 @@ public interface IAccountService {
 	Account findAccount(long id);
 	Account createAccount(Account account);
 	boolean duplicateCheck(String nickname);
-	Account setNickname(Account account);
+	Account setNickname(Long id, String nickname);
 	boolean signout(Account account);
 }

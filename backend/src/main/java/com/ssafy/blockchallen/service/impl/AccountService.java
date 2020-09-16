@@ -48,10 +48,10 @@ public class AccountService implements IAccountService {
 			return false;
 	}
 
-	public Account setNickname(Account account) {
-		Optional<Account> setAccount = accountRepository.findById(account.getId());
+	public Account setNickname(Long id, String nickname) {
+		Optional<Account> setAccount = accountRepository.findById(id);
 		if(setAccount.isPresent()) {
-			setAccount.get().setNickname(account.getNickname());
+			setAccount.get().setNickname(nickname);
 			accountRepository.save(setAccount.get());
 			return setAccount.get();
 		} else {
