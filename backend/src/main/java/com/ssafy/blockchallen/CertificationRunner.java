@@ -15,12 +15,12 @@ public class CertificationRunner implements ApplicationRunner{
 	
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		Certification ctf = new Certification();
-		ctf.setChallenge(null);
-		ctf.setAccount(null);
-		ctf.setPicture("aa");
-		ctf.setRegDate("12346");
-		ctf.setIsReported(true);
-		certificationrepository.save(ctf);
+//		Certification ctf = new Certification();
+//		ctf.setChallenge(null);
+//		ctf.setAccount(null);
+//		ctf.setPicture("abcd");
+//		ctf.setRegDate("3210");
+//		ctf.setIsReported(true);
+//		certificationrepository.save(ctf);
 	}
 }

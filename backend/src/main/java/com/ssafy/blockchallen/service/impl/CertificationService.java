@@ -1,8 +1,11 @@
 package com.ssafy.blockchallen.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Certification;
 import com.ssafy.blockchallen.repository.CertificationRepository;
 import com.ssafy.blockchallen.service.ICertificationService;
@@ -10,12 +13,8 @@ import com.ssafy.blockchallen.service.ICertificationService;
 @Service
 public class CertificationService implements ICertificationService {
 
-	private CertificationRepository certificationRepository;
-	
 	@Autowired
-	public CertificationService(CertificationRepository certificationRepository) {
-		this.certificationRepository = certificationRepository;
-	}
+	private CertificationRepository certificationRepository;
 	
 	@Override
 	public Certification register(Certification certification) {
@@ -23,11 +22,10 @@ public class CertificationService implements ICertificationService {
 	}
 
 	@Override
-	public Certification declaration(long id, Certification certification) {
-		Certification ctf = certificationRepository.findById(id).orElse(null);
-		
+	public Certification report(Account account, Certification certification) {
+		Optional<Certification> ctf = certificationRepository.findById(certification.getId());// 받아온 인증 정보의 id로 검색
+		ctf.setReporter(account);
 		ctf.setIsReported(true);
-		ctf.setIsReported(certification.getIsReported());
 		return certificationRepository.save(ctf);
 	}
 

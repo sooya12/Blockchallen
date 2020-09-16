@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Certification;
 import com.ssafy.blockchallen.service.ICertificationService;
 
@@ -31,8 +32,14 @@ public class CertificationController {
 	}
 	
 	@ApiOperation(value = "인증 신고하기")
-	@RequestMapping(value = "/certification/{userId}", method = RequestMethod.PUT)
-	public Certification declaration(@PathVariable long userId, @RequestBody Certification certification) {
-		return certificationService.declaration(userId, certification);
+	@RequestMapping(value = "/certification/{reporter}", method = RequestMethod.PUT)
+	public Certification report(@RequestBody Account account, @RequestBody Certification certification) { // 신고자와 인증 정보 받아옴
+		if(certification.getIsReported()==false) // 신고가 된적이 없는 인증이라면
+			return certificationService.report(account, certification); // 갱신
+		else {
+			return certification;			
+		}
 	}
+	
+	
 }

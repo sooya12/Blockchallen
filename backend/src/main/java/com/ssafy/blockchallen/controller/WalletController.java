@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +36,8 @@ public class WalletController {
 	
 	@ApiOperation(value = "유저의 지갑 등록")
 	@RequestMapping(value = "/wallet/create", method = RequestMethod.POST)
-	public Wallet create(@Valid @RequestBody Wallet wallet) {
+	@ExceptionHandler(Exception.class)
+	public Wallet create(@RequestBody Wallet wallet) {
 		return walletService.create(wallet);
 	}
 
@@ -58,7 +60,7 @@ public class WalletController {
 	 * @param uid 사용자 id
 	 */
 	@ApiOperation(value = "유저 아이디로 지갑 정보 찾기")
-	@RequestMapping(value = "/wallets/info/id", method = RequestMethod.GET)
+	@RequestMapping(value = "/wallets/info/id", method = RequestMethod.GET) //{id}로 받아와야 하려나?? 그런 느낌인거같소
 	public Wallet findUserId(@RequestBody Account account) {
 		return walletService.findByAccount(account);
 	}
