@@ -6,7 +6,8 @@
         </v-btn>
       </div>
       <div id="header">
-        <h1>{{ user.nickname }}님의 마이페이지</h1>
+        <h1><span style="color: red;">{{ user.nickname }}</span>님의 마이페이지</h1>
+        <v-btn @click="logout">로그아웃</v-btn>
       </div>
       <div id="wallet">
         <h2>나의 지갑</h2>
@@ -54,8 +55,9 @@
 <script>
 import Chart from 'chart.js'
 import Web3 from 'web3'
+import axios from 'axios'
 
-var web3 = new Web3(Web3.givenProvider || 'http://localhost:8545')
+var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
 
 export default {
   name: "MyPage",
@@ -64,7 +66,8 @@ export default {
       id: 0,
       challenges: [],
       email: "",
-      nickname: ""
+      nickname: "",
+      access_token: "",
     },
     myEth: "100000",
     flag: false,
@@ -75,19 +78,25 @@ export default {
   }),
   methods: {
     backHome() {
-      this.$router.push("/challengeList")
+      this.$router.push("/challenges")
     },
-    createWallet() {
+    async createWallet() {
       alert("지갑 생성")
 
-      let wallet = web3.eth.accounts.create();
+      // let wallet = web3.eth.accounts.create();
+      //
+      // console.log(wallet)
+      // console.log(wallet.privateKey)
+      // console.log(wallet.address)
+      //
+      // web3.eth.getAccounts(console.log)
 
-      console.log(wallet)
-      console.log(wallet.privateKey)
-      console.log(wallet.address)
+      // this.myWallet.privateKey = wallet.privateKey
+      // this.myWallet.walletAddress = wallet.address
 
-      this.myWallet.privateKey = wallet.privateKey
-      this.myWallet.walletAddress = wallet.address
+      web3.eth.personal.newAccount()
+      .then(console.log)
+      web3.eth.
 
       this.flag = true
     },
@@ -120,12 +129,42 @@ export default {
           responsive: true,
         }
       })
+    },
+    logout(){
+      console.log(this.user.access_token)
+
+      axios({
+       method: 'post',
+       url: 'https://kapi.kakao.com/v2/user/logout',
+       headers: {
+         Authorization: 'Bearer ' + this.user.access_token,
+         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+       }
+      })
+      .then(res => {
+        console.log(res)
+
+        // sessionStorage.removeItem("user")
+        // this.$router.push('/')
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+      // axios.get('https://kauth.kakao.com/oauth/logout?client_id=28c57e4dec8be27db1832926dba21bb0&logout_redirect_uri=http://localhost:3030/')
+      // .then(res => {
+      //   console.log(res)
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      // })
     }
   },
   mounted() {
     this.createChart()
 
-    this.user.nickname = sessionStorage.getItem("user").nickname
+    const user = JSON.parse(sessionStorage.getItem("user"))
+    this.user = user
   }
 }
 </script>

@@ -66,7 +66,7 @@ export default {
         sessionStorage.removeItem("user")
         sessionStorage.setItem("user", JSON.stringify(res.data))
 
-        this.$router.push("/ChallengeList")
+        this.$router.push("/challenges")
       })
       .catch((err) => {
         console.log(err)

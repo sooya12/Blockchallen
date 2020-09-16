@@ -78,7 +78,7 @@ export default{
 
         },
         ToMyPage:function(){
-            this.$router.push('/MyPage')
+            this.$router.push('/mypage')
         },
         find:function(event){
             if(event)
