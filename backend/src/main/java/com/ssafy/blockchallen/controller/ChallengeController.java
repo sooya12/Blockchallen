@@ -31,5 +31,12 @@ public class ChallengeController {
 		
 		return new ResponseEntity<>("챌린지 생성 실패", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-
+	
+	@RequestMapping(path = "/challenge")
+	public Object datailChallenge(@RequestParam long id) {
+		
+		
+		
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 }

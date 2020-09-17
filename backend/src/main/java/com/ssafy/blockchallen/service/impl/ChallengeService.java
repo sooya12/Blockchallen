@@ -46,5 +46,13 @@ public class ChallengeService implements IChallengeService {
 		return true;
 	}
 
+	public Challenge detailChallenge(long id) {
+		Optional<Challenge> challenge = challengeRepository.findById(id);
+		if(challenge.isPresent()) {
+			return challenge.get();
+		}
+		
+		return null;
+	}
 	
 }
