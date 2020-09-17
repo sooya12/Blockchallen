@@ -1,0 +1,28 @@
+{
+  "id": 3,
+  "name":"매일 단어 외우기",
+  "startDate":"2020-09-01",
+  "endDate":"2020-09-14",
+  "expireDate":"2020-08-30",
+  "fee" : 10000,
+  "isRandom":true,
+  "certificationCondition":null,
+  "superuid": 1,
+  "users": [
+    {
+      "uid" : 1
+    },
+    {
+      "uid" : 4
+    },
+    {
+      "uid" : 10
+    },
+    {
+      "uid" : 11
+    },
+    {
+      "uid" : 12
+    }
+  ]
+}

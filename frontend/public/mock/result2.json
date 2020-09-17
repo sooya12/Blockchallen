@@ -1,0 +1,32 @@
+{
+  "successlist": [
+    {
+      "uid" : 1,
+      "nickname" : "도전 가득 인생 살이",
+      "prize" : 14000
+    },
+    {
+      "uid" : 10,
+      "nickname" : "상금은 내꺼",
+      "prize" : 13000
+    },
+    {
+      "uid" : 11,
+      "nickname" : "취준생",
+      "prize" : 12000
+    },
+    {
+      "uid" : 12,
+      "nickname" : "쌒가능",
+      "prize" : 11000
+    }
+  ],
+  "faillist" : [
+    {
+      "uid" : 4,
+      "nickname" : "IBM 신입"
+    }
+  ]
+
+
+}

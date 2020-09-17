@@ -1,0 +1,19 @@
+{
+  "id": 2,
+  "name":"새벽 6시 도전?",
+  "startDate":"2020-09-14",
+  "endDate":"2020-10-01",
+  "expireDate":"2020-09-13",
+  "fee" : 10000,
+  "isRandom":true,
+  "certificationCondition":"매일 시간 찍혀있는 사진 올리기",
+  "superuid": 1,
+  "users": [
+    {
+      "uid" : 1
+    },
+    {
+      "uid" : 4
+    }
+  ]
+}
