@@ -17,14 +17,14 @@ const routes = [
         component: Home,
     },
     {
-        path:'/challenges',
-        name:'ChallengeList',
-        component:ChallengeList
+        path: '/challenges',
+        name: 'ChallengeList',
+        component: ChallengeList
     },
     {
-        path:'/mypage',
-        name:'MyPage',
-        component:MyPage
+        path: '/mypage',
+        name: 'MyPage',
+        component: MyPage
     },
     {
         path: '/signup',

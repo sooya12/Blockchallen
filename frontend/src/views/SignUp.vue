@@ -2,7 +2,8 @@
   <div id="app">
     <div>
       <v-btn color="pink" dark top left style="margin: 2%;" @click="backHome">
-        <v-icon dark left>arrow_back</v-icon>처음으로
+        <v-icon dark left>arrow_back</v-icon>
+        처음으로
       </v-btn>
     </div>
     <div id="terms">
@@ -36,8 +37,8 @@ export default {
     id: 0,
     nickname: "",
     nicknameRules: [
-        value => !! value || '필수 사항. 한 글자 이상 입력해주세요',
-        value => (value && value.length >= 1) || '한 글자 이상 입력해주세요'
+      value => !!value || '필수 사항. 한 글자 이상 입력해주세요',
+      value => (value && value.length >= 1) || '한 글자 이상 입력해주세요'
     ],
     flag: false
   }),
@@ -47,13 +48,13 @@ export default {
     },
     duplicationCheck() {
       axios.get('http://localhost:8080/blockchallen/account/nickname/' + this.nickname)
-      .then((res) => {
-        console.log(res.data)
-        this.flag = true
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+          .then((res) => {
+            console.log(res.data)
+            this.flag = true
+          })
+          .catch((err) => {
+            console.log(err)
+          })
     },
     signUp() {
       const account = {
@@ -62,17 +63,17 @@ export default {
       }
 
       axios.put('http://localhost:8080/blockchallen/account', account)
-      .then((res) => {
-        sessionStorage.removeItem("user")
-        sessionStorage.setItem("user", JSON.stringify(res.data))
+          .then((res) => {
+            sessionStorage.removeItem("user")
+            sessionStorage.setItem("user", JSON.stringify(res.data))
 
-        this.$router.push("/challenges")
-      })
-      .catch((err) => {
-        console.log(err)
-        alert("닉네임 생성 실패")
-        this.flag = false
-      })
+            this.$router.push("/challenges")
+          })
+          .catch((err) => {
+            console.log(err)
+            alert("닉네임 생성 실패")
+            this.flag = false
+          })
     }
   },
   mounted() {

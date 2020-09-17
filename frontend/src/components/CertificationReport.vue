@@ -19,7 +19,7 @@
           <br>
         </p>
         <p style="color:red; font-size: 1.8vh; font-weight: bold; ">
-          {{textOriginal}}
+          {{ textOriginal }}
         </p>
         <v-text-field
             ref="title"
@@ -34,7 +34,7 @@
       </v-card>
       <div style="position: absolute; left:0; bottom :5%; width: 100%;">
 
-        <div  style="position: relative; margin: 0 auto; text-align: center; float:left;  width: 100%;">
+        <div style="position: relative; margin: 0 auto; text-align: center; float:left;  width: 100%;">
           <v-btn
               color="#ff5555"
               v-bind="attrs"
@@ -66,61 +66,59 @@
 <script>
 import axios from 'axios'
 import ChallengeModal from "@/components/ChallengeModal";
+
 export default {
   name: "CertificationReport",
-  props:{
-    participant : Object,
-    total : Number,
+  props: {
+    participant: Object,
+    total: Number,
   },
-  data(){
+  data() {
     return {
-      textSignature:'',
+      textSignature: '',
       description: '위 내용을 그대로 입력해주세요. (붙여넣기 사용 불가)',
-      textOriginal:'위 내용을 숙지하였으며 동의합니다.',
-      activateReport : false,
+      textOriginal: '위 내용을 숙지하였으며 동의합니다.',
+      activateReport: false,
 
     }
   },
   mounted() {
 
 
-
   },
-  methods:{
-    clickReport(participant){
+  methods: {
+    clickReport(participant) {
       console.log(participant)
-      axios.post('url',{
-
-      })
-      .then((res)=>{
-        console.log(res)
-      })
+      axios.post('url', {})
+          .then((res) => {
+            console.log(res)
+          })
 
 
     },
 
 
-    cancel(){
+    cancel() {
       this.$emit('close')
-      this.$modal.show(ChallengeModal,{
-        participant : this.participant,
-        total : Number(this.total),
-        modal : this.$modal },{
+      this.$modal.show(ChallengeModal, {
+        participant: this.participant,
+        total: Number(this.total),
+        modal: this.$modal
+      }, {
         name: 'dynamic-modal',
-        width : '50%',
-        height : '40%',
+        width: '50%',
+        height: '40%',
         draggable: false,
       })
     }
 
   },
-  watch :{
-    textSignature(val){
-      if(val==this.textOriginal){
-        this.activateReport=true
-      }
-      else{
-        this.activateReport=false
+  watch: {
+    textSignature(val) {
+      if (val == this.textOriginal) {
+        this.activateReport = true
+      } else {
+        this.activateReport = false
       }
     },
   }

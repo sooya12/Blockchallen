@@ -13,22 +13,22 @@
 <script>
 export default {
   name: "BlockProgress.vue",
-  props:{
-    progress:Number,
+  props: {
+    progress: Number,
     total: Number
   },
-  data(){
-    return{
-      progressInteger:0,
-      progressDecimal:0,
-      blockimg:'',
+  data() {
+    return {
+      progressInteger: 0,
+      progressDecimal: 0,
+      blockimg: '',
     }
   },
   mounted() {
 
-    this.progressInteger=Math.floor(this.progress*10/this.total)
-    this.progressDecimal=Math.round(this.progress*100/this.total)-this.progressInteger*10
-    this.blockimg='/block/block'+this.progressDecimal+'.jpg'
+    this.progressInteger = Math.floor(this.progress * 10 / this.total)
+    this.progressDecimal = Math.round(this.progress * 100 / this.total) - this.progressInteger * 10
+    this.blockimg = '/block/block' + this.progressDecimal + '.jpg'
 
   }
 }

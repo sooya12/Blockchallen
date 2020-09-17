@@ -1,44 +1,45 @@
 <template>
-    <div id="app">
-      <div>
-        <v-btn color="pink" dark top left style="margin: 2%;" @click="backHome">
-          <v-icon dark left>arrow_back</v-icon>메인으로
-        </v-btn>
+  <div id="app">
+    <div>
+      <v-btn color="pink" dark top left style="margin: 2%;" @click="backHome">
+        <v-icon dark left>arrow_back</v-icon>
+        메인으로
+      </v-btn>
+    </div>
+    <div id="header">
+      <h1><span style="color: red;">{{ user.nickname }}</span>님의 마이페이지</h1>
+      <v-btn @click="kakaoLogout">로그아웃</v-btn>
+    </div>
+    <div id="wallet">
+      <h2>나의 지갑</h2>
+      <div v-if="!flag">
+        <v-btn @click="createWallet">생성하기</v-btn>
       </div>
-      <div id="header">
-        <h1><span style="color: red;">{{ user.nickname }}</span>님의 마이페이지</h1>
-        <v-btn @click="kakaoLogout">로그아웃</v-btn>
+      <div v-else>
+        <!--<p>나의 비밀키 {{ myWallet.privateKey }}</p>-->
+        <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
+        <p>나의 잔고는 {{ myWallet.myEth }} 입니다.</p>
+        <v-btn @click="charge">충전하기</v-btn>
       </div>
-      <div id="wallet">
-        <h2>나의 지갑</h2>
-        <div v-if="!flag">
-          <v-btn @click="createWallet">생성하기</v-btn>
-        </div>
-        <div v-else>
-          <!--<p>나의 비밀키 {{ myWallet.privateKey }}</p>-->
-          <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
-          <p>나의 잔고는 {{ myWallet.myEth }} 입니다.</p>
-          <v-btn @click="charge">충전하기</v-btn>
-        </div>
+    </div>
+    <div id="challenge">
+      <h2>나의 챌린지</h2>
+      <div id="totalSuccessRate">
+        <canvas id="myChart" width="100" height="100"></canvas>
       </div>
-      <div id="challenge">
-        <h2>나의 챌린지</h2>
-        <div id="totalSuccessRate">
-          <canvas id="myChart" width="100" height="100"></canvas>
-        </div>
-        <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
-          <div class="progressSet">
-            <div class="challengeName"><p>{{ challenge.name }}</p></div>
-            <v-progress-linear
-                class="challengeProgress"
-                color="red lighten-2"
-                :buffer-value="challenge.rate"
-                stream
-            ></v-progress-linear>
-          </div>
+      <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
+        <div class="progressSet">
+          <div class="challengeName"><p>{{ challenge.name }}</p></div>
+          <v-progress-linear
+              class="challengeProgress"
+              color="red lighten-2"
+              :buffer-value="challenge.rate"
+              stream
+          ></v-progress-linear>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -98,14 +99,14 @@ export default {
         data: {
           datasets: [{
             data: [
-                80,
-                20
+              80,
+              20
             ],
             backgroundColor: [
               // 'rgba(119, 146, 174, 0.7)',
               // 'rgba(192, 41, 66, 0.7)'
-                'rgb(91, 132, 177)',
-                'rgb(252, 118, 106)'
+              'rgb(91, 132, 177)',
+              'rgb(252, 118, 106)'
             ],
           }],
           labels: [
@@ -118,7 +119,7 @@ export default {
         }
       })
     },
-    kakaoLogout(){
+    kakaoLogout() {
       let win = window.open('https://accounts.kakao.com/logout?continue=https://accounts.kakao.com/weblogin/account')
       win.close()
       this.$router.push("/")
@@ -146,7 +147,7 @@ export default {
     this.user = user
 
     console.log(this.user.walletAddress)
-    if(this.user.walletAddress != "") {
+    if (this.user.walletAddress != "") {
       this.flag = true
       this.myWallet.walletAddress = this.user.walletAddress
 

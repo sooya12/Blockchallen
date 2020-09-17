@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
 
     <div style="float:left; width:40%; height : 20vh;">
       <v-img
@@ -29,13 +29,15 @@
       >
       </v-img>
       <div style=" margin-top: 5%; ">
-        <i ><img src="/lego.png" style="height:8vh;"></i><p style="font-size:2vh;  font-weight: bold;">{{participant.nickname}}</p>
+        <i><img src="/lego.png" style="height:8vh;"></i>
+        <p style="font-size:2vh;  font-weight: bold;">{{ participant.nickname }}</p>
       </div>
 
       <i>upload at</i>
-      <p>{{participant.certification.regDate}}</p>
-      <p style="font-size:2vh;  font-weight: bold;">진행도 : <span style="color:#ff5555;">{{participant.progress}} / {{total}}</span></p>
-      <block-progress :progress="participant.progress" :total="total" ></block-progress>
+      <p>{{ participant.certification.regDate }}</p>
+      <p style="font-size:2vh;  font-weight: bold;">진행도 : <span
+          style="color:#ff5555;">{{ participant.progress }} / {{ total }}</span></p>
+      <block-progress :progress="participant.progress" :total="total"></block-progress>
 
       <v-tooltip top>
         <template v-slot:activator="{ on, attrs }">
@@ -74,34 +76,32 @@ import CertificationReport from "@/components/CertificationReport";
 
 export default {
   name: "ChallengeModal",
-  components : {
+  components: {
     BlockProgress,
 
 
   },
-  props:{
-    participant : Object,
-    total : Number
+  props: {
+    participant: Object,
+    total: Number
   },
-  data(){
-    return {
-
-    }
+  data() {
+    return {}
   },
   mounted() {
 
 
-
   },
-  methods :{
-    clickReport(participant){
-      this.$modal.show(CertificationReport,{
-        participant : participant,
-        total : Number(this.total),
-        modal : this.$modal },{
+  methods: {
+    clickReport(participant) {
+      this.$modal.show(CertificationReport, {
+        participant: participant,
+        total: Number(this.total),
+        modal: this.$modal
+      }, {
         name: 'dynamic-modal',
-        width : '50%',
-        height : '70%',
+        width: '50%',
+        height: '70%',
         draggable: false,
 
       })
