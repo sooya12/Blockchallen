@@ -85,9 +85,8 @@ export default {
       // this.myWallet.privateKey = wallet.privateKey
       // this.myWallet.walletAddress = wallet.address
 
-      web3.eth.personal.newAccount()
-      .then(console.log)
-      web3.eth.
+      const address = await web3.eth.personal.newAccount()
+      this.myWallet.walletAddress = address
 
       this.flag = true
     },
@@ -124,22 +123,22 @@ export default {
     logout(){
       console.log(this.user.access_token)
 
-      axios({
-        method: 'post',
-        url: 'http://localhost:8080/blockchallen/logout',
-        data: {
-          'id': this.user.id,
-        },
-      })
-      .then(res => {
-        console.log(res)
-
-        sessionStorage.removeItem("user")
-        this.$router.push('/')
-      })
-      .catch(err => {
-        console.log(err)
-      })
+      // axios({
+      //   method: 'post',
+      //   url: 'http://localhost:8080/blockchallen/logout',
+      //   data: {
+      //     'id': this.user.id,
+      //   },
+      // })
+      // .then(res => {
+      //   console.log(res)
+      //
+      //   sessionStorage.removeItem("user")
+      //   this.$router.push('/')
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      // })
 
       // axios({
       //  method: 'post',
@@ -177,13 +176,15 @@ export default {
       //   console.log(err)
       // })
 
-      // axios.get('https://kauth.kakao.com/oauth/logout?client_id=28c57e4dec8be27db1832926dba21bb0&logout_redirect_uri=http://localhost:3030/')
-      // .then(res => {
-      //   console.log(res)
-      // })
-      // .catch(err => {
-      //   console.log(err)
-      // })
+      axios.get('https://kauth.kakao.com/oauth/logout?client_id=28c57e4dec8be27db1832926dba21bb0&logout_redirect_uri=http://localhost:8080/blockchallen/logout')
+      .then(res => {
+        console.log(res)
+        sessionStorage.removeItem("user")
+        this.$router.push('/')
+      })
+      .catch(err => {
+        console.log(err)
+      })
     }
   },
   mounted() {
