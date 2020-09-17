@@ -6,12 +6,11 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -37,10 +36,6 @@ public class Challenge {
 	@ApiModelProperty(required = true, value = "챌린지 주제")
 	private String name;
 	
-	@Column(name = "expire_date")
-	@ApiModelProperty(required = true, value = "모집 마감일")
-	private String expireDate;
-	
 	@Column(name = "start_date")
 	@ApiModelProperty(required = true, value = "챌린지 시작일")
 	private String startDate;
@@ -48,6 +43,10 @@ public class Challenge {
 	@Column(name = "end_date")
 	@ApiModelProperty(required = true, value = "챌린지 마감일")
     private String endDate;
+
+	@Column(name = "expire_date")
+	@ApiModelProperty(required = true, value = "모집 마감일")
+	private String expireDate;
     
 	@ApiModelProperty(required = true, value = "배팅금액")
     private Integer fee;
@@ -64,8 +63,8 @@ public class Challenge {
     @ApiModelProperty(value = "인증 set")
     private Set<Certification> certifications;
     
-    @ManyToMany(mappedBy = "challenges", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
     @ApiModelProperty(value = "참여한 회원 계정 set")
 	private Set<Account> accounts;
 
@@ -88,13 +87,14 @@ public class Challenge {
 	
 	public void addAccount(Account account) {
 		this.getAccountsInternal().add(account);
+		account.addChallenge(this);
 	}
 	
 	public static class Builder {
 		private String name = "";
-		private String expireDate = "";
 		private String startDate = "";
 		private String endDate = "";
+		private String expireDate = "";
 		private Integer fee = 0;
 		private Boolean isRandom = false;
 		private String certificationCondition = "";
@@ -108,16 +108,16 @@ public class Challenge {
 			this.name = name;
 			return this;
 		}
-		public Builder expireDate(String expireDate) {
-			this.expireDate = expireDate;
-			return this;
-		}
 		public Builder startDate(String starDate) {
 			this.startDate = starDate;
 			return this;
 		}
 		public Builder endDate(String endDate) {
 			this.endDate = endDate;
+			return this;
+		}
+		public Builder expireDate(String expireDate) {
+			this.expireDate = expireDate;
 			return this;
 		}
 		public Builder fee(int fee) {

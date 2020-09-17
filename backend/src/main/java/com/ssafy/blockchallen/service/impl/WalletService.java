@@ -1,6 +1,8 @@
 package com.ssafy.blockchallen.service.impl;
 
 import com.ssafy.blockchallen.service.IWalletService;
+import com.ssafy.blockchallen.dto.walletDTO;
+import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Wallet;
 import com.ssafy.blockchallen.repository.WalletRepository;
 
@@ -12,27 +14,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class WalletService implements IWalletService {
 
+	@Autowired
 	private WalletRepository walletRepository;
 
-	@Autowired
-	public WalletService(WalletRepository walletRepository) {
-		this.walletRepository = walletRepository;
-	}
 	@Override
-	public Wallet get(long userId) {
-		Wallet newWallet = new Wallet();
-		newWallet = walletRepository.findById(userId).orElse(null);
-		return newWallet;
+	public Wallet findById(long id) {
+		return walletRepository.findById(id).orElse(null);
 	}
 
-	@Override
-	public Wallet register(Wallet wallet) {
-		Wallet newWallet = new Wallet();
-		newWallet.setId(wallet.getId());
-		newWallet.setAddress(wallet.getAddress());
-		newWallet.setId(wallet.getAccount().getId());
-		return newWallet;
-	}
+//	@Override
+//	public Wallet findByWallet(Wallet wallet) {
+//		return walletRepository.findByWallet(wallet);
+//	}
+	
+//	@Override
+//	public Wallet create(walletDTO wallet, long id) {
+//		Wallet newWallet = new Wallet();
+//		newWallet.setAccount(id);
+//		return walletRepository.save();
+//	}
 	@Override
 	public Wallet syncBalance(String walletAddress, BigDecimal balance, int cash) {
 		return null;
@@ -43,10 +43,23 @@ public class WalletService implements IWalletService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+//	@Override
+//	public Wallet findByAccount(Account account) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+	
 	@Override
-	public Wallet get(String address) {
-		Wallet newWallet = new Wallet();
-		newWallet = walletRepository.findByAddress(address);
-		return newWallet;
+	public Wallet findByWallet(Wallet address) {
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+	@Override
+	public Wallet create(walletDTO wallet, long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }
