@@ -42,7 +42,6 @@
                 <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" >본 챌린지는 진행중입니다. </p>
                 <p style="font-size:2.5vh; margin-top: 5%;  font-weight: bold;">
                   챌린지 현황
-
                 </p>
                 <div v-for="participant of userlist" v-bind:key="participant.id">
                   <v-card style="margin : 5% 1%; margin-top : 1%; min-height: 32vh;" @click="clickParicipant(participant,total)">
@@ -96,7 +95,31 @@
               </div>
               <div v-if="challengeState=='done'">
                 <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;" >본 챌린지는 마감되었습니다.</p>
+                <p style="font-size:2.5vh; margin-top: 5%;  font-weight: bold;">
+                  결과
+                </p>
+                <p style="font-size:2.5vh;  font-weight: bold;"> <span style="font-size: 2.2vh;">성공 인원 : </span> {{successlist.length}}명</p>
+                <p style="font-size:2.5vh;  font-weight: bold;"> <span style="font-size: 2.2vh;">실패 인원 : </span> {{faillist.length}}명</p>
+                <v-card style="margin : 5% 1%; margin-top : 1%; padding : 1%;  padding-top : 2%;" v-if="successlist.length>0">
+                  <div v-for="(success,index) in successlist" v-bind:key="success.id">
+                    <div>
+                      <p style="font-size:2vh; font-weight: bold; float:left; width:50%; text-align: center;">
+                        {{success.nickname}}
+                      </p>
+                    </div>
+                    <div>
+                      <p style="font-size:2vh; font-weight: bold; text-align: center;">
+                        <font-awesome-icon icon="medal" v-if="index==0&&isRandom" style="color:gold;"></font-awesome-icon>
+                        <font-awesome-icon icon="medal" v-if="index==1&&isRandom" style="color:silver;"></font-awesome-icon>
+                        <font-awesome-icon icon="medal" v-if="index==2&&isRandom" style="color:#cd7f32;"></font-awesome-icon>
 
+                        <span v-if="index<3" style="font-size:2.2vh;">{{insertCommaInNumber(success.prize)}}원</span>
+                        <span v-if="index>2" style="font-size:2vh;">{{insertCommaInNumber(success.prize)}}원</span>
+                      </p>
+                    </div>
+
+                  </div>
+                </v-card>
               </div>
             </v-card>
             <div style="width:70%; padding: 1% 2%; margin-top: 3%; text-align: center;" v-if="challengeState=='before'">
@@ -139,6 +162,8 @@
                 gather:0,
                 userlist:[],
                 total: 0,
+                successlist:[],
+                faillist : [],
 
             }
         },
@@ -181,6 +206,7 @@
                 }
                 else{
                     this.challengeState='done'
+                    this.done()
                 }
                 this.gather=this.fee*this.users.length;
                 let len = String(this.gather).length;
@@ -281,8 +307,21 @@
                 })
 
             },
+            /**
+            * TODO : URL 수정
+            */
             done(){
+              axios.get('/mock/result'+this.cid+'.json',{
+                params: {
+                  "id": Number(this.cid)
+                }
+              })
+                  .then((res)=>{
 
+                    this.successlist=res.data.successlist
+                    this.faillist=res.data.faillist
+
+                  })
             },
 
             clickParicipant(participant,total){
@@ -296,6 +335,18 @@
                 draggable: false,
               })
             },
+
+            insertCommaInNumber(num){
+              let len = String(num).length;
+              let comma=len%3
+              let tempstr=String(num).substr(0,comma)
+              while(comma<len){
+                tempstr+=','
+                tempstr+=String(num).substr(comma,3)
+                comma+=3
+              }
+              return tempstr
+            }
 
 
 
