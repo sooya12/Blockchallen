@@ -29,11 +29,11 @@ public class WalletRunner implements ApplicationRunner{
 //		accountRepository.save(account);
 		
 		
-		Wallet wallet = new Wallet();
-		wallet.setAddress("test1");
-		wallet.setBalance(BigDecimal.valueOf(123));
-		//wallet.setAccount(account);
-		walletRepository.save(wallet);
+//		Wallet wallet = new Wallet();
+//		wallet.setAddress("test1");
+//		wallet.setBalance(BigDecimal.valueOf(123));
+//		//wallet.setAccount(account);
+//		walletRepository.save(wallet);
 	}
 
 }

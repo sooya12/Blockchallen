@@ -37,14 +37,14 @@ public class ChallengeService implements IChallengeService {
 				.isRandom(challenge.isRandom())
 				.certificationCondition(challenge.getCertification())
 				.build();
+		newChallenge.addAccount(captain.get());
 		
 		
-		Challenge savedChallenge = challengeRepository.save(newChallenge);
+		captain.get().addCaptainChallenge(newChallenge);
+		challengeRepository.save(newChallenge);
 		
-		if(savedChallenge!=null)
-			return true;
-		else
-			return false;
+		return true;
 	}
+
 	
 }

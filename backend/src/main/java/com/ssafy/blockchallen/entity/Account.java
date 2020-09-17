@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -58,11 +59,7 @@ public class Account {
 	@ApiModelProperty(value = "인증 set")
 	private Set<Certification> certifications;
 	
-	@ManyToMany
-	@JoinTable(
-			name = "account_challenge", 
-			joinColumns = @JoinColumn(name = "account_id"),
-			inverseJoinColumns = @JoinColumn(name = "challenge_id"))
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JsonManagedReference
 	@ApiModelProperty(value = "참여한 챌린지 set")
 	private Set<Challenge> challenges;
@@ -97,7 +94,7 @@ public class Account {
 	
 	public void addChallengeAccount(Challenge challenge) {
 		this.getChallengesInternal().add(challenge);
-		challenge.getAccounts().add(this);
+		challenge.addAccount(this);
 	}
 	
 	
@@ -105,7 +102,7 @@ public class Account {
 		private String email = "";
 		private String nickname = "";
 		private String access_token = "";
-		private Wallet wallet;
+		private Wallet wallet = null;
 		private Set<Challenge> captainChallenges;
 		private Set<Certification> certifications;
 		private Set<Challenge> challenges;
