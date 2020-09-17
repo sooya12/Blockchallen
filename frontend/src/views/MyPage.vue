@@ -15,9 +15,9 @@
           <v-btn @click="createWallet">생성하기</v-btn>
         </div>
         <div v-else>
-          <p>나의 비밀키 {{ myWallet.privateKey }}</p>
+          <!--<p>나의 비밀키 {{ myWallet.privateKey }}</p>-->
           <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
-          <p>나의 잔고는 {{ myEth }} 입니다.</p>
+          <p>나의 잔고는 {{ myWallet.myEth }} 입니다.</p>
           <v-btn @click="charge">충전하기</v-btn>
         </div>
       </div>
@@ -56,12 +56,13 @@ export default {
       email: "",
       nickname: "",
       access_token: "",
+      walletAddress: "",
     },
-    myEth: "100000",
     flag: false,
     myWallet: {
       privateKey: "",
       walletAddress: "",
+      myEth: 0,
     },
   }),
   methods: {
@@ -82,9 +83,9 @@ export default {
       // this.myWallet.privateKey = wallet.privateKey
       // this.myWallet.walletAddress = wallet.address
 
-      const address = await web3.eth.personal.newAccount()
-      this.myWallet.walletAddress = address
-
+      this.myWallet.walletAddress = await web3.eth.personal.newAccount()
+      // this.myWallet.myEth = await web3.eth.getBalance(address)
+      this.getWalletInfo(this.myWallet.walletAddress)
       this.flag = true
     },
     charge() {
@@ -117,21 +118,13 @@ export default {
         }
       })
     },
-    // logout(){
-    //   axios.get('https://kauth.kakao.com/oauth/logout?client_id=28c57e4dec8be27db1832926dba21bb0&logout_redirect_uri=http://localhost:8080/blockchallen/logout')
-    //   .then(res => {
-    //     console.log(res)
-    //     sessionStorage.removeItem("user")
-    //     this.$router.push('/')
-    //   })
-    //   .catch(err => {
-    //     console.log(err)
-    //   })
-    // },
     kakaoLogout(){
       let win = window.open('https://accounts.kakao.com/logout?continue=https://accounts.kakao.com/weblogin/account')
       win.close()
       this.$router.push("/")
+    },
+    async getWalletInfo(walletAddress) {
+      this.myWallet.myEth = await web3.eth.getBalance(walletAddress)
     }
   },
   mounted() {
@@ -151,6 +144,14 @@ export default {
       }
     ]
     this.user = user
+
+    console.log(this.user.walletAddress)
+    if(this.user.walletAddress != "") {
+      this.flag = true
+      this.myWallet.walletAddress = this.user.walletAddress
+
+      this.getWalletInfo(this.myWallet.walletAddress)
+    }
   }
 }
 </script>

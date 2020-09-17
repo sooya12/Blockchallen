@@ -21,6 +21,7 @@ export default {
       email: "",
       nickname: null,
       access_token: "",
+      walletAddress: "",
     }
   }),
   mounted() {
@@ -33,6 +34,7 @@ export default {
         this.user.email = res.data.email
         this.user.nickname = res.data.nickname
         this.user.access_token = res.data.access_token
+        this.user.walletAddress = ""
 
         sessionStorage.setItem("user", JSON.stringify(this.user))
 
@@ -42,6 +44,8 @@ export default {
         this.user.challenges = res.data.challenges
         this.user.email = res.data.email
         this.user.access_token = res.data.access_token
+        this.user.access_token = res.data.access_token
+        this.user.walletAddress = ""
 
         sessionStorage.setItem("user", JSON.stringify(this.user))
         this.$router.push("/signup")
