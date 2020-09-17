@@ -1,0 +1,19 @@
+{
+  "id": 5,
+  "name":"하루에 1시간 공부하기",
+  "startDate":"2020-10-1",
+  "endDate":"2020-10-30",
+  "expireDate":"2020-09-30",
+  "fee" : 5000,
+  "isRandom":true,
+  "certificationCondition":"매일 공부한거 찍기",
+  "superuid": 1,
+  "users": [
+    {
+      "uid" : 1
+    },
+    {
+      "uid" : 4
+    }
+  ]
+}
