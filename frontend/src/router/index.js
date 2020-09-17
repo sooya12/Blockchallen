@@ -6,7 +6,7 @@ import Home from '@/views/Home.vue'
 import ChallengeList from '@/views/ChallengeList.vue'
 import MyPage from '@/views/MyPage.vue'
 import SignUp from '@/views/SignUp.vue'
-import SocialLogin from "@/views/SocialLogin";
+import SocialLogin from "@/views/SocialLogin"
 
 Vue.use(VueRouter)
 
@@ -17,7 +17,7 @@ const routes = [
         component: Home,
     },
     {
-        path:'/ChallengeList',
+        path:'/challenges',
         name:'ChallengeList',
         component:ChallengeList
     },
@@ -30,6 +30,7 @@ const routes = [
         path: '/signup',
         name: 'signup',
         component: SignUp,
+        props: true
     },
     {
         path: '/challenges/create',

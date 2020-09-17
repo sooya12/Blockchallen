@@ -21,7 +21,7 @@
       </div>
     </div>
     <div id="signUp">
-      <v-btn large color="primary" @click="signUp" :disabled="!(nickname && nickname.length >= 1)">가입하기</v-btn>
+      <v-btn large color="primary" @click="signUp" :disabled="!flag">가입하기</v-btn>
     </div>
   </div>
 </template>
@@ -33,28 +33,52 @@ export default {
   name: "SignUp",
   data: () => ({
     userInfoAgree: '블록챌린은 이메일로 계정을 생성합니다. 다만, 실제 이메일의 소유주임을 확인하기 위해서 가입 당시 인증 절차를 거치게 됩니다. 아래의 경우에는 계정 생성을 승인하지 않을 수 있습니다.\n\n다른 사람의 개인정보를 이용하여 계정을 생성하려 한 경우\n계정 생성시 필요한 정보를 입력하지 않거나 허위 정보를 입력한 경우\n블록챌린이 과거에 운영원칙 또는 법률 위반 등의 정당한 사유로 해당 계정을 삭제 또는 징계한 경우\n\n계정은 본인만 이용할 수 있고, 다른 사람에게 이용을 허락하거나 양도할 수 없습니다. 이메일이 바뀐 경우에는 서비스 내 설정 메뉴나 고객센터 문의를 통해 새 이메일로 인증절차를 걸쳐 수정할 수 있습니다.',
+    id: 0,
     nickname: "",
     nicknameRules: [
         value => !! value || '필수 사항. 한 글자 이상 입력해주세요',
         value => (value && value.length >= 1) || '한 글자 이상 입력해주세요'
-    ]
+    ],
+    flag: false
   }),
   methods: {
     backHome() {
       this.$router.push("/")
     },
     duplicationCheck() {
-      console.log(this.nickname)
-      axios
-      .get('http://localhost:8080/blockchallen/nickname')
+      axios.get('http://localhost:8080/blockchallen/account/nickname/' + this.nickname)
       .then((res) => {
         console.log(res.data)
+        this.flag = true
       })
       .catch((err) => {
         console.log(err)
       })
+    },
+    signUp() {
+      const account = {
+        id: this.id,
+        nickname: this.nickname
+      }
+
+      axios.put('http://localhost:8080/blockchallen/account', account)
+      .then((res) => {
+        sessionStorage.removeItem("user")
+        sessionStorage.setItem("user", JSON.stringify(res.data))
+
+        this.$router.push("/challenges")
+      })
+      .catch((err) => {
+        console.log(err)
+        alert("닉네임 생성 실패")
+        this.flag = false
+      })
     }
   },
+  mounted() {
+    this.id = JSON.parse(sessionStorage.getItem("user")).id
+    console.log(this.id)
+  }
 }
 </script>
 
