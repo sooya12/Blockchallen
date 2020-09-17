@@ -48,7 +48,7 @@ public class AccountService implements IAccountService {
 			return false;
 	}
 
-	public Account setNickname(Long id, String nickname) {
+	public Account setNickname(long id, String nickname) {
 		Optional<Account> setAccount = accountRepository.findById(id);
 		if(setAccount.isPresent()) {
 			setAccount.get().setNickname(nickname);
@@ -67,6 +67,14 @@ public class AccountService implements IAccountService {
 		} else {
 			return false;
 		}
+	}
+
+	public String getAccesstoken(long id) {
+		Optional<Account> account = accountRepository.findById(id);
+		if(account.isPresent())
+			return account.get().getAccess_token();
+		else
+			return "";
 	}
 	
 }

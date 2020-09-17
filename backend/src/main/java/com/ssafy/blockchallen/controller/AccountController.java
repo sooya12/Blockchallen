@@ -13,7 +13,7 @@ import java.net.URLEncoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ssafy.blockchallen.dto.setNicknameDTO;
+import com.ssafy.blockchallen.dto.accountDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,8 +76,7 @@ public class AccountController {
 	}
 
 	@RequestMapping(value = "/account", method = RequestMethod.PUT)
-	public Object setNickname(@RequestBody setNicknameDTO account) {
-//		long lid = Long.valueOf(account.getId());
+	public Object setNickname(@RequestBody accountDTO account) {
 
 		Account setAccount = accountService.setNickname(account.getId(), account.getNickname());
 
@@ -94,6 +93,37 @@ public class AccountController {
 			return new ResponseEntity<>("success", HttpStatus.OK);
 		else
 			return new ResponseEntity<>("fail", HttpStatus.NO_CONTENT);
+	}
+	
+	@RequestMapping(value = "/logout", method = RequestMethod.POST)
+	public Object logout(@RequestBody accountDTO account) {
+		
+		String access_token = accountService.getAccesstoken(account.getId());
+		if(access_token=="")
+			return new ResponseEntity<>("토큰 값을 찾을 수 없음", HttpStatus.NO_CONTENT);
+		
+		String reqURL = "https://kauth.kakao.com/v1/user/logout";
+		try {
+			URL url = new URL(reqURL);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.setRequestMethod("POST");
+			
+			// 요청에 필요한 header에 포함될 내용
+			con.setRequestProperty("Authorization", "Bearer " + access_token);
+			
+			int responseCode = con.getResponseCode(); // 성공 : 200
+			
+			if(responseCode==200)
+				return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
+			else
+				return new ResponseEntity<>("로그아웃 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<>(HttpStatus.OK);
+		
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
