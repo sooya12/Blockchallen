@@ -3,7 +3,7 @@
         <!-- 상단 -->
         <div class="high">
             <div class="name">
-                <strong>{{user}}님</strong>
+                <strong>{{user.nickname}}님</strong>
             </div>
             <div class="topbutton">
                 <v-btn @click="ToMyPage">마이페이지</v-btn>
@@ -13,7 +13,7 @@
 
         <!-- 검색 -->
         <v-form class="mt-3 px-3 d-flex">
-            
+
              <v-text-field
                 label="어떤 챌린지를 찾고 계신가요?"
                 outlined
@@ -24,69 +24,89 @@
 
             >
             </v-text-field>
-            <!-- <div>
-                <v-icon 
-                    @click="find" 
-                    color="#5858FA"
-                    >fas fa-search</v-icon>
-                
-            </div> -->
+
             <div>
-                <v-btn 
-                    @click="find" 
-                    text class="mt-3 font-weight-bold" 
+                <v-btn
+                    @click="find"
+                    text class="mt-3 font-weight-bold"
                     color="#5858FA"
-                    ><font-awesome-icon icon="search"  
+                    ><font-awesome-icon icon="search"
                         color="#5858FA" size='2x'/></v-btn>
             </div>
+        </v-form>
+        <!-- select box-->
+        <v-form class="mt-3 px-3 d-flex">
+            <v-select
+            :items="items"
+            label="정렬기준"
+            ></v-select>
         </v-form>
 
         <!-- 챌린지 목록 -->
         <v-container>
             <v-slide-item
-                v-for="(challenge,index) in challengelist"
-                :key="index"
+                v-for="challenge in challengelist.filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)"
+                :key="challenge.id"
             >
-                <v-btn 
+                <v-btn
                  style="width:100%; height:300px; border-radius: 50px;"
-               >{{challenge}}
+               >{{challenge.name}}<br>시작일 : {{challenge.startDate}}<br>마감일 : {{challenge.endDate}}<br>배팅 금액 : {{challenge.fee}}
                </v-btn>
             </v-slide-item>
         </v-container>
 
-         
+
     </div>
 </template>
 <script>
-// import axios from 'axios'
+import axios from 'axios'
 
 export default{
 
         name:'ChallengeList',
         data(){
             return{
-            user:'사랑하는 고객',
+            user:'',
             searchText:'',
-            challengelist:['챌린지1','챌린지2','챌린지3','챌린지4']
+            challengelist:[],
+            items:['빠른시작','느린시작','비싼배팅','저렴한배팅']
             }
+        },
+        computed:{
+
+            // challengelist: function(){
+            //     return  this.challengelist.filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)
+            // }
         },
         created(){
           // axios
+            axios.get('/jsontest/Account.json')
+            .then(res=> {
+                console.log(res)
+                this.user = res.data
+            }),
+          axios.get('/jsontest/Challenge.json')
+            .then(res=> {
+                console.log(res)
+                this.challengelist = res.data.ChallengeList
+            })
         },
-         methods:{
-        logout:function(){
+        methods: {
+          logout: function () {
+          },
+          ToMyPage: function () {
+            this.$router.push('/mypage')
+          },
+          find: function () {
+            if (this.challengelist.name.includes(this.searchText)) {
 
+              alert("찾음")
+            } else {
+              alert("없어")
+            }
+          }
         },
-        ToMyPage:function(){
-            this.$router.push('/MyPage')
-        },
-        find:function(event){
-            if(event)
-            alert("찾기")
-        }
-    }
-    
-   
+
 }
 </script>
 <style scoped>
@@ -94,6 +114,6 @@ export default{
     .high{width:100%;padding:20px;margin:20px}
     .name{float:left}
     .topbutton{float:right}
-    
+
 
 </style>
