@@ -34,12 +34,6 @@ public class Challenge {
 	@ApiModelProperty(value = "챌린지 ID")
 	private Long id;
 	
-	@ManyToOne
-	@JoinColumn(name = "captain_id")
-	@JsonManagedReference
-	@ApiModelProperty(required = true, value = "챌린지 방장")
-	private Account captain;
-	
 	@ApiModelProperty(required = true, value = "챌린지 주제")
 	private String name;
 	
@@ -97,7 +91,6 @@ public class Challenge {
 	}
 	
 	public static class Builder {
-		private Account captain;
 		private String name = "";
 		private String expireDate = "";
 		private String startDate = "";
@@ -110,10 +103,6 @@ public class Challenge {
 		
 		public Builder() {
 			
-		}
-		public Builder captain(Account captain) {
-			this.captain = captain;
-			return this;
 		}
 		public Builder name(String name) {
 			this.name = name;
@@ -156,8 +145,6 @@ public class Challenge {
 		}
 	}
 	private Challenge(Builder builder) {
-		captain = builder.captain;
-		captain.addCaptainChallenge(this);
 		name = builder.name;
 		expireDate = builder.expireDate;
 		startDate = builder.startDate;
