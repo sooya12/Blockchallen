@@ -99,7 +99,7 @@
 
               </div>
             </v-card>
-            <div style="width:70%; padding: 1% 2%; margin-top: 3%; text-align: center;">
+            <div style="width:70%; padding: 1% 2%; margin-top: 3%; text-align: center;" v-if="challengeState=='before'">
                 <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;">참여하기</v-btn>
 
             </div>
@@ -202,7 +202,7 @@
                         differ=Math.floor((differ/7))+'주'
                     }
                     else{
-                        differ=Math.floor((differ/7))+'주 '+(differ%7)+'일'
+                        differ=Math.floor((differ/7))+'주 '+Math.floor(differ%7)+'일'
                     }
                 }else{
                     differ=differ+'일'

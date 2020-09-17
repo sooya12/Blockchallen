@@ -101,8 +101,8 @@ export default {
         modal : this.$modal },{
         name: 'dynamic-modal',
         width : '50%',
-        height : '50%',
-        draggable: true,
+        height : '70%',
+        draggable: false,
 
       })
       this.$emit('close')

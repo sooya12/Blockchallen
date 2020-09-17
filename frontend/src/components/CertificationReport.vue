@@ -32,30 +32,32 @@
             oncopy="return false;"
         ></v-text-field>
       </v-card>
+      <div style="position: absolute; left:0; bottom :5%; width: 100%;">
 
-      <div  style="margin: 0 auto; text-align: center; ">
-        <v-btn
-            color="#ff5555"
-            v-bind="attrs"
-            v-on="on"
-            @click="clickReport(participant)"
-            :disabled="!activateReport"
-            style="margin-right: 2%;"
-        >
-          <p style="color:white; font-size:2vh;  font-weight: bold;">신고하기</p>
-          <v-icon dark right style="color:white;">mdi-cancel</v-icon>
-        </v-btn>
+        <div  style="position: relative; margin: 0 auto; text-align: center; float:left;  width: 100%;">
+          <v-btn
+              color="#ff5555"
+              v-bind="attrs"
+              v-on="on"
+              @click="clickReport(participant)"
+              :disabled="!activateReport"
+              style="margin-right: 2%; "
+          >
+            <p style="color:white; font-size:2vh;  font-weight: bold;">신고하기</p>
+            <v-icon dark right style="color:white;">mdi-cancel</v-icon>
+          </v-btn>
 
-        <v-btn
-            color="#ff5555"
-            v-bind="attrs"
-            v-on="on"
-            @click="cancel"
-            style="margin-left: 2%;"
-        >
-          <p style="color:white; font-size:2vh;  font-weight: bold;">취소</p>
+          <v-btn
+              color="#ff5555"
+              v-bind="attrs"
+              v-on="on"
+              @click="cancel"
+              style="margin-left: 2%;"
+          >
+            <p style="color:white; font-size:2vh;  font-weight: bold;">취소</p>
 
-        </v-btn>
+          </v-btn>
+        </div>
       </div>
     </div>
   </div>
