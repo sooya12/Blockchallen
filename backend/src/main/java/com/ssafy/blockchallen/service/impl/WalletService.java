@@ -1,6 +1,7 @@
 package com.ssafy.blockchallen.service.impl;
 
 import com.ssafy.blockchallen.service.IWalletService;
+import com.ssafy.blockchallen.dto.walletDTO;
 import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Wallet;
 import com.ssafy.blockchallen.repository.WalletRepository;
@@ -17,8 +18,8 @@ public class WalletService implements IWalletService {
 	private WalletRepository walletRepository;
 
 	@Override
-	public Wallet findByAccount(Account account) {
-		return walletRepository.findByAccount(account);
+	public Wallet findById(long id) {
+		return walletRepository.findById(id).orElse(null);
 	}
 
 //	@Override
@@ -26,10 +27,12 @@ public class WalletService implements IWalletService {
 //		return walletRepository.findByWallet(wallet);
 //	}
 	
-	@Override
-	public Wallet create(Wallet wallet) {
-		return walletRepository.save(wallet);
-	}
+//	@Override
+//	public Wallet create(walletDTO wallet, long id) {
+//		Wallet newWallet = new Wallet();
+//		newWallet.setAccount(id);
+//		return walletRepository.save();
+//	}
 	@Override
 	public Wallet syncBalance(String walletAddress, BigDecimal balance, int cash) {
 		return null;
@@ -37,6 +40,24 @@ public class WalletService implements IWalletService {
 	
 	@Override
 	public Wallet requestEth(String walletAddress) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+//	@Override
+//	public Wallet findByAccount(Account account) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+	
+	@Override
+	public Wallet findByWallet(Wallet address) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Wallet create(walletDTO wallet, long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

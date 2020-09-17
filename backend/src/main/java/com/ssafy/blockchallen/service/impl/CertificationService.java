@@ -1,7 +1,5 @@
 package com.ssafy.blockchallen.service.impl;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +21,7 @@ public class CertificationService implements ICertificationService {
 
 	@Override
 	public Certification report(Account account, Certification certification) {
-		Optional<Certification> ctf = certificationRepository.findById(certification.getId());// 받아온 인증 정보의 id로 검색
+		Certification ctf = certificationRepository.findById(certification.getId()).orElse(null); // 받아온 인증 정보의 id로 검색
 		ctf.setReporter(account);
 		ctf.setIsReported(true);
 		return certificationRepository.save(ctf);

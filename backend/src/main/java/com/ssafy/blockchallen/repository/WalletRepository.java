@@ -9,8 +9,8 @@ import com.ssafy.blockchallen.entity.Wallet;
 @Repository
 public interface WalletRepository extends JpaRepository<Wallet, Long> {
 	
-	// 지갑 주소로 지갑 정보 조회
-	Wallet findByAccount(Account account);
+//	// 지갑 주소로 지갑 정보 조회
+//	Wallet findByAccount(Account account);
 	
 	//Wallet findAllByAddress(Collect)
 	

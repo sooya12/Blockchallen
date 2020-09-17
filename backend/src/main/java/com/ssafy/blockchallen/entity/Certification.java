@@ -56,7 +56,6 @@ public class Certification {
 	@ApiModelProperty(value = "신고자")
 	private Account reporter;
 	
-	
 	public static class Builder {
 		private Challenge challenge;
 		private Account account;
