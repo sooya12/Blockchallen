@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.blockchallen.dto.findAccountDTO;
 import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.repository.AccountRepository;
 import com.ssafy.blockchallen.service.IAccountService;
@@ -23,14 +24,21 @@ public class AccountService implements IAccountService {
 			return null;
 	}
 
-	public Account findAccount(long id) {
+	public findAccountDTO findAccount(long id) {
 		Optional<Account> account = accountRepository.findById(id);
-		if(account.isPresent())
-			return account.get();
-		else
+		if(account.isPresent()) {
+			findAccountDTO retAccount = new findAccountDTO.Builder()
+					.id(account.get().getId())
+					.email(account.get().getEmail())
+					.nickname(account.get().getNickname())
+					.access_token(account.get().getAccess_token())
+					.wallet(account.get().getWallet())
+					.build();
+			return retAccount;
+		} else
 			return null;
 	}
-
+	
 	public Account createAccount(Account account) {
 		accountRepository.save(account);
 		Optional<Account> newAccount = accountRepository.findByEmail(account.getEmail());
