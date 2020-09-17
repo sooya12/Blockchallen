@@ -9,8 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -38,7 +36,7 @@ public class Account {
 	@ApiModelProperty(required = true, value = "이메일")
 	private String email;
 	
-	@ApiModelProperty(required = true, value = "별명")
+	@ApiModelProperty(value = "별명")
 	private String nickname;
 	
 	@ApiModelProperty(required = true, value = "토큰")
@@ -48,11 +46,6 @@ public class Account {
 	@JsonBackReference
 	@ApiModelProperty(value = "지갑 ID")
 	private Wallet wallet;
-	
-	@OneToMany(mappedBy = "captain", cascade = CascadeType.ALL)
-	@JsonBackReference
-	@ApiModelProperty(value = "방장인 챌린지 set")
-	private Set<Challenge> captainChallenges;
 	
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
 	@JsonBackReference
@@ -64,17 +57,7 @@ public class Account {
 	@ApiModelProperty(value = "참여한 챌린지 set")
 	private Set<Challenge> challenges;
 	
-	protected Set<Challenge> getCaptainChallengesInternal() {
-		if(this.captainChallenges == null)
-			this.captainChallenges = new HashSet<Challenge>();
-		return captainChallenges;
-	}
-	
-	public void addCaptainChallenge(Challenge challenge) {
-		this.getCaptainChallengesInternal().add(challenge);
-		challenge.setCaptain(this);
-	}
-	
+
 	protected Set<Certification> getCertificationsInternal() {
 		if(this.certifications == null)
 			this.certifications = new HashSet<Certification>();
@@ -102,8 +85,7 @@ public class Account {
 		private String email = "";
 		private String nickname = "";
 		private String access_token = "";
-		private Wallet wallet = null;
-		private Set<Challenge> captainChallenges;
+		private Wallet wallet;
 		private Set<Certification> certifications;
 		private Set<Challenge> challenges;
 		
@@ -126,10 +108,6 @@ public class Account {
 			this.wallet = wallet;
 			return this;
 		}
-		public Builder captainChallenges(Set<Challenge> captainChallenges) {
-			this.captainChallenges = captainChallenges;
-			return this;
-		}
 		public Builder certifications(Set<Certification> certifications) {
 			this.certifications = certifications;
 			return this;
@@ -147,7 +125,6 @@ public class Account {
 		nickname = builder.nickname;
 		access_token = builder.access_token;
 		wallet = builder.wallet;
-		captainChallenges = builder.captainChallenges;
 		certifications = builder.certifications;
 		challenges = builder.challenges;
 	}
