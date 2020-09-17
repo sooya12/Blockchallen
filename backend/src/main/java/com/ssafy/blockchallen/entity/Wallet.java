@@ -34,6 +34,9 @@ public class Wallet {
 	@ApiModelProperty(required = true, value="회원 번호")
 	private Account account;
 	
+//	@ApiModelProperty(required = true, value="지갑 키")
+//	private String key;
+	
 	@ApiModelProperty(required = true, value="지갑 주소")
 	private String address;
 
@@ -53,6 +56,10 @@ public class Wallet {
 			this.account = account;
 			return this;
 		}
+//		public Builder key(String key) {
+//			this.key = key;
+//			return this;
+//		}
 		public Builder address(String address) {
 			this.address = address;
 			return this;
@@ -67,6 +74,7 @@ public class Wallet {
 	}
 	private Wallet(Builder builder) {
 		account = builder.account;
+		//key = builder.key;
 		address = builder.address;
 		balance = builder.balance;
 	}
