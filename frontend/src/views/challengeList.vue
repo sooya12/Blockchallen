@@ -1,4 +1,5 @@
 <template>
+    
     <div class="ChallengeList">
         <!-- 상단 -->
         <div class="high">
@@ -11,6 +12,7 @@
             </div>
         </div>
 
+        
         <!-- 검색 -->
         <v-form class="mt-3 px-3 d-flex">
             
@@ -21,38 +23,42 @@
                 class="col-12 px-3"
                 color="#5858FA"
                 style="padding:10px;"
-
+                append-icon="mdi-magnify"
             >
             </v-text-field>
-
-            <div>
-                <v-btn 
-                    @click="find" 
-                    text class="mt-3 font-weight-bold" 
-                    color="#5858FA"
-                    ><font-awesome-icon icon="search"  
-                        color="#5858FA" size='2x'/></v-btn>
-            </div>
         </v-form>
         <!-- select box-->
-        <v-form class="mt-3 px-3 d-flex">
+        <!-- <v-form class="mt-3 px-3 d-flex">
             <v-select
             :items="items"
             label="정렬기준"
             ></v-select>
-        </v-form>
+        </v-form> -->
 
+        <!-- 무한 스크롤 -->
+        <infinite-loading @infinite="infiniteHandler" spinner="circles"></infinite-loading>
         <!-- 챌린지 목록 -->
         <v-container>
-            <v-slide-item
-                v-for="challenge in challengelist.filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)"
-                :key="challenge.id"
+            <select class="selectbox" @change="sortfunction($event)">
+                <option value="fast">빠른 시작</option>
+                <option value="slow">느린 시작</option>
+                <option value="expensive">비싼 배팅</option>
+                <option value="cheap">저렴한 배팅</option>
             >
-                <v-btn 
-                 style="width:100%; height:300px; border-radius: 50px;"
-               >{{challenge.name}}<br>시작일 : {{challenge.startDate}}<br>마감일 : {{challenge.endDate}}<br>배팅 금액 : {{challenge.fee}}
-               </v-btn>
-            </v-slide-item>
+                
+            
+            </select>
+                <v-slide-item
+                    v-for="challenge in challengelist
+                        .filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)"
+                    :key="challenge.id"
+                >
+                    <v-btn 
+                    style="width:100%; height:300px; border-radius: 50px;"
+                     >{{challenge.name}}<br>시작일 : {{challenge.startDate}}<br>마감일 : {{challenge.endDate}}<br>배팅 금액 : {{challenge.fee}}
+                     </v-btn>
+                </v-slide-item>
+            
         </v-container>
 
          
@@ -60,6 +66,7 @@
 </template>
 <script>
 import axios from 'axios'
+import InfiniteLoading from 'vue-infinite-loading'
 
 export default{
 
@@ -69,14 +76,13 @@ export default{
             user:'',
             searchText:'',
             challengelist:[],
-            items:['빠른시작','느린시작','비싼배팅','저렴한배팅']
+            limit:0
             }
         },
         computed:{
-           
-            // challengelist: function(){
-            //     return  this.challengelist.filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)
-            // }
+            InfiniteLoading
+            // challengelist.sort((a,b)=>a.startDate>b.startDate?1:-1)
+
         },
         created(){
           // axios
@@ -96,15 +102,46 @@ export default{
 
              },
              ToMyPage:function(){
-            this.$router.push('/MyPage')
+                this.$router.push('/MyPage')
             },
-              find:function(){
-                if(this.challengelist.name.includes(this.searchText)){
-
-                    alert("찾음")
-                }else{
-                    alert("없어")
+            sortfunction:function(event){
+                if(event.target.value=="fast"){
+                    alert("소팅1")
+                }else if(event.target.value=="slow"){
+                    alert("소팅2")
+                }else if(event.target.value=="expensive"){
+                    alert("소팅3")
+                }else if(event.target.value=="cheap"){
+                    alert("소팅4")
                 }
+                // ag{
+                //     sortrlwns: etv
+                // }
+                // .t (res ){
+                //     this.challengelist=res.data;
+                // }
+                
+            },
+            infiniteHandler($state){
+                http
+                    .get(api, {
+                        params:{
+                            limit: this.limit
+                        },
+                    })
+                    .then((response)=>{
+                        setTimeout(()=>{
+                            if(response.data.length){
+                                this.challengelist=this.challengelist.concat(response.data)
+                                this.limit +=3
+                                $state.loaded()
+
+                            }else{
+                                $state.complete()
+                            }
+                        }, 1000)
+                    })
+                    .catch((error)=>{})
             }
 
     }
@@ -117,6 +154,24 @@ export default{
     .high{width:100%;padding:20px;margin:20px}
     .name{float:left}
     .topbutton{float:right}
-    
+    .selectbox{
+        float: right; 
+        width: 20%; 
+        line-height: 40px; 
+        background: url(https://farm1.staticflickr.com/379/19928272501_4ef877c265_t.jpg) 
+        no-repeat 95% 50%;  z-index: 1; 
+        margin:20px
+        
+    } 
+    /* .selectbox:hover{
+        background-color:#e6e6ff;
+    } */
+    /* .selectbox-selected{
+        background-color:#e6e6ff;
+    } */
+    /* option:checked{
+        background-color:#e6e6ff;
+    } */
+
 
 </style>
