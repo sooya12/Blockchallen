@@ -52,8 +52,8 @@ public class Account {
 	@ApiModelProperty(value = "인증 set")
 	private Set<Certification> certifications;
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JsonManagedReference
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "accounts", cascade = CascadeType.ALL)
+	@JsonBackReference
 	@ApiModelProperty(value = "참여한 챌린지 set")
 	private Set<Challenge> challenges;
 	
@@ -75,9 +75,8 @@ public class Account {
 		return challenges;
 	}
 	
-	public void addChallengeAccount(Challenge challenge) {
+	public void addChallenge(Challenge challenge) {
 		this.getChallengesInternal().add(challenge);
-		challenge.addAccount(this);
 	}
 	
 	

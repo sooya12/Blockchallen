@@ -10,9 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -65,8 +63,8 @@ public class Challenge {
     @ApiModelProperty(value = "인증 set")
     private Set<Certification> certifications;
     
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "challenges", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
     @ApiModelProperty(value = "참여한 회원 계정 set")
 	private Set<Account> accounts;
 
@@ -89,7 +87,7 @@ public class Challenge {
 	
 	public void addAccount(Account account) {
 		this.getAccountsInternal().add(account);
-		
+		account.addChallenge(this);
 	}
 	
 	public static class Builder {

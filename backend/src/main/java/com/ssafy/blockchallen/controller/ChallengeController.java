@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.blockchallen.dto.createChallengeDTO;
+import com.ssafy.blockchallen.dto.detailChallengeDTO;
 import com.ssafy.blockchallen.service.IChallengeService;
 
 @RestController
@@ -32,11 +33,20 @@ public class ChallengeController {
 		return new ResponseEntity<>("챌린지 생성 실패", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@RequestMapping(path = "/challenge")
+	@RequestMapping(path = "/challenge", method = RequestMethod.GET)
 	public Object datailChallenge(@RequestParam long id) {
 		
-		
-		
-		return new ResponseEntity<>(HttpStatus.OK);
+		detailChallengeDTO challenge = challengeService.detailChallenge(id);
+		if(challenge != null)
+			return new ResponseEntity<>(challenge, HttpStatus.OK);
+		else
+			return new ResponseEntity<>("존재하지 않는 챌린지", HttpStatus.NO_CONTENT);
 	}
+	
+	@RequestMapping(path = "/challenges", method = RequestMethod.GET)
+	public Object getChallenges() {
+		return new ResponseEntity<>(challengeService.getChallenges(),HttpStatus.OK);
+	}
+	
+	
 }

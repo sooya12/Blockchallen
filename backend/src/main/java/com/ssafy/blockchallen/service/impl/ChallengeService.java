@@ -1,11 +1,13 @@
 package com.ssafy.blockchallen.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.blockchallen.dto.createChallengeDTO;
+import com.ssafy.blockchallen.dto.detailChallengeDTO;
 import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Challenge;
 import com.ssafy.blockchallen.repository.AccountRepository;
@@ -22,13 +24,12 @@ public class ChallengeService implements IChallengeService {
 	ChallengeRepository challengeRepository;
 	
 	public boolean createChallenge(createChallengeDTO challenge) {
-		Optional<Account> captain = accountRepository.findById(challenge.getUid());
-		if(!captain.isPresent()) {
+		Optional<Account> account = accountRepository.findById(challenge.getUid());
+		if(!account.isPresent()) {
 			return false;
 		}
 		
 		Challenge newChallenge = new Challenge.Builder()
-				.captain(captain.get())
 				.name(challenge.getName())
 				.expireDate(challenge.getExpireDate())
 				.startDate(challenge.getStartDate())
@@ -37,22 +38,36 @@ public class ChallengeService implements IChallengeService {
 				.isRandom(challenge.isRandom())
 				.certificationCondition(challenge.getCertification())
 				.build();
-		newChallenge.addAccount(captain.get());
-		
-		
-		captain.get().addCaptainChallenge(newChallenge);
+		newChallenge.addAccount(account.get());
 		challengeRepository.save(newChallenge);
 		
 		return true;
 	}
 
-	public Challenge detailChallenge(long id) {
+	public detailChallengeDTO detailChallenge(long id) {
 		Optional<Challenge> challenge = challengeRepository.findById(id);
 		if(challenge.isPresent()) {
-			return challenge.get();
+			detailChallengeDTO retChallenge = new detailChallengeDTO.Builder()
+					.id(challenge.get().getId())
+					.name(challenge.get().getName())
+					.startDate(challenge.get().getStartDate())
+					.endDate(challenge.get().getEndDate())
+					.expireDate(challenge.get().getExpireDate())
+					.fee(challenge.get().getFee())
+					.isRandom(challenge.get().getIsRandom())
+					.certificationCondition(challenge.get().getCertificationCondition())
+					.users(challenge.get().getAccounts())
+					.build();
+			
+			return retChallenge;
 		}
-		
 		return null;
 	}
+
+	public List<Challenge> getChallenges() {
+		return challengeRepository.findAll();
+	}
+
+
 	
 }
