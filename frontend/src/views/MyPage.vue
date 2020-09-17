@@ -44,7 +44,6 @@
 <script>
 import Chart from 'chart.js'
 import Web3 from 'web3'
-import axios from 'axios'
 
 var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
 
