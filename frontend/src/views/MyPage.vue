@@ -134,22 +134,57 @@ export default {
       console.log(this.user.access_token)
 
       axios({
-       method: 'post',
-       url: 'https://kapi.kakao.com/v2/user/logout',
-       headers: {
-         Authorization: 'Bearer ' + this.user.access_token,
-         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-       }
+        method: 'post',
+        url: 'http://localhost:8080/blockchallen/logout',
+        data: {
+          'id': this.user.id,
+        },
       })
       .then(res => {
         console.log(res)
 
-        // sessionStorage.removeItem("user")
-        // this.$router.push('/')
+        sessionStorage.removeItem("user")
+        this.$router.push('/')
       })
       .catch(err => {
         console.log(err)
       })
+
+      // axios({
+      //  method: 'post',
+      //  url: 'https://kapi.kakao.com/v1/user/logout',
+      //  headers: {
+      //    Authorization: 'Bearer ' + this.user.access_token,
+      //    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+      //    'Access-Control-Allow-Origin': '*',
+      //  }
+      // })
+      // .then(res => {
+      //   console.log(res)
+      //
+      //   // sessionStorage.removeItem("user")
+      //   // this.$router.push('/')
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      // })
+
+      // axios({
+      //   method: 'post',
+      //   url: 'https://kapi.kakao.com/v1/user/logout',
+      //   headers: {
+      //     Authorization: 'KakaoAK 2fe9bac6ff93d65ab61c7be746b84855'
+      //   }
+      // })
+      // .then(res => {
+      //   console.log(res)
+      //
+      //   // sessionStorage.removeItem("user")
+      //   // this.$router.push('/')
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      // })
 
       // axios.get('https://kauth.kakao.com/oauth/logout?client_id=28c57e4dec8be27db1832926dba21bb0&logout_redirect_uri=http://localhost:3030/')
       // .then(res => {

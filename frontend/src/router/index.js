@@ -6,11 +6,9 @@ import Home from '@/views/Home.vue'
 import ChallengeList from '@/views/ChallengeList.vue'
 import MyPage from '@/views/MyPage.vue'
 import SignUp from '@/views/SignUp.vue'
-import SocialLogin from "@/views/SocialLogin";
-import Cors from 'vue-axios-cors'
+import SocialLogin from "@/views/SocialLogin"
 
 Vue.use(VueRouter)
-Vue.use(Cors)
 
 const routes = [
     {
