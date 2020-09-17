@@ -119,8 +119,8 @@ export default {
 
     },
     infiniteHandler($state) {
-      http
-          .get(api, {
+      InfiniteLoading.http
+          .get(InfiniteLoading.api, {
             params: {
               limit: this.limit
             },
