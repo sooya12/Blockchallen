@@ -30,20 +30,11 @@
         </div>
         <div id="progressBars">
           <div class="progressSet">
-            <div class="challengeName"><p>6시 기상 챌린지</p></div>
+            <div class="challengeName"><p>{{ challenge }}</p></div>
             <v-progress-linear
                 class="challengeProgress"
                 color="red lighten-2"
                 buffer-value="50"
-                stream
-            ></v-progress-linear>
-          </div>
-          <div class="progressSet">
-            <div class="challengeName"><p>30일 홈트 챌린지</p></div>
-            <v-progress-linear
-                class="challengeProgress"
-                color="teal"
-                buffer-value="70"
                 stream
             ></v-progress-linear>
           </div>
