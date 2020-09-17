@@ -7,7 +7,7 @@
       </div>
       <div id="header">
         <h1><span style="color: red;">{{ user.nickname }}</span>님의 마이페이지</h1>
-        <v-btn @click="logout">로그아웃</v-btn>
+        <v-btn @click="kakaoLogout">로그아웃</v-btn>
       </div>
       <div id="wallet">
         <h2>나의 지갑</h2>
@@ -118,16 +118,21 @@ export default {
         }
       })
     },
-    logout(){
-      axios.get('https://kauth.kakao.com/oauth/logout?client_id=28c57e4dec8be27db1832926dba21bb0&logout_redirect_uri=http://localhost:8080/blockchallen/logout')
-      .then(res => {
-        console.log(res)
-        sessionStorage.removeItem("user")
-        this.$router.push('/')
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    // logout(){
+    //   axios.get('https://kauth.kakao.com/oauth/logout?client_id=28c57e4dec8be27db1832926dba21bb0&logout_redirect_uri=http://localhost:8080/blockchallen/logout')
+    //   .then(res => {
+    //     console.log(res)
+    //     sessionStorage.removeItem("user")
+    //     this.$router.push('/')
+    //   })
+    //   .catch(err => {
+    //     console.log(err)
+    //   })
+    // },
+    kakaoLogout(){
+      let win = window.open('https://accounts.kakao.com/logout?continue=https://accounts.kakao.com/weblogin/account')
+      win.close()
+      this.$router.push("/")
     }
   },
   mounted() {
