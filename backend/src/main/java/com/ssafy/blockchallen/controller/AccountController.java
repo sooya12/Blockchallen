@@ -42,7 +42,7 @@ public class AccountController {
 	private final String FRONT_SERVER_URI = "http://localhost:3030";
 	private final String kakaoRedirectBackURI = BACK_SERVER_URI + "/blockchallen/login";
 	private final String kakaoRedirectFrontURI = FRONT_SERVER_URI + "/login/";
-//	private final String kakaoNicknameRedirectFrontURI = FRONT_SERVER_URI + "";
+	private final String kakaoLogoutBackUIR = BACK_SERVER_URI + "/blockchallen/logout";
 
 
 //	@RequestMapping(value = "/test", method = RequestMethod.GET)
@@ -98,22 +98,48 @@ public class AccountController {
 	@RequestMapping(value = "/logout", method = RequestMethod.POST)
 	public Object logout(@RequestBody accountDTO account) {
 		
-		String access_token = accountService.getAccesstoken(account.getId());
-		if(access_token=="")
-			return new ResponseEntity<>("토큰 값을 찾을 수 없음", HttpStatus.NO_CONTENT);
+//		String access_token = accountService.getAccesstoken(account.getId());
+//		if(access_token=="")
+//			return new ResponseEntity<>("토큰 값을 찾을 수 없음", HttpStatus.NO_CONTENT);
+//		
+//		String reqURL = "https://kauth.kakao.com/v1/user/logout";
+//		try {
+//			URL url = new URL(reqURL);
+//			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+//			con.setRequestMethod("POST");
+//			
+//			// 요청에 필요한 header에 포함될 내용
+//			con.setRequestProperty("Authorization", "Bearer " + access_token);
+//			
+//			int responseCode = con.getResponseCode(); // 성공 : 200
+//			
+//			if(responseCode==200)
+//				return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
+//			else
+//				return new ResponseEntity<>("로그아웃 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
-		String reqURL = "https://kauth.kakao.com/v1/user/logout";
+		String reqURL = "https://kauth.kakao.com/oauth/logout";
+		
 		try {
 			URL url = new URL(reqURL);
 			HttpURLConnection con = (HttpURLConnection)url.openConnection();
-			con.setRequestMethod("POST");
+			con.setRequestMethod("GET");
 			
-			// 요청에 필요한 header에 포함될 내용
-			con.setRequestProperty("Authorization", "Bearer " + access_token);
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
+			StringBuilder sb = new StringBuilder();
+			sb.append("client_id=28c57e4dec8be27db1832926dba21bb0");
+			sb.append("&redirect_uri=" + kakaoLogoutBackUIR);
 			
-			int responseCode = con.getResponseCode(); // 성공 : 200
+			bw.write(sb.toString());
+			bw.flush();
 			
-			if(responseCode==200)
+			int responseCode = con.getResponseCode(); // 성공 : 302 Found
+			
+			if(responseCode==302)
 				return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
 			else
 				return new ResponseEntity<>("로그아웃 실패", HttpStatus.INTERNAL_SERVER_ERROR);
