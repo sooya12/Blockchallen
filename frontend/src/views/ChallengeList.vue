@@ -1,4 +1,6 @@
 <template>
+<<<<<<< HEAD
+=======
     
     <div class="ChallengeList">
         <!-- 상단 -->
@@ -70,14 +72,78 @@
             
         </v-container>
 
+>>>>>>> bc9b59aecfd10e03b77ebe57d0ab8470e9366301
 
+  <div class="ChallengeList">
+    <!-- 상단 -->
+    <div class="high">
+      <div class="name">
+        <strong>{{user.nickname}}님</strong>
+      </div>
+      <div class="topbutton">
+        <v-btn @click="ToMyPage">마이페이지</v-btn>
+        <v-btn @click="logout">로그아웃</v-btn>
+      </div>
     </div>
+
+
+    <!-- 검색 -->
+    <v-form class="mt-3 px-3 d-flex">
+
+      <v-text-field
+          label="어떤 챌린지를 찾고 계신가요?"
+          outlined
+          v-model="searchText"
+          class="col-12 px-3"
+          color="#5858FA"
+          style="padding:10px;"
+          append-icon="mdi-magnify"
+      >
+      </v-text-field>
+    </v-form>
+    <!-- select box-->
+    <!-- <v-form class="mt-3 px-3 d-flex">
+        <v-select
+        :items="items"
+        label="정렬기준"
+        ></v-select>
+    </v-form> -->
+
+    <!-- 무한 스크롤 -->
+    <infinite-loading @infinite="infiniteHandler" spinner="circles"></infinite-loading>
+    <!-- 챌린지 목록 -->
+    <v-container>
+      <select class="selectbox" @change="sortfunction($event)">
+        <option value="fast">빠른 시작</option>
+        <option value="slow">느린 시작</option>
+        <option value="expensive">비싼 배팅</option>
+        <option value="cheap">저렴한 배팅</option>
+        >
+
+
+      </select>
+      <v-slide-item
+          v-for="challenge in challengelist
+                        .filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)"
+          :key="challenge.id"
+      >
+        <v-btn
+            style="width:100%; height:300px; border-radius: 50px;"
+        >{{challenge.name}}<br>시작일 : {{challenge.startDate}}<br>마감일 : {{challenge.endDate}}<br>배팅 금액 : {{challenge.fee}}
+        </v-btn>
+      </v-slide-item>
+
+    </v-container>
+
+
+  </div>
 </template>
 <script>
 import axios from 'axios'
 import InfiniteLoading from 'vue-infinite-loading'
 
 export default{
+
 
         name:'ChallengeList',
         data(){
@@ -102,9 +168,10 @@ export default{
             }),
           axios.get('/jsontest/Challenge.json')
             .then(res=> {
-                console.log(res)
-                this.challengelist = res.data.ChallengeList
+              console.log(res)
+              this.challengelist = res.data.ChallengeList
             })
+
         },
         methods: {
           logout: function () {
@@ -159,6 +226,7 @@ export default{
 
 </script>
 <style scoped>
+
     .ChallengeList{width:70%; text-align:center; margin:0px auto; padding:20px}
     .high{width:100%;padding:20px;margin:20px}
     .name{float:left}
