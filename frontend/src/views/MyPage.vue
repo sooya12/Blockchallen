@@ -28,13 +28,13 @@
         <div id="totalSuccessRate">
           <canvas id="myChart" width="100" height="100"></canvas>
         </div>
-        <div id="progressBars">
+        <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
           <div class="progressSet">
-            <div class="challengeName"><p>{{ challenge }}</p></div>
+            <div class="challengeName"><p>{{ challenge.name }}</p></div>
             <v-progress-linear
                 class="challengeProgress"
                 color="red lighten-2"
-                buffer-value="50"
+                :buffer-value="challenge.rate"
                 stream
             ></v-progress-linear>
           </div>
@@ -190,6 +190,18 @@ export default {
     this.createChart()
 
     const user = JSON.parse(sessionStorage.getItem("user"))
+    user.challenges = [
+      {
+        id: 1,
+        name: '6시 기상 챌린지',
+        rate: 80
+      },
+      {
+        id: 2,
+        name: '코로나 챌린지',
+        rate: 40
+      }
+    ]
     this.user = user
   }
 }
