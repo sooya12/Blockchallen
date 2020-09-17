@@ -260,6 +260,131 @@ web3 라이브러리를 이용하여 지갑 생성/회원의 지갑 정보를 �
 
 
 
-### ! 지갑이 Geth에는 생성되지 않는 문제
+### ~~! 지갑이 Geth에는 생성되지 않는 문제~~
 
-### ! DB에 지갑이 저장되고 후 조회 안됨 -> 정상 생성 기능이 안되는 문제
+### ~~! DB에 지갑이 저장되고 후 조회 안됨 -> 정상 생성 기능이 안되는 문제~~
+
+
+
+## 20.09.10
+
+### 오늘 한 일
+
+- 로고 정하기
+- Backend 프레임 만들기
+- Entitiy 설계
+
+
+
+#### JPA 연관관계 매핑
+
+##### 다대일 / 일대다
+
+테이블 - 외래키 하나로 두 테이블이 연관관계를 가질수 있음
+
+> 연관관계를 관리하는 포인트는 **외래키 하나!**
+
+엔티티가 양방향으로 참조되면 A -> B, B->A 둘 중 하나를 정하여 외래키 관리
+
+> 보통은 **외래키를 가진 쪽**을 **연관관계의 주인**으로 선택
+
+주인이 아닌 방향은 읽기만 가능하다.
+
+> 연관관계의 주인은 `mappedBy` 속성을 사용할 수 없으며, 주인이 아닌 쪽에 `mappedBy`로 주인 필드(외래키) 지정 (1:N 또는 N:1의 경우 N인 쪽이 외래키를 가짐. N인 쪽이 주인)
+>
+> 일대다 보다는 다대일을 사용하는 것 권장
+
+[내일 마저 하자...](https://private-space.tistory.com/95?category=876554)
+
+#### 내일은 좀 더 열심히 살아보자...
+
+
+
+## 20.09.11
+
+### 오늘 한 일
+
+- 엔티티 수정
+- 엔티티 연관관계 매핑
+- 엔티티 빌더 생성
+- 엔티티 순환 참조 방지
+
+
+
+#### ManyToMany
+
+양 쪽 모두 Set의 형태로 데이터를 가지게 한다.
+
+연관관계의 주인 쪽에 관계를 구성
+
+@JoinTable 어노테이션 이용 
+
+- name = "조인 테이블 이름"
+- joincolumns = @JoinColumn(name = "주인쪽 외래키 id")
+- inverseJoinColumn(name = "다른쪽 외래키 id")
+
+주인이 아닌쪽에 mappedBy 설정
+
+[ManyToMany 레퍼런스](https://www.baeldung.com/jpa-many-to-many)
+
+[ManyToMany 예제](https://thorben-janssen.com/best-practices-for-many-to-many-associations-with-hibernate-and-jpa/)
+
+
+
+#### JPA 순환 참조 방지
+
+@JsonIgnore 
+
+- 실제로 property에 null을 할당하는 방식
+
+@JsonManagedReference / @JsonBackReference 
+
+- 본질적으로 순환참조를 방어하기 위한 Annotation
+- 객체의 상위/하위 관계 처리 명시
+
+- 부모 클래스측에(주인쪽에 사용했음 난) @JsonManagedReference 자식측에 @JsonBackReference
+
+
+
+## 20.09.14
+
+### 오늘 한 일
+
+- 소셜 로그인(카카오) 구현중...
+
+
+
+[java.net.URL / java.net.HttpURLConnection 참고](https://ggoreb.tistory.com/114)
+
+[카카오 소셜 로그인 참고](https://m.blog.naver.com/lcy707/222073884681)
+
+
+
+## 20.09.15
+
+### 오늘 한 일
+
+- 소셜 로그인(카카오) 구현 중...
+- 회원 정보 조회 기능
+- 닉네임 중복 체크 기능
+- 닉네임 설정 기능
+- 회원 탈퇴 기능
+
+> 정상 작동 확인 필요
+
+
+
+### 오전 미팅 내용
+
+JWT를 쓰는 이유?
+
+1. API 서버가 여러개가 되었기 때문
+2. 모바일 환경 -> 안드로이드 or IOS 안전 영역 -> 토큰(JWT)
+
+> Spring에서 JWT를 사용해서 filter단에서 인증되지 않는 것들을 걸러낸다 (403 error)
+>
+> ViewResolvers는 SPA(우리는 Vue.js에서 라우터 사용)를 사용하면서 역할이 작아짐.
+
+
+
+#### 나중에 JWT 적용할 수 있게 공부해 두자!
