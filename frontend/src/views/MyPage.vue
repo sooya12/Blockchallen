@@ -11,11 +11,9 @@
       </div>
       <div id="wallet">
         <h2>나의 지갑</h2>
-        <!--<div v-if="myWallet == null">-->
         <div v-if="!flag">
           <v-btn @click="createWallet">생성하기</v-btn>
         </div>
-        <!--<div v-else>-->
         <div v-else>
           <p>나의 비밀키 {{ myWallet.privateKey }}</p>
           <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
@@ -121,61 +119,6 @@ export default {
       })
     },
     logout(){
-      console.log(this.user.access_token)
-
-      // axios({
-      //   method: 'post',
-      //   url: 'http://localhost:8080/blockchallen/logout',
-      //   data: {
-      //     'id': this.user.id,
-      //   },
-      // })
-      // .then(res => {
-      //   console.log(res)
-      //
-      //   sessionStorage.removeItem("user")
-      //   this.$router.push('/')
-      // })
-      // .catch(err => {
-      //   console.log(err)
-      // })
-
-      // axios({
-      //  method: 'post',
-      //  url: 'https://kapi.kakao.com/v1/user/logout',
-      //  headers: {
-      //    Authorization: 'Bearer ' + this.user.access_token,
-      //    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-      //    'Access-Control-Allow-Origin': '*',
-      //  }
-      // })
-      // .then(res => {
-      //   console.log(res)
-      //
-      //   // sessionStorage.removeItem("user")
-      //   // this.$router.push('/')
-      // })
-      // .catch(err => {
-      //   console.log(err)
-      // })
-
-      // axios({
-      //   method: 'post',
-      //   url: 'https://kapi.kakao.com/v1/user/logout',
-      //   headers: {
-      //     Authorization: 'KakaoAK 2fe9bac6ff93d65ab61c7be746b84855'
-      //   }
-      // })
-      // .then(res => {
-      //   console.log(res)
-      //
-      //   // sessionStorage.removeItem("user")
-      //   // this.$router.push('/')
-      // })
-      // .catch(err => {
-      //   console.log(err)
-      // })
-
       axios.get('https://kauth.kakao.com/oauth/logout?client_id=28c57e4dec8be27db1832926dba21bb0&logout_redirect_uri=http://localhost:8080/blockchallen/logout')
       .then(res => {
         console.log(res)
