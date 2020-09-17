@@ -15,7 +15,7 @@
         
         <!-- 검색 -->
         <v-form class="mt-3 px-3 d-flex">
-            
+
              <v-text-field
                 label="어떤 챌린지를 찾고 계신가요?"
                 outlined
@@ -26,6 +26,15 @@
                 append-icon="mdi-magnify"
             >
             </v-text-field>
+
+            <div>
+                <v-btn
+                    @click="find"
+                    text class="mt-3 font-weight-bold"
+                    color="#5858FA"
+                    ><font-awesome-icon icon="search"
+                        color="#5858FA" size='2x'/></v-btn>
+            </div>
         </v-form>
         <!-- select box-->
         <!-- <v-form class="mt-3 px-3 d-flex">
@@ -61,7 +70,7 @@
             
         </v-container>
 
-         
+
     </div>
 </template>
 <script>
@@ -88,23 +97,22 @@ export default{
           // axios
             axios.get('/jsontest/Account.json')
             .then(res=> {
-                console.log(res) 
+                console.log(res)
                 this.user = res.data
             }),
           axios.get('/jsontest/Challenge.json')
             .then(res=> {
-                console.log(res) 
+                console.log(res)
                 this.challengelist = res.data.ChallengeList
             })
         },
-         methods:{
-            logout:function(){
-
-             },
-             ToMyPage:function(){
-                this.$router.push('/MyPage')
-            },
-            sortfunction:function(event){
+        methods: {
+          logout: function () {
+          },
+          ToMyPage: function () {
+            this.$router.push('/mypage')
+          },
+          sortfunction:function(event){
                 if(event.target.value=="fast"){
                     alert("소팅1")
                 }else if(event.target.value=="slow"){
@@ -141,13 +149,14 @@ export default{
                             }
                         }, 1000)
                     })
-                    .catch((error)=>{})
+                    .catch(()=>{})
             }
 
-    }
-    
-   
-}
+
+          }
+        }
+
+
 </script>
 <style scoped>
     .ChallengeList{width:70%; text-align:center; margin:0px auto; padding:20px}
