@@ -46,11 +46,11 @@
         <v-container>
             <v-slide-item
                 v-for="challenge in challengelist.filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)"
-                :key="challenge"
+                :key="challenge.id"
             >
                 <v-btn 
                  style="width:100%; height:300px; border-radius: 50px;"
-               >{{challenge.name}}
+               >{{challenge.name}}<br>시작일 : {{challenge.startDate}}<br>마감일 : {{challenge.endDate}}<br>배팅 금액 : {{challenge.fee}}
                </v-btn>
             </v-slide-item>
         </v-container>
