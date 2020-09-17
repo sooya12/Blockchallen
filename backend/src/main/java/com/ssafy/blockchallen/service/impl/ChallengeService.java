@@ -2,6 +2,7 @@ package com.ssafy.blockchallen.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,6 +69,12 @@ public class ChallengeService implements IChallengeService {
 		return challengeRepository.findAll();
 	}
 
-
+	public Set<Challenge> MyChallenges(long id) {
+		Optional<Account> account = accountRepository.findById(id);
+		if(account.isPresent()) {
+			return account.get().getChallenges();
+		}
+		return null;
+	}
 	
 }
