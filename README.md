@@ -2,7 +2,7 @@
 
 ##### 블록체인을 기반으로 원하는 목표를 설정하고, 목표 달성 시 ERC-20 토큰으로 보상받는 서비스
 
-![img](Img\blockchallen.png)
+![img](Img/blockchallen.png)
 
 
 
@@ -12,7 +12,7 @@
 
 ### :black_nib: 와이어프레임
 
-![img](Img\wireframe.png)
+![img](Img/wireframe.png)
 
 
 
