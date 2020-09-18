@@ -63,16 +63,28 @@
 <script>
 import axios from 'axios'
 import InfiniteLoading from 'vue-infinite-loading'
+import _ from 'lodash'
 
 export default {
   name: 'ChallengeList',
   data() {
     return {
-      user: '',
+      user: {
+      id: 0,
+      challenges: [],
+      email: "",
+      nickname: "",
+      access_token: "",
+      walletAddress: "",
+    },
       searchText: '',
       challengelist: [],
       limit: 0
     }
+  },
+  mounted() {
+      const user = JSON.parse(sessionStorage.getItem("user"))
+      this.user = user
   },
   computed: {
     InfiniteLoading
@@ -80,15 +92,10 @@ export default {
   },
   created() {
     // axios
-    axios.get('/jsontest/Account.json')
-        .then(res => {
-          console.log(res)
-          this.user = res.data
-        }),
-        axios.get('/jsontest/Challenge.json')
+        axios.get('http://localhost:8080/blockchallen/challenges')
             .then(res => {
               console.log(res)
-              this.challengelist = res.data.ChallengeList
+              this.challengelist = res.data
             })
   },
   methods: {
@@ -102,20 +109,26 @@ export default {
     },
     sortfunction: function (event) {
       if (event.target.value == "fast") {
-        alert("소팅1")
+        axios.get('http://localhost:8080/blockchallen/challenges')
+              .then(res => {
+                 this.challengelist = _.orderBy(res.data, 'startDate', 'asc')
+              })
       } else if (event.target.value == "slow") {
-        alert("소팅2")
+        axios.get('http://localhost:8080/blockchallen/challenges')
+            .then(res => {
+                 this.challengelist = _.orderBy(res.data, 'startDate', 'desc')
+              })
       } else if (event.target.value == "expensive") {
-        alert("소팅3")
+        axios.get('http://localhost:8080/blockchallen/challenges')
+            .then(res => {
+                 this.challengelist = _.orderBy(res.data, 'fee', 'desc')
+              })
       } else if (event.target.value == "cheap") {
-        alert("소팅4")
+        axios.get('http://localhost:8080/blockchallen/challenges')
+            .then(res => {
+                 this.challengelist = _.orderBy(res.data, 'fee', 'asc')
+              })
       }
-      // ag{
-      //     sortrlwns: etv
-      // }
-      // .t (res ){
-      //     this.challengelist=res.data;
-      // }
 
     },
     infiniteHandler($state) {
@@ -129,13 +142,13 @@ export default {
             setTimeout(() => {
               if (response.data.length) {
                 this.challengelist = this.challengelist.concat(response.data)
-                this.limit += 3
+                this.limit += 2
                 $state.loaded()
 
               } else {
                 $state.complete()
               }
-            }, 1000)
+            }, 500)
           })
           .catch(() => {
           })
