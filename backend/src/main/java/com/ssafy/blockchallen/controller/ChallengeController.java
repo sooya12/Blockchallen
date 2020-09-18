@@ -53,4 +53,9 @@ public class ChallengeController {
 		return challengeService.MyChallenges(id);
 	}
 	
+	@RequestMapping(path = "/challenges")
+	    public Object selectInfiniteLoading(@RequestParam("limit") int limit) {
+
+		return new ResponseEntity<>(challengeService.infinite(limit), HttpStatus.OK);
+	}
 }

@@ -1,5 +1,6 @@
 package com.ssafy.blockchallen.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -75,6 +76,10 @@ public class ChallengeService implements IChallengeService {
 			return account.get().getChallenges();
 		}
 		return null;
+	}
+
+	public Collection<Challenge> infinite(int limit) {
+		return challengeRepository.infinite(limit);
 	}
 	
 }
