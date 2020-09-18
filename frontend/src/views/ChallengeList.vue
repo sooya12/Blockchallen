@@ -40,7 +40,7 @@
     
     <!-- 챌린지 목록 -->
     <v-container>
-      <select class="selectbox" @change="sortfunction($event)">
+      <select v-model="options" class="selectbox" @change="sortfunction($event)">
         <option value="fast">빠른 시작</option>
         <option value="slow">느린 시작</option>
         <option value="expensive">비싼 배팅</option>
@@ -68,9 +68,8 @@
 <script>
 import axios from 'axios'
 import InfiniteLoading from 'vue-infinite-loading'
-import _ from 'lodash'
+// import _ from 'lodash'
 
-// const api = '//hn.algolia.com/api/v1/search_by_date?tags=story';
 
 export default {
   name: 'ChallengeList',
@@ -86,7 +85,8 @@ export default {
     },
       searchText: '',
       challengelist: [],
-      limit: 0
+      limit: 0,
+      options:''
     }
   },
   mounted() {
@@ -120,28 +120,19 @@ export default {
     ToMyPage: function () {
       this.$router.push('/mypage')
     },
-    sortfunction: function (event) {
-      if (event.target.value == "fast") {
-        axios.get('http://localhost:8080/blockchallen/challenges')
+    sortfunction: function () {
+
+        axios.get('http://localhost:8080/blockchallen/challenges', {
+          params:{
+            limit:0,
+            options:this.options
+          }
+        })
               .then(res => {
-                 this.challengelist = _.orderBy(res.data, 'startDate', 'asc')
+                 this.challengelist = res.data
+                 this.limit =2
               })
-      } else if (event.target.value == "slow") {
-        axios.get('http://localhost:8080/blockchallen/challenges')
-            .then(res => {
-                 this.challengelist = _.orderBy(res.data, 'startDate', 'desc')
-              })
-      } else if (event.target.value == "expensive") {
-        axios.get('http://localhost:8080/blockchallen/challenges')
-            .then(res => {
-                 this.challengelist = _.orderBy(res.data, 'fee', 'desc')
-              })
-      } else if (event.target.value == "cheap") {
-        axios.get('http://localhost:8080/blockchallen/challenges')
-            .then(res => {
-                 this.challengelist = _.orderBy(res.data, 'fee', 'asc')
-              })
-      }
+      
 
     },
     infiniteHandler($state) {
