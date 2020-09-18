@@ -1,7 +1,7 @@
 package com.ssafy.blockchallen.service;
 
 import java.util.Collection;
-import java.util.List;
+//import java.util.List;
 import java.util.Set;
 
 
@@ -13,7 +13,7 @@ public interface IChallengeService {
 	
 	boolean createChallenge(createChallengeDTO challenge);
 	detailChallengeDTO detailChallenge(long id);
-	List<Challenge> getChallenges();
+//	List<Challenge> getChallenges();
 	Set<Challenge> MyChallenges(long id);
-	Collection<Challenge> infinite(int limit);
+	Collection<Challenge> infinite(String option, int limit);
 }
