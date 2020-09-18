@@ -43,19 +43,18 @@ public class ChallengeController {
 			return new ResponseEntity<>("존재하지 않는 챌린지", HttpStatus.NO_CONTENT);
 	}
 	
-	@RequestMapping(path = "/challenges", method = RequestMethod.GET)
-	public Object getChallenges() {
-		return new ResponseEntity<>(challengeService.getChallenges(),HttpStatus.OK);
-	}
+//	@RequestMapping(path = "/challenges", method = RequestMethod.GET)
+//	public Object getChallenges() {
+//		return new ResponseEntity<>(challengeService.getChallenges(),HttpStatus.OK);
+//	}
 	
 	@RequestMapping(path = "/mychallenges/{id}", method = RequestMethod.GET)
 	public Object myChallenges(@PathVariable("id") long id) {
 		return challengeService.MyChallenges(id);
 	}
 	
-	@RequestMapping(path = "/challenges")
-	    public Object selectInfiniteLoading(@RequestParam("limit") int limit) {
-
+	@RequestMapping(path = "/challenges", method = RequestMethod.GET)
+	public Object infiniteLoding(@RequestParam("limit") int limit) {
 		return new ResponseEntity<>(challengeService.infinite(limit), HttpStatus.OK);
 	}
 }

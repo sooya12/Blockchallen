@@ -1,4 +1,5 @@
 <template>
+
   <div class="ChallengeList">
     <!-- 상단 -->
     <div class="high">
@@ -34,8 +35,9 @@
         ></v-select>
     </v-form> -->
 
-    <!-- 무한 스크롤 -->
-    <infinite-loading @infinite="infiniteHandler" spinner="circles"></infinite-loading>
+
+      
+    
     <!-- 챌린지 목록 -->
     <v-container>
       <select class="selectbox" @change="sortfunction($event)">
@@ -57,13 +59,18 @@
           {{ challenge.fee }}
         </v-btn>
       </v-slide-item>
+        <!-- 무한 스크롤 -->
+    <infinite-loading @infinite="infiniteHandler" spinner="circles">  </infinite-loading>
     </v-container>
   </div>
+
 </template>
 <script>
 import axios from 'axios'
 import InfiniteLoading from 'vue-infinite-loading'
 import _ from 'lodash'
+
+// const api = '//hn.algolia.com/api/v1/search_by_date?tags=story';
 
 export default {
   name: 'ChallengeList',
@@ -85,18 +92,24 @@ export default {
   mounted() {
       const user = JSON.parse(sessionStorage.getItem("user"))
       this.user = user
+      
   },
-  computed: {
+  components: {
     InfiniteLoading
-    // challengelist.sort((a,b)=>a.startDate>b.startDate?1:-1)
   },
   created() {
     // axios
-        axios.get('http://localhost:8080/blockchallen/challenges')
+        axios.get('http://localhost:8080/blockchallen/challenges',{
+            params: {
+              limit: this.limit
+            },
+          })
             .then(res => {
               console.log(res)
               this.challengelist = res.data
+
             })
+
   },
   methods: {
     logout: function () {
@@ -132,26 +145,28 @@ export default {
 
     },
     infiniteHandler($state) {
-      InfiniteLoading.http
-          .get(InfiniteLoading.api, {
+      axios.get('http://localhost:8080/blockchallen/challenges',{
             params: {
-              limit: this.limit
+              limit: this.limit+2
             },
           })
-          .then((response) => {
-            setTimeout(() => {
-              if (response.data.length) {
-                this.challengelist = this.challengelist.concat(response.data)
-                this.limit += 2
-                $state.loaded()
-
-              } else {
-                $state.complete()
-              }
-            }, 500)
-          })
-          .catch(() => {
-          })
+      .then(response=>{
+        setTimeout(()=>{
+          if(response.data.length){
+            this.challengelist = this.challengelist.concat(response.data)
+            $state.loaded()
+            this.limit += 2
+            if(this.challengelist.length/2==0){
+              $state.complete()
+            }
+          }else{
+            $state.complete()
+          }
+        },2000)
+      }).catch(error=>{
+        console.error(error)
+      })
+          
     }
   }
 }
@@ -189,15 +204,5 @@ export default {
   margin: 20px
 
 }
-
-/* .selectbox:hover{
-    background-color:#e6e6ff;
-} */
-/* .selectbox-selected{
-    background-color:#e6e6ff;
-} */
-/* option:checked{
-    background-color:#e6e6ff;
-} */
 
 </style>
