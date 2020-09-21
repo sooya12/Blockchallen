@@ -35,7 +35,7 @@ public class WalletController {
       if(newWallet != null) {
          return new ResponseEntity<>(newWallet, HttpStatus.OK);
       } else {
-         return new ResponseEntity<>("존재하지 않는 회원", HttpStatus.NO_CONTENT);
+         return new ResponseEntity<>("지갑 등록 실패", HttpStatus.NO_CONTENT);
       }
    }
    
