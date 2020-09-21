@@ -29,7 +29,7 @@ public class WalletController {
    private IWalletService walletService; 
 
    @ApiOperation(value = "유저의 지갑 등록")
-   @RequestMapping(value = "/wallet/create", method = RequestMethod.PUT)
+   @RequestMapping(value = "/wallet/create", method = RequestMethod.POST)
    public Object create(@RequestBody walletDTO wallet) {
       Wallet newWallet = walletService.create(wallet.getId(), wallet.getAddress());
       
@@ -41,7 +41,7 @@ public class WalletController {
    }
    
    @ApiOperation(value = "유저 아이디로 지갑 정보 찾기")
-   @RequestMapping(value = "/wallet/{id}", method = RequestMethod.GET) //{id}로 받아와야 하려나?? 그런 느낌인거같소
+   @RequestMapping(value = "/wallet/{id}", method = RequestMethod.GET)
    public Object findWallet(@PathVariable("id") long id) {
 	   findWalletDTO wallet = walletService.findWallet(id);
 	   if(wallet != null) {
