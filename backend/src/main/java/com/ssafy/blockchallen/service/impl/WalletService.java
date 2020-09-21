@@ -24,7 +24,7 @@ public class WalletService implements IWalletService {
    @Override
    public findWalletDTO findWallet(long id) {
 	  Optional<Account> account = accountRepository.findById(id);
-	  Optional<Wallet> wallet = walletRepository.findById(account.get().getId());
+	  Optional<Wallet> wallet = walletRepository.findByAccount(account.get());
 	  if(wallet.isPresent()) {
 		  findWalletDTO retWallet = new findWalletDTO();
 		  retWallet.setAddress(wallet.get().getAddress());
