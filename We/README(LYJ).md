@@ -440,3 +440,40 @@ JWT를 쓰는 이유?
 
 
 ##### 코딩 테스트 준비 하자...
+
+
+
+## 20.09.21
+
+### 오늘 한 일
+
+- 챌린지 생성 연동 (수정함 다시 연동 테스트 필요)
+- 챌린지 상세 조회 연동 (수정한 다시 연동 테스트 필요)
+- 챌린지 인증 목록
+- 챌린지 결과 진행ing
+
+
+
+#### Stream
+
+> 자바 8에서 추가한 람다를 활용할 수 있는 기술 중 하나.
+>
+> '데이터의 흐름'
+>
+> 배열 또는 컬렉션 인스턴스에 함수 여러 개를 조합해서 원하는 결과를 필터링 하고 가공된 결과를 얻을 수 있음.
+>
+> 코드의 양을 줄이고 간결하게 표현할 수 있음
+>
+> 크게 세 가지 동작으로 나눔
+>
+> 1. 생성 : 스트림 인스턴스 생성
+> 2. 가공 : 필터링(filtering) 및 맵핑(mapping) 등 원하는 결과를 만들어가는 중간 작업(intermediate operations)
+> 3. 결과 : 최종적으로 결과를 만들어내는 작업(terminal operations)
+
+
+
+[Introduction to Java 8 Streams](https://www.baeldung.com/java-8-streams-introduction)
+
+[Java Streams](https://www.baeldung.com/java-streams)
+
+[참고 블로그](https://futurecreator.github.io/2018/08/26/java-8-streams/)
