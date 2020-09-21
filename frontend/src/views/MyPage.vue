@@ -7,7 +7,7 @@
       </v-btn>
     </div>
     <div id="header">
-      <h1><span style="color: red;">{{ user.nickname }}</span>님의 마이페이지</h1>
+      <h1><span>{{ user.nickname }}</span>님의 마이페이지</h1>
       <v-btn @click="kakaoLogout">로그아웃</v-btn>
     </div>
     <div id="wallet">
@@ -50,6 +50,8 @@ import axios from 'axios'
 
 var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
 
+const bip39 = require('bip39')
+
 export default {
   name: "MyPage",
   data: () => ({
@@ -72,34 +74,31 @@ export default {
     backHome() {
       this.$router.push("/challenges")
     },
-    async createWallet() {
+    createWallet() {
       let wallet = web3.eth.accounts.create();
-
-      console.log("지갑 생성")
-      console.log(wallet)
-      // console.log(wallet.privateKey)
-      // console.log(wallet.address)
-      //
-      // web3.eth.getAccounts(console.log)
 
       this.myWallet.privateKey = wallet.privateKey
       this.myWallet.walletAddress = wallet.address
-      // this.myWallet.walletAddress = await web3.eth.personal.newAccount()
-      // this.myWallet.myEth = await web3.eth.getBalance(address)
       this.getWalletInfo(this.myWallet.walletAddress)
 
+      const pkString = this.myWallet.privateKey.toString().substring(2)
+      console.log(pkString.substring(0, 32))
+      console.log(pkString.substring(32))
 
-      // console.log(wallet.privateKey)
-      // const mnemonic = bip39.entropyToMnemonic(wallet.privateKey)
-      // console.log(mnemonic)
-      // console.log(bip39.mnemonicToEntropy(mnemonic))
+      bip39.setDefaultWordlist('korean')
 
-      axios.put('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: this.myWallet.walletAddress})
-      .then(res => {
-        console.log("지갑 생성 백과 연동")
-        console.log(res)
+      const etm_prefix = bip39.entropyToMnemonic(pkString.substring(0, 32))
+      const etm_suffix = bip39.entropyToMnemonic(pkString.substring(32))
+      console.log(etm_prefix)
+      console.log(etm_suffix)
+
+      const mte = '0x' + bip39.mnemonicToEntropy(etm_prefix) + bip39.mnemonicToEntropy(etm_suffix)
+      console.log(mte)
+
+      axios.post('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: this.myWallet.walletAddress})
+      .then(
         this.flag = true
-      })
+      )
       .catch(err => {
         console.log(err)
       })
@@ -118,8 +117,6 @@ export default {
               20
             ],
             backgroundColor: [
-              // 'rgba(119, 146, 174, 0.7)',
-              // 'rgba(192, 41, 66, 0.7)'
               'rgb(91, 132, 177)',
               'rgb(252, 118, 106)'
             ],
@@ -164,10 +161,7 @@ export default {
 
     axios.get('http://localhost:8080/blockchallen/wallet/' + this.user.id)
     .then(res => {
-      console.log("지갑 조회 결과")
-      console.log(res)
       const address = res.data.address
-      console.log(address)
 
       if(address != null && address != ' ' && address != '') {
         this.myWallet.walletAddress = address
@@ -175,12 +169,6 @@ export default {
         this.flag = true
       }
     })
-    // if (this.user.walletAddress != "") {
-    //   this.flag = true
-    //   this.myWallet.walletAddress = this.user.walletAddress
-    //
-    //   this.getWalletInfo(this.myWallet.walletAddress)
-    // }
   }
 }
 </script>
@@ -197,6 +185,10 @@ export default {
   height: auto;
   margin: 0 auto;
   text-align: center;
+}
+
+#header h1 span {
+  color: red;
 }
 
 #wallet {
