@@ -45,6 +45,8 @@
 <script>
 import Chart from 'chart.js'
 import Web3 from 'web3'
+import axios from 'axios'
+import bip39 from 'bip39'
 
 var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
 
@@ -81,13 +83,24 @@ export default {
       //
       // web3.eth.getAccounts(console.log)
 
-      // this.myWallet.privateKey = wallet.privateKey
+      this.myWallet.privateKey = wallet.privateKey
       this.myWallet.walletAddress = wallet.address
-
       // this.myWallet.walletAddress = await web3.eth.personal.newAccount()
       // this.myWallet.myEth = await web3.eth.getBalance(address)
       this.getWalletInfo(this.myWallet.walletAddress)
-      this.flag = true
+
+      const mnemonic = bip39.entropyToMnemonic(wallet.privateKey)
+      console.log(mnemonic)
+      console.log(bip39.mnemonicToEntropy(mnemonic))
+
+      axios.put('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: this.myWallet.walletAddress})
+      .then(res => {
+        console.log(res)
+        this.flag = true
+      })
+      .catch(err => {
+        console.log(err)
+      })
     },
     charge() {
       alert("충전")
