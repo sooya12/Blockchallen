@@ -102,8 +102,9 @@
           <p style="text-align: left;">분배방식</p>
           <v-radio-group v-model="isRandom" :mandatory="true" row>
             <v-radio label="랜덤 차등 분배" value="true"></v-radio>
-            <v-radio label="균등 분배" value="false" style="margin-left: 5%;"></v-radio>
+            <v-radio label="균등 분배" value="false"  style="margin-left: 5%;"></v-radio>
           </v-radio-group>
+
         </div>
         <div style="margin-top: 2%;">
           <p style="text-align: left;">사진 인증 조건 (선택)</p>
@@ -173,6 +174,7 @@
 
 
       <v-btn class="ma-2" color="primary" :disabled="!(checktitle&&(bet>0)&&checkdate)"
+             @click="register"
       >
         챌린지 만들기
         <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
@@ -215,18 +217,21 @@ export default {
   },
   methods: {
     register: function () {
-      axios.post('/blockchallen/challenge', {
+      axios.post('http://localhost:8080/blockchallen/challenge', {
         name: this.title,
         startDate: this.startdate,
         endDate: this.enddate,
         expireDate: this.expiredate,
         fee: this.bet,
         isRandom: this.isRandom,
-        certificationCondition: this.certificateCondition,
-        uid: '로그인 이후 구현',
+        certification: this.certificateCondition,
+        uid: 61,
       })
           .then(() => {
             this.$router.push('/') //상세페이지로 이동하자
+          })
+          .catch((err)=>{
+            console.log(err)
           })
     }
   },
@@ -296,7 +301,6 @@ export default {
         this.expiredate = tempDate.toISOString().substr(0, 10)
       }
 
-      console.log(this.bet)
     }
 
   }
