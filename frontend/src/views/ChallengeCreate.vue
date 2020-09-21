@@ -113,11 +113,11 @@
               class="mt-0"
               color="green lighten-2"
               hide-details
-              label="항상 가능"
+              label="24시간 내내 가능"
               style="margin-bottom: 2%;"
           ></v-switch>
           <v-spacer></v-spacer>
-          <div v-if="certificationAvailableTime">
+          <div v-if="!certificationAvailableTime">
             <p style="text-align: left; margin-top:2%; font-weight: bold;">시간 선택</p>
             <v-range-slider
                 v-model="certificationTime"
@@ -299,6 +299,10 @@ export default {
   },
   methods: {
     register: function () {
+      if(this.certificationAvailableTime){
+        this.certificationStartTime=0
+        this.certificationEndTime=48
+      }
       axios.post('http://localhost:8080/blockchallen/challenge', {
         name: this.title,
         startDate: this.startdate,
