@@ -46,7 +46,7 @@
 import Chart from 'chart.js'
 import Web3 from 'web3'
 import axios from 'axios'
-import bip39 from 'bip39'
+// import bip39 from 'bip39'
 
 var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
 
@@ -73,10 +73,9 @@ export default {
       this.$router.push("/challenges")
     },
     async createWallet() {
-      alert("지갑 생성")
-
       let wallet = web3.eth.accounts.create();
 
+      console.log("지갑 생성")
       console.log(wallet)
       // console.log(wallet.privateKey)
       // console.log(wallet.address)
@@ -97,6 +96,7 @@ export default {
 
       axios.put('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: this.myWallet.walletAddress})
       .then(res => {
+        console.log("지갑 생성 백과 연동")
         console.log(res)
         this.flag = true
       })
@@ -164,7 +164,13 @@ export default {
 
     axios.get('http://localhost:8080/blockchallen/wallet/' + this.user.id)
     .then(res => {
+      console.log("지갑 조회 결과")
       console.log(res)
+      if(res != null && res != ' ' && res != '') {
+        this.myWallet.walletAddress = res
+        this.getWalletInfo(this.myWallet.walletAddress)
+        this.flag = true
+      }
     })
     // if (this.user.walletAddress != "") {
     //   this.flag = true
