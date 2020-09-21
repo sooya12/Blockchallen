@@ -166,8 +166,11 @@ export default {
     .then(res => {
       console.log("지갑 조회 결과")
       console.log(res)
-      if(res != null && res != ' ' && res != '') {
-        this.myWallet.walletAddress = res
+      const address = res.data.address
+      console.log(address)
+
+      if(address != null && address != ' ' && address != '') {
+        this.myWallet.walletAddress = address
         this.getWalletInfo(this.myWallet.walletAddress)
         this.flag = true
       }
