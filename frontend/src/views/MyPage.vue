@@ -95,13 +95,17 @@ export default {
       const mte = '0x' + bip39.mnemonicToEntropy(etm_prefix) + bip39.mnemonicToEntropy(etm_suffix)
       console.log(mte)
 
-      axios.post('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: this.myWallet.walletAddress})
-      .then(
-        this.flag = true
-      )
-      .catch(err => {
-        console.log(err)
-      })
+      const content = etm_prefix + " " + etm_suffix
+
+      this.download(content)
+
+      // axios.post('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: this.myWallet.walletAddress})
+      // .then(
+      //   this.flag = true
+      // )
+      // .catch(err => {
+      //   console.log(err)
+      // })
     },
     charge() {
       alert("충전")
@@ -139,7 +143,14 @@ export default {
     },
     async getWalletInfo(walletAddress) {
       this.myWallet.myEth = await web3.eth.getBalance(walletAddress)
-    }
+    },
+    download(content) {
+      var pom = document.createElement('a')
+      pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content))
+      pom.setAttribute('download', 'blockchallenKey.txt')
+
+      pom.click()
+    },
   },
   mounted() {
     this.createChart()
