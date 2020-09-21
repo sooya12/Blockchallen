@@ -107,6 +107,30 @@
 
         </div>
         <div style="margin-top: 2%;">
+          <p style="text-align: left;">사진 인증 가능 시간</p>
+          <v-switch
+              v-model="certificationAvailableTime"
+              class="mt-0"
+              color="green lighten-2"
+              hide-details
+              label="항상 가능"
+              style="margin-bottom: 2%;"
+          ></v-switch>
+          <v-spacer></v-spacer>
+          <div v-if="certificationAvailableTime">
+            <p style="text-align: left; margin-top:2%; font-weight: bold;">시간 선택</p>
+            <v-range-slider
+                v-model="certificationTime"
+                :value="[certificationStartTime, certificationEndTime]"
+                min="0"
+                max="48"
+            >
+              <template v-slot:thumb-label="props">
+                {{timepick[props.value]}}
+              </template>
+            </v-range-slider>
+            <p style="text-align: left; margin-top:2%; font-weight: bold;">{{ Math.floor((certificationStartTime*30)/60) }}:{{ (certificationStartTime*30)%60==0?"00":"30" }} ~ {{ Math.floor((certificationEndTime*30)/60) }}:{{ (certificationEndTime*30)%60==0?"00":"30" }}</p>
+          </div>
           <p style="text-align: left;">사진 인증 조건 (선택)</p>
           <v-text-field
               v-model="certificateCondition"
@@ -204,6 +228,61 @@ export default {
       certificateCondition: '',
       expiredate: new Date().toISOString().substr(0, 10),
       expiremenu: false,
+      certificationAvailableTime:true,
+      certificationStartTime : 0,
+      certificationEndTime : 48,
+      certificationTime:[0,48],
+      timepick : [
+        "00:00",
+        "00:30",
+        "01:00",
+        "01:30",
+        "02:00",
+        "02:30",
+        "03:00",
+        "03:30",
+        "04:00",
+        "04:30",
+        "05:00",
+        "05:30",
+        "06:00",
+        "06:30",
+        "07:00",
+        "07:30",
+        "08:00",
+        "08:30",
+        "09:00",
+        "09:30",
+        "10:00",
+        "10:30",
+        "11:00",
+        "11:30",
+        "12:00",
+        "12:30",
+        "13:00",
+        "13:30",
+        "14:00",
+        "14:30",
+        "15:00",
+        "15:30",
+        "16:00",
+        "16:30",
+        "17:00",
+        "17:30",
+        "18:00",
+        "18:30",
+        "19:00",
+        "19:30",
+        "20:00",
+        "20:30",
+        "21:00",
+        "21:30",
+        "22:00",
+        "22:30",
+        "23:00",
+        "23:30",
+        "24:00"
+      ],
       snackbar: false,
       snackbarcolor: 'red',
       snackbarmode: 'vertical',
@@ -214,6 +293,9 @@ export default {
 
 
     }
+  },
+  mounted() {
+    console.log(new Date().getHours(),',',new Date().getMinutes())
   },
   methods: {
     register: function () {
@@ -226,6 +308,8 @@ export default {
         isRandom: this.isRandom,
         certification: this.certificateCondition,
         uid: 61,
+        certificationStartTime:this.certificationStartTime,
+        certificationEndTime : this.certificationEndTime,
       })
           .then(() => {
             this.$router.push('/') //상세페이지로 이동하자
@@ -301,7 +385,13 @@ export default {
         this.expiredate = tempDate.toISOString().substr(0, 10)
       }
 
-    }
+    },
+
+    certificationTime :function (newVal){
+      this.certificationStartTime=newVal[0]
+      this.certificationEndTime=newVal[1]
+
+    },
 
   }
 }
