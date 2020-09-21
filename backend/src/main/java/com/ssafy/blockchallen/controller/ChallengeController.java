@@ -48,13 +48,13 @@ public class ChallengeController {
 	}
 	
 	@RequestMapping(path = "/challenges", method = RequestMethod.GET)
-	public Object getChallenges() {
-		return new ResponseEntity<>(challengeService.getChallenges(),HttpStatus.OK);
+	public Object getChallenges(@RequestParam String option, @RequestParam int limit) {
+		return new ResponseEntity<>(challengeService.infinite(option, limit),HttpStatus.OK);
 	}
 	
 	@RequestMapping(path = "/mychallenges/{id}", method = RequestMethod.GET)
 	public Object myChallenges(@PathVariable("id") long id) {
-		return challengeService.MyChallenges(id);
+		return new ResponseEntity<>(challengeService.MyChallenges(id), HttpStatus.OK);
 	}
 	
 	@RequestMapping(path = "/challenge/certification")
