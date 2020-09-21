@@ -81,3 +81,19 @@
 
   
 
+## 9월 17일(목) 오늘 한 일:deciduous_tree:
+
+* 검색 버튼 -> 기능 없애기
+
+* select box 정렬은 back 정보를 받아오기
+
+* 무한 스크롤 기능 넣기 -> back 연동하기
+
+  > https://daily-life-of-bsh.tistory.com/209 : 참고블로그
+
+* 깃 대충돌 해결하기
+
+  > 무한 스크롤 부분 현수가 infiniteload 를 http 앞에 추가해서 오류 해결
+  >
+  > ![image-20200917205921973](C:\Users\multicampus\AppData\Roaming\Typora\typora-user-images\image-20200917205921973.png)
+
