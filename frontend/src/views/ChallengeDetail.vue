@@ -55,7 +55,7 @@
           </p>
           <div v-for="participant of userlist" v-bind:key="participant.id">
             <v-card style="margin : 5% 1%; margin-top : 1%; min-height: 32vh;"
-                    @click="clickParicipant(participant,total)">
+                    @click="clickParticipant(participant,total)">
               <div>
 
                 <div style="float:left; width:40%; height : 20vh;">
@@ -190,7 +190,7 @@ export default {
     /*
     TODO : 추후 URL 수정 필요
     */
-    axios.get('/mock/challenge' + this.cid + '.json', {
+    axios.get('http://localhost:8080/blockchallen/challenge', {
       params: {
         id: Number(this.cid),
 
@@ -338,7 +338,7 @@ export default {
           })
     },
 
-    clickParicipant(participant, total) {
+    clickParticipant(participant, total) {
       this.$modal.show(ChallengeModal, {
         participant: participant,
         total: total,
