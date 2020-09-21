@@ -73,18 +73,18 @@ export default {
     async createWallet() {
       alert("지갑 생성")
 
-      // let wallet = web3.eth.accounts.create();
-      //
-      // console.log(wallet)
+      let wallet = web3.eth.accounts.create();
+
+      console.log(wallet)
       // console.log(wallet.privateKey)
       // console.log(wallet.address)
       //
       // web3.eth.getAccounts(console.log)
 
       // this.myWallet.privateKey = wallet.privateKey
-      // this.myWallet.walletAddress = wallet.address
+      this.myWallet.walletAddress = wallet.address
 
-      this.myWallet.walletAddress = await web3.eth.personal.newAccount()
+      // this.myWallet.walletAddress = await web3.eth.personal.newAccount()
       // this.myWallet.myEth = await web3.eth.getBalance(address)
       this.getWalletInfo(this.myWallet.walletAddress)
       this.flag = true
