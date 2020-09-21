@@ -67,3 +67,9 @@ public class ChallengeController {
 			return new ResponseEntity<>("존재하지 않는 챌린지", HttpStatus.NO_CONTENT);
 	}
 	
+	public Object challengeResult() {
+		
+		
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+}
