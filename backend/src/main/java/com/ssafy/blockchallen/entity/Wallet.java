@@ -34,9 +34,6 @@ public class Wallet {
 	@ApiModelProperty(required = true, value="회원 번호")
 	private Account account;
 	
-//	@ApiModelProperty(required = true, value="지갑 키")
-//	private String key;
-	
 	@ApiModelProperty(required = true, value="지갑 주소")
 	private String address;
 
