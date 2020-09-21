@@ -46,6 +46,8 @@ public class ChallengeService implements IChallengeService {
 				.fee(challenge.getFee())
 				.isRandom(challenge.isRandom())
 				.certificationCondition(challenge.getCertification())
+				.certificationStartTime(challenge.getCertificationStartTime())
+				.certificationEndTime(challenge.getCertificationEndTime())
 				.build();
 		newChallenge.addAccount(account.get());
 		challengeRepository.save(newChallenge);
