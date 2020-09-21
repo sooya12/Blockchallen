@@ -46,7 +46,7 @@
 import Chart from 'chart.js'
 import Web3 from 'web3'
 import axios from 'axios'
-import bip39 from 'bip39'
+// import bip39 from 'bip39'
 
 var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
 
@@ -89,9 +89,9 @@ export default {
       // this.myWallet.myEth = await web3.eth.getBalance(address)
       this.getWalletInfo(this.myWallet.walletAddress)
 
-      const mnemonic = bip39.entropyToMnemonic(wallet.privateKey)
-      console.log(mnemonic)
-      console.log(bip39.mnemonicToEntropy(mnemonic))
+      // const mnemonic = bip39.entropyToMnemonic(wallet.privateKey)
+      // console.log(mnemonic)
+      // console.log(bip39.mnemonicToEntropy(mnemonic))
 
       axios.put('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: this.myWallet.walletAddress})
       .then(res => {
@@ -135,6 +135,7 @@ export default {
     kakaoLogout() {
       let win = window.open('https://accounts.kakao.com/logout?continue=https://accounts.kakao.com/weblogin/account')
       win.close()
+      sessionStorage.removeItem("user")
       this.$router.push("/")
     },
     async getWalletInfo(walletAddress) {
@@ -159,13 +160,16 @@ export default {
     ]
     this.user = user
 
-    console.log(this.user.walletAddress)
-    if (this.user.walletAddress != "") {
-      this.flag = true
-      this.myWallet.walletAddress = this.user.walletAddress
-
-      this.getWalletInfo(this.myWallet.walletAddress)
-    }
+    axios.get('http://localhost:8080/blockchallen/wallet/' + this.user.id)
+    .then(res => {
+      console.log(res)
+    })
+    // if (this.user.walletAddress != "") {
+    //   this.flag = true
+    //   this.myWallet.walletAddress = this.user.walletAddress
+    //
+    //   this.getWalletInfo(this.myWallet.walletAddress)
+    // }
   }
 }
 </script>
