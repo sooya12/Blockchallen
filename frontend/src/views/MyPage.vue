@@ -46,7 +46,7 @@
 import Chart from 'chart.js'
 import Web3 from 'web3'
 import axios from 'axios'
-// import bip39 from 'bip39'
+import bip39 from 'bip39'
 
 var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
 
@@ -89,6 +89,8 @@ export default {
       // this.myWallet.myEth = await web3.eth.getBalance(address)
       this.getWalletInfo(this.myWallet.walletAddress)
 
+
+      // console.log(wallet.privateKey)
       // const mnemonic = bip39.entropyToMnemonic(wallet.privateKey)
       // console.log(mnemonic)
       // console.log(bip39.mnemonicToEntropy(mnemonic))
