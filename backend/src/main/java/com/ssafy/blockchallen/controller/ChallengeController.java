@@ -1,5 +1,8 @@
 package com.ssafy.blockchallen.controller;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.blockchallen.dto.certificationListDTO;
 import com.ssafy.blockchallen.dto.createChallengeDTO;
 import com.ssafy.blockchallen.dto.detailChallengeDTO;
 import com.ssafy.blockchallen.service.IChallengeService;
@@ -53,4 +57,13 @@ public class ChallengeController {
 		return challengeService.MyChallenges(id);
 	}
 	
-}
+	@RequestMapping(path = "/challenge/certification")
+	public Object getCertifications(@RequestParam long id) {
+		
+		List<certificationListDTO> list = challengeService.getCertifications(id);
+		if(list != null)
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		else
+			return new ResponseEntity<>("존재하지 않는 챌린지", HttpStatus.NO_CONTENT);
+	}
+	
