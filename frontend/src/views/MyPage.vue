@@ -16,7 +16,6 @@
         <v-btn @click="createWallet">생성하기</v-btn>
       </div>
       <div v-else>
-        <!--<p>나의 비밀키 {{ myWallet.privateKey }}</p>-->
         <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
         <p>나의 잔고는 {{ myWallet.myEth }} 입니다.</p>
         <v-btn @click="charge">충전하기</v-btn>
@@ -56,12 +55,11 @@
 
 <script>
 import Chart from 'chart.js'
-// import Web3 from 'web3'
 import axios from 'axios'
 
 const Web3 = require('web3')
-// var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
-const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/132d48f7fad8474db95aa5359cec4524'))
+const web3 = new Web3(new Web3.providers.HttpProvider('http://j3a102.p.ssafy.io:8545'))
+// const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/132d48f7fad8474db95aa5359cec4524'))
 
 // const bip39 = require('bip39')
 
@@ -93,8 +91,13 @@ export default {
       this.$router.push("/challenges")
     },
     async createWallet() {
-      let wallet = web3.eth.accounts.create();
-      console.log(wallet)
+      /*
+      accounts.create()로 계정 생성
+      privateKey Mnemonic 처리해서 사용자에게 자동 다운로드
+      백엔드와 post 통신하여 DB에 계정 주소 저장
+      */
+      // let wallet = await web3.eth.accounts.create();
+      // console.log(wallet)
       //
       // this.myWallet.privateKey = wallet.privateKey
       // this.myWallet.walletAddress = wallet.address
@@ -117,7 +120,38 @@ export default {
       //   console.log(err)
       // })
 
-      await web3.eth.getAccounts().then(console.log)
+
+      // const list = await web3.eth.accounts
+      // console.log(list)
+      // await web3.eth.getBalance(web3.eth.accounts[0])
+
+      // const val = await web3.eth.personal.newAccount('pass')
+      // console.log(val)
+
+      /* rpc로 새로운 계정 생성 */
+      // axios(
+      //   {
+      //     method: 'post',
+      //     url: 'http://j3a102.p.ssafy.io:8545',
+      //     headers: {
+      //       "Content-Type": "application/json"
+      //     },
+      //     data: {
+      //       "jsonrpc": '2.0',
+      //       "method": 'personal_newAccount',
+      //       'params': ['pass'],
+      //       "id": 1
+      //     }
+      //   }
+      // )
+      // .then(res => {
+      //   console.log(res)
+      // })
+      // .catch(err => {
+      //   console.log(err)
+      // })
+
+      await web3.eth.personal.newAccount('ssafy').then(console.log)
     },
     charge() {
       alert("충전")
