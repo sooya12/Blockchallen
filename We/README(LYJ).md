@@ -477,3 +477,16 @@ JWT를 쓰는 이유?
 [Java Streams](https://www.baeldung.com/java-streams)
 
 [참고 블로그](https://futurecreator.github.io/2018/08/26/java-8-streams/)
+
+
+
+## 20.09.22
+
+### 오늘 한일
+
+- 블록체인 멘토링
+- 스마트 컨트랙트 관련 회의
+
+
+
+내일은 web3 - 메타마스크 API 찾아보기! 계정 생성 및 충전 기능 완성하자!
