@@ -5,10 +5,11 @@
         </button>
 
         <div v-show="isModal">
-            <!-- <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'> -->
-            <label class="btn btn-primary btn-file">
+            <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'>
+            <!-- <label class="btn btn-primary btn-file">
                 사진 가져오기 <input type="file" style="display:none;">
-            </label>
+            </label> -->
+            <p>{{picture.lastModifiedDate}}</p>
         </div>
     </div>
 </template>
@@ -36,6 +37,10 @@ export default {
             console.log(this.$refs)
             // console.log(this.picture)
             this.picture = this.$refs.picture.files[0]
+            console.log(this.picture.type)
+            console.log(this.picture.lastModifiedDate)
+            console.log(this.picture.name)
+
         },
         submit(){
 
