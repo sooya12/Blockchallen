@@ -32,7 +32,6 @@ public class CertificationController {
 	@Autowired
 	private ICertificationService certificationService;
 	
-
 	@ApiOperation(value = "인증 등록하기")
 	@RequestMapping(value = "/certification/register", method = RequestMethod.PUT)
 	public Object register(@RequestBody certificationDTO certification) {
