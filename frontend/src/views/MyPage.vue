@@ -86,6 +86,7 @@ export default {
       walletAddress: "",
       myEth: 0,
     },
+    /* Mnemonic 관련 변수 */
     // showPk: false,
     // pkWords: "",
     // pkRules: [
@@ -103,6 +104,7 @@ export default {
       this.$router.push("/challenges")
     },
     async createWallet() {
+      this.passwordFlag = 1
       /*
       accounts.create()로 계정 생성
       privateKey Mnemonic 처리해서 사용자에게 자동 다운로드
@@ -164,7 +166,6 @@ export default {
       // })
 
       // await web3.eth.personal.newAccount('ssafy').then(console.log)
-      this.passwordFlag = 1
     },
     async submitPw() {
       console.log(this.password)
@@ -180,7 +181,7 @@ export default {
       alert("충전")
     },
     createChart() {
-      var ctx = document.getElementById('myChart').getContext('2d')
+      const ctx = document.getElementById('myChart').getContext('2d')
       window.chart = new Chart(ctx, {
         type: 'pie',
         data: {
