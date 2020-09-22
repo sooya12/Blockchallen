@@ -9,6 +9,7 @@ import com.ssafy.blockchallen.dto.certificationListDTO;
 
 import com.ssafy.blockchallen.dto.createChallengeDTO;
 import com.ssafy.blockchallen.dto.detailChallengeDTO;
+import com.ssafy.blockchallen.dto.resultChallengeDTO;
 import com.ssafy.blockchallen.entity.Challenge;
 
 public interface IChallengeService {
@@ -18,4 +19,5 @@ public interface IChallengeService {
 	Set<Challenge> MyChallenges(long id);
 	Collection<Challenge> infinite(String option, int limit);
 	List<certificationListDTO> getCertifications(long id);
+	resultChallengeDTO getResult(long id);
 }

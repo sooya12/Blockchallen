@@ -16,6 +16,7 @@ import com.ssafy.blockchallen.dto.certificationForCLDTO;
 import com.ssafy.blockchallen.dto.certificationListDTO;
 import com.ssafy.blockchallen.dto.createChallengeDTO;
 import com.ssafy.blockchallen.dto.detailChallengeDTO;
+import com.ssafy.blockchallen.dto.resultChallengeDTO;
 import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Certification;
 import com.ssafy.blockchallen.entity.Challenge;
@@ -140,6 +141,14 @@ public class ChallengeService implements IChallengeService {
 					}
 				}
 			}).collect(Collectors.toList());
+		}
+		return null;
+	}
+
+	public resultChallengeDTO getResult(long id) {
+		Optional<Challenge> challenge = challengeRepository.findById(id);
+		if(challenge.isPresent()) {
+			
 		}
 		return null;
 	}
