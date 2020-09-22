@@ -12,25 +12,31 @@
     </div>
     <div id="wallet">
       <h2>나의 지갑</h2>
-      <div v-if="!flag">
-        <v-btn @click="createWallet">생성하기</v-btn>
+      <div v-if="!walletFlag">
+        <v-btn @click="createWallet" v-if="passwordFlag == 0">생성하기</v-btn>
+        <div id="passwordArea" v-else-if="passwordFlag == 1">
+          <p>비밀번호는 이더 사용/충전에 필요하며, 수정/재발급이 불가합니다. 꼭 기억해주세요!</p>
+          <span id="passwordSpan">지갑 비밀번호</span>
+          <v-text-field id="passwordInput" :rules="pwRules" v-model="password"></v-text-field>
+          <v-btn id="passwordBtn" @click="submitPw">입력 완료</v-btn>
+        </div>
       </div>
       <div v-else>
         <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
         <p>나의 잔고는 {{ myWallet.myEth }} 입니다.</p>
         <v-btn @click="charge">충전하기</v-btn>
-        <div v-if="!showPk" class="pkArea">
-          <v-btn @click="showPkInput">비밀키 보기</v-btn>
-        </div>
-        <div v-else class="pkArea">
-          <div id="inputPk">
-            <p>나의 비밀키</p>
-            <v-text-field :rules="pkRules" hint="blockchallen.txt 단어 16개 입력" v-model="pkWords"></v-text-field>
-          </div>
-          <div id="btnPk">
-            <v-btn small color="primary" @click="checkPrivateKey">확인</v-btn>
-          </div>
-        </div>
+        <!--<div v-if="!showPk" class="pkArea">
+           <v-btn @click="showPkInput">비밀키 보기</v-btn>
+         </div>
+         <div v-else class="pkArea">
+           <div id="inputPk">
+             <p>나의 비밀키</p>
+             <v-text-field :rules="pkRules" hint="blockchallen.txt 단어 16개 입력" v-model="pkWords"></v-text-field>
+           </div>
+           <div id="btnPk">
+             <v-btn small color="primary" @click="checkPrivateKey">확인</v-btn>
+           </div>
+         </div>-->
       </div>
     </div>
     <div id="challenge">
@@ -74,17 +80,23 @@ export default {
       access_token: "",
       walletAddress: "",
     },
-    flag: false,
+    walletFlag: false,
     myWallet: {
       privateKey: "",
       walletAddress: "",
       myEth: 0,
     },
-    showPk: false,
-    pkWords: "",
-    pkRules: [
-        value => !!value || 'blockchallen.txt 단어 16개 입력'
+    // showPk: false,
+    // pkWords: "",
+    // pkRules: [
+    //     value => !!value || 'blockchallen.txt 단어 16개 입력'
+    // ],
+    passwordFlag: 0,
+    pwRules: [
+      value => !!value || '지갑의 비밀번호를 입력해주세요',
+      value => !(value.length < 4) || '최소 4자 이상'
     ],
+    password: "",
   }),
   methods: {
     backHome() {
@@ -151,7 +163,18 @@ export default {
       //   console.log(err)
       // })
 
-      await web3.eth.personal.newAccount('ssafy').then(console.log)
+      // await web3.eth.personal.newAccount('ssafy').then(console.log)
+      this.passwordFlag = 1
+    },
+    async submitPw() {
+      console.log(this.password)
+      await web3.eth.personal.newAccount(this.password)
+        .then(res => {
+          console.log(res)
+          this.passwordFlag = 2
+          this.myWallet.walletAddress = res
+          this.walletFlag = true
+        })
     },
     charge() {
       alert("충전")
@@ -230,7 +253,7 @@ export default {
       if(address != null && address != ' ' && address != '') {
         this.myWallet.walletAddress = address
         this.getWalletInfo(this.myWallet.walletAddress)
-        this.flag = true
+        this.walletFlag = true
       }
     })
   }
@@ -260,6 +283,33 @@ export default {
   height: auto;
   margin-top: 3%;
   text-align: center;
+}
+
+#passwordArea {
+  width: 100%;
+  height: auto;
+  margin-top: 3%;
+}
+
+#passwordSpan {
+  width: 30%;
+  height: auto;
+  float: left;
+  margin-top: 1%;
+}
+
+.theme--light.v-input {
+  padding: 0;
+  margin: 0;
+}
+
+#passwordArea > div {
+  width: 45%;
+  float: left;
+}
+
+#passwordArea p {
+  color: red;
 }
 
 #challenge {
