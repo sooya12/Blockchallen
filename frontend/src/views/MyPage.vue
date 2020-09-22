@@ -5,10 +5,10 @@
         <v-icon dark left>arrow_back</v-icon>
         메인으로
       </v-btn>
+      <v-btn dark top right style="margin: 2%; float: right;" @click="kakaoLogout">로그아웃</v-btn>
     </div>
     <div id="header">
       <h1><span>{{ user.nickname }}</span>님의 마이페이지</h1>
-      <v-btn @click="kakaoLogout">로그아웃</v-btn>
     </div>
     <div id="wallet">
       <h2>나의 지갑</h2>
@@ -20,6 +20,18 @@
         <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
         <p>나의 잔고는 {{ myWallet.myEth }} 입니다.</p>
         <v-btn @click="charge">충전하기</v-btn>
+        <div v-if="!showPk" class="pkArea">
+          <v-btn @click="showPkInput">비밀키 보기</v-btn>
+        </div>
+        <div v-else class="pkArea">
+          <div id="inputPk">
+            <p>나의 비밀키</p>
+            <v-text-field :rules="pkRules" hint="blockchallen.txt 단어 16개 입력" v-model="pkWords"></v-text-field>
+          </div>
+          <div id="btnPk">
+            <v-btn small color="primary" @click="checkPrivateKey">확인</v-btn>
+          </div>
+        </div>
       </div>
     </div>
     <div id="challenge">
@@ -44,13 +56,14 @@
 
 <script>
 import Chart from 'chart.js'
-import Web3 from 'web3'
+// import Web3 from 'web3'
 import axios from 'axios'
-// import bip39 from 'bip39'
 
-var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
+const Web3 = require('web3')
+// var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
+const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/132d48f7fad8474db95aa5359cec4524'))
 
-const bip39 = require('bip39')
+// const bip39 = require('bip39')
 
 export default {
   name: "MyPage",
@@ -69,36 +82,33 @@ export default {
       walletAddress: "",
       myEth: 0,
     },
+    showPk: false,
+    pkWords: "",
+    pkRules: [
+        value => !!value || 'blockchallen.txt 단어 16개 입력'
+    ],
   }),
   methods: {
     backHome() {
       this.$router.push("/challenges")
     },
-    createWallet() {
+    async createWallet() {
       let wallet = web3.eth.accounts.create();
-
-      this.myWallet.privateKey = wallet.privateKey
-      this.myWallet.walletAddress = wallet.address
-      this.getWalletInfo(this.myWallet.walletAddress)
-
-      const pkString = this.myWallet.privateKey.toString().substring(2)
-      console.log(pkString.substring(0, 32))
-      console.log(pkString.substring(32))
-
-      bip39.setDefaultWordlist('korean')
-
-      const etm_prefix = bip39.entropyToMnemonic(pkString.substring(0, 32))
-      const etm_suffix = bip39.entropyToMnemonic(pkString.substring(32))
-      console.log(etm_prefix)
-      console.log(etm_suffix)
-
-      const mte = '0x' + bip39.mnemonicToEntropy(etm_prefix) + bip39.mnemonicToEntropy(etm_suffix)
-      console.log(mte)
-
-      const content = etm_prefix + " " + etm_suffix
-
-      this.download(content)
-
+      console.log(wallet)
+      //
+      // this.myWallet.privateKey = wallet.privateKey
+      // this.myWallet.walletAddress = wallet.address
+      // this.getWalletInfo(this.myWallet.walletAddress)
+      //
+      // const pkString = this.myWallet.privateKey.toString().substring(2)
+      //
+      // bip39.setDefaultWordlist('korean')
+      //
+      // const etm_prefix = bip39.entropyToMnemonic(pkString.substring(0, 32))
+      // const etm_suffix = bip39.entropyToMnemonic(pkString.substring(32))
+      //
+      // this.download(etm_prefix + " " + etm_suffix)
+      //
       // axios.post('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: this.myWallet.walletAddress})
       // .then(
       //   this.flag = true
@@ -106,6 +116,8 @@ export default {
       // .catch(err => {
       //   console.log(err)
       // })
+
+      await web3.eth.getAccounts().then(console.log)
     },
     charge() {
       alert("충전")
@@ -151,6 +163,13 @@ export default {
 
       pom.click()
     },
+    showPkInput() {
+      this.showPk = true
+    },
+    checkPrivateKey() {
+      // const mte = '0x' + bip39.mnemonicToEntropy(etm_prefix) + bip39.mnemonicToEntropy(etm_suffix)
+      // console.log(mte)
+    }
   },
   mounted() {
     this.createChart()
