@@ -18,12 +18,7 @@ export default {
     },
     data(){
         return{
-            // id:'', // id
-            account:'', // 계정 id
             picture:'', // 사진 정보
-            // regDate:'', // 등록일
-            // isReported:false, // 신고여부
-
         }
     },
 
@@ -42,6 +37,7 @@ export default {
             formData.append('picture',this.picture)
             formData.append('uid',JSON.parse(sessionStorage.getItem("user")).id)
             formData.append('cid',this.challengeid)
+            formData.append('regDate',this.picture.lastModifiedDate)
 
 
             // axios로 multipart/form data Post 요청 보내기
