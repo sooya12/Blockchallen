@@ -57,15 +57,14 @@
         </v-btn>
       </v-slide-item>
         <!-- 무한 스크롤 -->
-    <infinite-loading @infinite="infiniteHandler" spinner="circles">  </infinite-loading>
+    <!-- <infinite-loading @infinite="infiniteHandler" spinner="circles">  </infinite-loading> -->
     </v-container>
   </div>
 
 </template>
 <script>
 import axios from 'axios'
-import InfiniteLoading from 'vue-infinite-loading'
-// import _ from 'lodash'
+// import InfiniteLoading from 'vue-infinite-loading'
 
 
 export default {
@@ -92,13 +91,13 @@ export default {
       
   },
   components: {
-    InfiniteLoading
+    // InfiniteLoading
   },
   created() {
     // axios
         axios.get('http://localhost:8080/blockchallen/challenges',{
             params: {
-              limit: this.limit
+              // limit: this.limit
             },
           })
             .then(res => {
@@ -122,41 +121,41 @@ export default {
 
         axios.get('http://localhost:8080/blockchallen/challenges', {
           params:{
-            limit:0,
+            // limit:0,
             options:this.options
           }
         })
               .then(res => {
                  this.challengelist = res.data
-                 this.limit =2
+                //  this.limit =2
               })
       
 
     },
-    infiniteHandler($state) {
-      axios.get('http://localhost:8080/blockchallen/challenges',{
-            params: {
-              limit: this.limit+2
-            },
-          })
-      .then(response=>{
-        setTimeout(()=>{
-          if(response.data.length){
-            this.challengelist = this.challengelist.concat(response.data)
-            $state.loaded()
-            this.limit += 2
-            if(this.challengelist.length/2==0){
-              $state.complete()
-            }
-          }else{
-            $state.complete()
-          }
-        },2000)
-      }).catch(error=>{
-        console.error(error)
-      })
+    // infiniteHandler($state) {
+    //   axios.get('http://localhost:8080/blockchallen/challenges',{
+    //         params: {
+    //           limit: this.limit+2
+    //         },
+    //       })
+    //   .then(response=>{
+    //     setTimeout(()=>{
+    //       if(response.data.length){
+    //         this.challengelist = this.challengelist.concat(response.data)
+    //         $state.loaded()
+    //         this.limit += 2
+    //         if(this.challengelist.length/2==0){
+    //           $state.complete()
+    //         }
+    //       }else{
+    //         $state.complete()
+    //       }
+    //     },2000)
+    //   }).catch(error=>{
+    //     console.error(error)
+    //   })
           
-    }
+    // }
   }
 }
 </script>
