@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.blockchallen.dto.certificationListDTO;
 import com.ssafy.blockchallen.dto.createChallengeDTO;
 import com.ssafy.blockchallen.dto.detailChallengeDTO;
+import com.ssafy.blockchallen.dto.resultChallengeDTO;
 import com.ssafy.blockchallen.service.IChallengeService;
 
 @RestController
@@ -61,7 +62,7 @@ public class ChallengeController {
 	
 	@RequestMapping(path = "/challenge/certification", method = RequestMethod.GET)
 	public Object getCertifications(@RequestParam long id) {
-		System.out.println(id);
+
 		List<certificationListDTO> list = challengeService.getCertifications(id);
 		if(list != null)
 			return new ResponseEntity<>(list, HttpStatus.OK);
@@ -69,35 +70,13 @@ public class ChallengeController {
 			return new ResponseEntity<>("존재하지 않는 챌린지", HttpStatus.NO_CONTENT);
 	}
 	
-	@RequestMapping(path = "/testtest", method = RequestMethod.GET)
-	public Object test() {
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-	
-	
-	@RequestMapping(path = "/challenge/result/{id}", method = RequestMethod.GET)
-	public Object challengeResult(@PathVariable("id") long id) {
+	@RequestMapping(path = "/challenge/result", method = RequestMethod.GET)
+	public Object challengeResult(@RequestParam long id) {
 		
-		System.out.println("들어와줘");
-		
-//		String start = "2020-09-20";
-//		String end = "2020-09-23";
-//		
-//		try {
-//			SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-//			
-//			Date startDate = format.parse(start);
-//			Date endDate = format.parse(end);
-//			
-//			long calDate = endDate.getTime() - startDate.getTime();
-//			
-//			long challengeDays = calDate / (24*60*60*1000) - 1; // 날짜로 계산(시작일 포함)
-//			
-//			System.out.println("몇일 차이나니~? " + challengeDays + "일!");
-//			
-//		} catch(ParseException e) {
-//			e.printStackTrace();
-//		}
-		return new ResponseEntity<>(id, HttpStatus.OK);
+		resultChallengeDTO result = challengeService.getResult(id);
+		if(result != null)
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		else
+			return new ResponseEntity<>("존재하지 않는 챌린지", HttpStatus.NO_CONTENT);
 	}
 }

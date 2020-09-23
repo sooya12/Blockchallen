@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,9 @@ import com.ssafy.blockchallen.dto.certificationForCLDTO;
 import com.ssafy.blockchallen.dto.certificationListDTO;
 import com.ssafy.blockchallen.dto.createChallengeDTO;
 import com.ssafy.blockchallen.dto.detailChallengeDTO;
+import com.ssafy.blockchallen.dto.failDTO;
 import com.ssafy.blockchallen.dto.resultChallengeDTO;
+import com.ssafy.blockchallen.dto.successDTO;
 import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Certification;
 import com.ssafy.blockchallen.entity.Challenge;
@@ -153,18 +156,79 @@ public class ChallengeService implements IChallengeService {
 		if(challenge.isPresent()) {
 			String start = challenge.get().getStartDate();
 			String end = challenge.get().getEndDate();
+			boolean random = challenge.get().getIsRandom();
+			int totalFee = challenge.get().getFee() * (int)challenge.get().getAccounts().stream().count();
+			int fee = challenge.get().getFee();
 			
 			try {
 				SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
 				
+				// 파싱해서 날짜 얻기
 				Date startDate = format.parse(start);
 				Date endDate = format.parse(end);
 				
 				long calDate = endDate.getTime() - startDate.getTime();
+				long challengeDays = calDate / (24*60*60*1000) + 1; // 날짜로 계산(시작일 포함)
+
+				List<successDTO> successlist = new ArrayList<successDTO>();
+				List<failDTO> faillist = new ArrayList<failDTO>();
+				int successcnt = (int)challenge.get().getAccounts().stream().filter(el->el.getCertifications().stream().filter(e->e.getChallenge().getId()==id && !e.getIsReported()).count()==challengeDays).count();
+				int failcnt = (int)challenge.get().getAccounts().stream().filter(el->el.getCertifications().stream().filter(e->e.getChallenge().getId()==id && !e.getIsReported()).count()!=challengeDays).count();
 				
-				long challengeDays = calDate / (24*60*60*1000) - 1; // 날짜로 계산(시작일 포함)
+				if(!random) { // 균등
+					for (Account account : challenge.get().getAccounts()) {
+						if(account.getCertifications().stream().filter(el->el.getChallenge().getId()==id && !el.getIsReported()).count()==challengeDays) { // 성공
+							successlist.add(new successDTO.Builder()
+									.uid(account.getId())
+									.nickname(account.getNickname())
+									.prize(totalFee/successcnt)
+									.build());
+							
+						} else { // 실패
+							faillist.add(new failDTO.Builder()
+									.uid(account.getId())
+									.nickname(account.getNickname())
+									.build());
+						}
+					}
+					
+				} else { // 랜덤
+					boolean[] use = new boolean[successcnt];
+					Random rand = new Random();
+					for (Account account : challenge.get().getAccounts()) {
+						if(account.getCertifications().stream().filter(el->el.getChallenge().getId()==id && !el.getIsReported()).count()==challengeDays) { // 성공
+							int divnum = 1;
+							if(successcnt%2==0) { // 성공 짝수
+								divnum = (successcnt-1)*(successcnt/2);
+							} else {
+								divnum = (successcnt-1)*(successcnt/2) + successcnt/2;
+							}
+							
+							int bonus = -1;
+							while(!use[bonus = rand.nextInt(successcnt)])
+							
+							successlist.add(new successDTO.Builder()
+									.uid(account.getId())
+									.nickname(account.getNickname())
+									.prize(fee+(fee*failcnt)*(bonus/divnum))
+									.build());
+						} else { // 실패
+							faillist.add(new failDTO.Builder()
+									.uid(account.getId())
+									.nickname(account.getNickname())
+									.build());
+						}
+					}
+				}
 				
-				System.out.println("몇일 차이나니~?");
+				return new resultChallengeDTO.Builder()
+						.successlist(successlist.stream().sorted(new Comparator<successDTO>() {
+							public int compare(successDTO o1, successDTO o2) {
+								return o1.getPrize() > o2.getPrize() ? -1 : 1;
+							}
+						}).collect(Collectors.toList()))
+						.faillist(faillist)
+						.build();
 				
 			} catch(ParseException e) {
 				e.printStackTrace();
