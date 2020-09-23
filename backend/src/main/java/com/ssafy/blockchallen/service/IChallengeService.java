@@ -17,7 +17,7 @@ public interface IChallengeService {
 	boolean createChallenge(createChallengeDTO challenge);
 	detailChallengeDTO detailChallenge(long id);
 	List<myChallengeDTO> MyChallenges(long id) throws ParseException;
-	Collection<Challenge> infinite(String option, int limit);
+	Collection<Challenge> getChallenges(String option);
 	List<certificationListDTO> getCertifications(long id);
 	resultChallengeDTO getResult(long id) throws ParseException;
 }

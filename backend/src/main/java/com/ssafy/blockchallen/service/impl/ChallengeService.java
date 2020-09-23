@@ -132,17 +132,17 @@ public class ChallengeService implements IChallengeService {
 		return null;
 	}
 
-	public Collection<Challenge> infinite(String option, int limit) {
+	public Collection<Challenge> getChallenges(String option) {
 		if(option.equals("fast"))
-			return challengeRepository.infinite("order by start_date asc", limit);
+			return challengeRepository.findAllOrderByStartDateAsc();
 		else if(option.equals("slow"))
-			return challengeRepository.infinite("order by start_date desc", limit);
+			return challengeRepository.findAllOrderByStartDateDesc();
 		else if(option.equals("expensive"))
-			return challengeRepository.infinite("order by fee desc", limit);
+			return challengeRepository.findAllOrderByFeeDesc();
 		else if(option.equals("cheap"))
-			return challengeRepository.infinite("order by fee asc", limit);
+			return challengeRepository.findAllOrderByFeeAsc();
 		else
-			return challengeRepository.infinite("", limit);
+			return challengeRepository.findAll();
 	}
 	
 

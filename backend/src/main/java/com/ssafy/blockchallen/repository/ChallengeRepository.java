@@ -13,6 +13,8 @@ import com.ssafy.blockchallen.entity.Challenge;
 @Repository
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 	Optional<Challenge> findById(Long id);
-	@Query(value = "select * from challenge :option limit :limit, 2", nativeQuery = true)
-	Collection<Challenge> infinite(@Param("option")String option, @Param("limit")int limit);
+	Collection<Challenge> findAllOrderByStartDateAsc();
+	Collection<Challenge> findAllOrderByStartDateDesc();
+	Collection<Challenge> findAllOrderByFeeAsc();
+	Collection<Challenge> findAllOrderByFeeDesc();
 }
