@@ -35,9 +35,6 @@
         ></v-select>
     </v-form> -->
 
-
-      
-    
     <!-- 챌린지 목록 -->
     <v-container>
       <select v-model="options" class="selectbox" @change="sortfunction($event)">
@@ -115,6 +112,7 @@ export default {
     logout: function () {
       let win = window.open('https://accounts.kakao.com/logout?continue=https://accounts.kakao.com/weblogin/account')
       win.close()
+      sessionStorage.removeItem("user")
       this.$router.push("/")
     },
     ToMyPage: function () {

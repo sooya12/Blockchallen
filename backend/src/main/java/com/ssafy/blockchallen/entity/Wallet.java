@@ -1,7 +1,5 @@
 package com.ssafy.blockchallen.entity;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,20 +32,12 @@ public class Wallet {
 	@ApiModelProperty(required = true, value="회원 번호")
 	private Account account;
 	
-//	@ApiModelProperty(required = true, value="지갑 키")
-//	private String key;
-	
 	@ApiModelProperty(required = true, value="지갑 주소")
 	private String address;
-
-	@ApiModelProperty(required = true, value="지갑 잔고")
-	private BigDecimal balance = BigDecimal.valueOf(0);
-	
 	
 	public static class Builder {
 		private Account account;
 		private String address = "";
-		private BigDecimal balance = BigDecimal.valueOf(0);
 		
 		public Builder() {
 			
@@ -56,16 +46,8 @@ public class Wallet {
 			this.account = account;
 			return this;
 		}
-//		public Builder key(String key) {
-//			this.key = key;
-//			return this;
-//		}
 		public Builder address(String address) {
 			this.address = address;
-			return this;
-		}
-		public Builder balance(BigDecimal balance) {
-			this.balance = balance;
 			return this;
 		}
 		public Wallet build() {
@@ -74,9 +56,7 @@ public class Wallet {
 	}
 	private Wallet(Builder builder) {
 		account = builder.account;
-		//key = builder.key;
 		address = builder.address;
-		balance = builder.balance;
 	}
 	
 }
