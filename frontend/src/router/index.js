@@ -8,6 +8,7 @@ import MyPage from '@/views/MyPage.vue'
 import SignUp from '@/views/SignUp.vue'
 import SocialLogin from "@/views/SocialLogin"
 
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -48,7 +49,7 @@ const routes = [
         name: 'SocialLogin',
         component: SocialLogin,
         props: true
-    }
+    },
 ]
 
 const router = new VueRouter({

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --port 3030",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -30,7 +30,8 @@
     "vuex": "^3.5.1",
     "vuex-persistedstate": "^3.1.0",
     "web3": "^1.2.11",
-    "web3-eth-accounts": "^1.3.0"
+    "web3-eth-accounts": "^1.3.0",
+    "yarn": "^1.22.5"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",

@@ -1,5 +1,6 @@
 package com.ssafy.blockchallen.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -65,9 +66,9 @@ public class ChallengeService implements IChallengeService {
 		return null;
 	}
 
-	public List<Challenge> getChallenges() {
-		return challengeRepository.findAll();
-	}
+//	public List<Challenge> getChallenges() {
+//		return challengeRepository.findAll();
+//	}
 
 	public Set<Challenge> MyChallenges(long id) {
 		Optional<Account> account = accountRepository.findById(id);
@@ -75,6 +76,19 @@ public class ChallengeService implements IChallengeService {
 			return account.get().getChallenges();
 		}
 		return null;
+	}
+
+	public Collection<Challenge> infinite(String option, int limit) {
+		if(option.equals("fast"))
+			return challengeRepository.infinite("order by start_date asc", limit);
+		else if(option.equals("slow"))
+			return challengeRepository.infinite("order by start_date desc", limit);
+		else if(option.equals("expensive"))
+			return challengeRepository.infinite("order by fee desc", limit);
+		else if(option.equals("cheap"))
+			return challengeRepository.infinite("order by fee asc", limit);
+		else
+			return challengeRepository.infinite("", limit);
 	}
 	
 }
