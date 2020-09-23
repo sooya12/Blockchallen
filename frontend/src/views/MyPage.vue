@@ -50,7 +50,7 @@
           <v-progress-linear
               class="challengeProgress"
               color="red lighten-2"
-              :buffer-value="50"
+              :buffer-value="challenge.progressRate"
               stream
           ></v-progress-linear>
         </div>
@@ -170,7 +170,6 @@ export default {
     },
     charge() {
       alert("충전")
-
     },
     createChart() {
       const ctx = document.getElementById('myChart').getContext('2d')
