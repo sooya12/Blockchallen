@@ -50,7 +50,7 @@ public class ChallengeController {
 	}
 	
 	@RequestMapping(path = "/challenges", method = RequestMethod.GET)
-	public Object getChallenges(@RequestParam String option, @RequestParam int limit) {
+	public Object getChallenges(@RequestParam String option) {
 		return new ResponseEntity<>(challengeService.getChallenges(option),HttpStatus.OK);
 	}
 	
