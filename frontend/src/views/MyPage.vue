@@ -66,7 +66,6 @@ import axios from 'axios'
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://j3a102.p.ssafy.io:8545'))
 // const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/132d48f7fad8474db95aa5359cec4524'))
-
 // const bip39 = require('bip39')
 
 export default {
@@ -105,6 +104,7 @@ export default {
     },
     async createWallet() {
       this.passwordFlag = 1
+
       /*
       accounts.create()로 계정 생성
       privateKey Mnemonic 처리해서 사용자에게 자동 다운로드
@@ -126,21 +126,6 @@ export default {
       //
       // this.download(etm_prefix + " " + etm_suffix)
       //
-      // axios.post('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: this.myWallet.walletAddress})
-      // .then(
-      //   this.flag = true
-      // )
-      // .catch(err => {
-      //   console.log(err)
-      // })
-
-
-      // const list = await web3.eth.accounts
-      // console.log(list)
-      // await web3.eth.getBalance(web3.eth.accounts[0])
-
-      // const val = await web3.eth.personal.newAccount('pass')
-      // console.log(val)
 
       /* rpc로 새로운 계정 생성 */
       // axios(
@@ -164,17 +149,23 @@ export default {
       // .catch(err => {
       //   console.log(err)
       // })
-
-      // await web3.eth.personal.newAccount('ssafy').then(console.log)
     },
     async submitPw() {
       console.log(this.password)
       await web3.eth.personal.newAccount(this.password)
         .then(res => {
-          console.log(res)
-          this.passwordFlag = 2
-          this.myWallet.walletAddress = res
-          this.walletFlag = true
+          const address = res
+
+          axios.post('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: address})
+          .then(res => {
+            console.log(res)
+            this.passwordFlag = 2
+            this.myWallet.walletAddress = address
+            this.walletFlag = true
+          })
+          .catch(err => {
+            console.log(err)
+          })
         })
     },
     charge() {
@@ -340,7 +331,7 @@ export default {
   width: 100%;
   height: 5vh;
   margin-top: 1%;
-  maring: 0 auto;
+  margin: 0 auto;
   float: none;
 }
 
