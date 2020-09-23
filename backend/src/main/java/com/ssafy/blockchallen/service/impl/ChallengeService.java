@@ -66,10 +66,6 @@ public class ChallengeService implements IChallengeService {
 		return null;
 	}
 
-//	public List<Challenge> getChallenges() {
-//		return challengeRepository.findAll();
-//	}
-
 	public Set<Challenge> MyChallenges(long id) {
 		Optional<Account> account = accountRepository.findById(id);
 		if(account.isPresent()) {
