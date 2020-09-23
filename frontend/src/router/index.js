@@ -7,7 +7,6 @@ import ChallengeList from '@/views/ChallengeList.vue'
 import MyPage from '@/views/MyPage.vue'
 import SignUp from '@/views/SignUp.vue'
 import SocialLogin from "@/views/SocialLogin"
-import PictureCertification from "@/views/PictureCertification.vue"
 
 
 Vue.use(VueRouter)
@@ -51,11 +50,6 @@ const routes = [
         component: SocialLogin,
         props: true
     },
-    {
-        path: '/certification/register',
-        name: 'PictureCertification',
-        component: PictureCertification
-    }
 ]
 
 const router = new VueRouter({

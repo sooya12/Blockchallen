@@ -1,18 +1,11 @@
 <template>
     <div class="pictureCertification">
-        <button @click="certification" type="button">
-            인증하기
-        </button>
-
-        <div class="modal" v-show="isModal">
-            <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'>
-            <!-- <label class="btn btn-primary btn-file">
-                사진 가져오기 <input type="file" style="display:none;">
-            </label> -->
-            <p>{{picture.lastModifiedDate}}</p>
-            <v-btn @click="send">확인</v-btn>
-        </div>
+        <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'>
+        <p>{{picture.lastModifiedDate}}</p>
+        <br style="clear:both;"/>
+        <v-btn @click="$emit('close')">확인</v-btn>
     </div>
+
 </template>
 
 <script>
@@ -22,14 +15,7 @@ export default {
     name: 'pictureCertification',
     data(){
         return{
-            id:'',
-            challenge:'',
-            account:'',
             picture:'', 
-            regDate:'',
-            isReported:'',
-            isModal:false,
-            del_password:''
         }
     },
     methods:{
@@ -60,22 +46,14 @@ export default {
                 console.log(err)
             })
         },
-        certification:function(){
-            this.isModal= !this.isModal
-        },
-        send:function(){
-
-        }
     }
 }
 </script>
 
 <style scoped>
-.modal {
-  width: 70%;
+.pictureCertification{
   text-align: center;
   margin: 0px auto;
-  padding: 20px;
-  border:1px solid;
+  padding: 100px;
 }
 </style>

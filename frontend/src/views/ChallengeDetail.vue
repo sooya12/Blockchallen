@@ -12,13 +12,19 @@
     </v-btn>
     <div style="margin-left: 20%; margin-top: 3%;">
       <v-card style="width:70%;">
-        <v-img
-            src="/lego.ico"
-            height="4vh"
-            width="4vh"
-            style="float:left; margin:2%;"
-        ></v-img>
-        <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;">{{ title }}</p>
+
+          <v-img
+              src="/lego.ico"
+              height="4vh"
+              width="4vh"
+              style="float:left; margin:2%;"
+          ></v-img>
+          <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;float:left; ">{{ title }}</p>
+          <v-btn style="float:right; margin:2%; " @click="certification">
+              인증하기
+          </v-btn>
+          <br style="clear:both;"/>
+
         <div>
           <span style="font-size:2.5vh; font-weight: bold; margin-left: 2%; margin-right: 3%;">{{ startDate }}</span> ~
           <span style="font-size:2.5vh; font-weight: bold; margin-left: 3%;">{{ endDate }} </span> <span
@@ -151,6 +157,7 @@
 import axios from 'axios'
 import BlockProgress from "@/components/BlockProgress";
 import ChallengeModal from "@/components/ChallengeModal";
+import PictureModal from "@/components/PictureModal";
 
 export default {
   name: "challengeDetail",
@@ -351,6 +358,15 @@ export default {
       })
     },
 
+    certification:function(){
+      this.$modal.show(PictureModal,{
+        name: 'dynamic-modal',
+        width: '100%',
+        height: '40%',
+        draggable: false,
+      })
+    },
+
     insertCommaInNumber(num) {
       let len = String(num).length;
       let comma = len % 3
@@ -361,7 +377,8 @@ export default {
         comma += 3
       }
       return tempstr
-    }
+    },
+
 
 
   }
