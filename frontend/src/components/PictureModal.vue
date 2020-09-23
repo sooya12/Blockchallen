@@ -13,13 +13,21 @@ import axios from 'axios'
 
 export default {
     name: 'pictureCertification',
+    props:{
+        challengeid: Number  // 챌린지 id
+    },
     data(){
         return{
-            picture:'', 
+            // id:'', // id
+            account:'', // 계정 id
+            picture:'', // 사진 정보
+            // regDate:'', // 등록일
+            // isReported:false, // 신고여부
+
         }
     },
-    methods:{
 
+    methods:{
         piccer(){
             console.log(this.$refs)
             this.picture = this.$refs.picture.files[0]
@@ -32,6 +40,9 @@ export default {
 
             const formData = new FormData()
             formData.append('picture',this.picture)
+            formData.append('uid',JSON.parse(sessionStorage.getItem("user")).id)
+            formData.append('cid',this.challengeid)
+
 
             // axios로 multipart/form data Post 요청 보내기
             axios.post('http://localhost:8080/blockchallen/certification/register', formData,{

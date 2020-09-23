@@ -20,7 +20,7 @@
               style="float:left; margin:2%;"
           ></v-img>
           <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;float:left; ">{{ title }}</p>
-          <v-btn style="float:right; margin:2%; " @click="certification">
+          <v-btn style="float:right; margin:2%; " @click="certification(cid)">
               인증하기
           </v-btn>
           <br style="clear:both;"/>
@@ -358,8 +358,12 @@ export default {
       })
     },
 
-    certification:function(){
+    certification:function(challengeid){
       this.$modal.show(PictureModal,{
+        modal: this.$modal,
+        challengeid:challengeid,
+
+      },{
         name: 'dynamic-modal',
         width: '100%',
         height: '40%',
