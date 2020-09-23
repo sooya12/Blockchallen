@@ -35,9 +35,6 @@
         ></v-select>
     </v-form> -->
 
-
-      
-    
     <!-- 챌린지 목록 -->
     <v-container>
       <select v-model="options" class="selectbox" @change="sortfunction($event)">
