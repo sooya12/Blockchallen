@@ -13,5 +13,7 @@ public class createChallengeDTO {
 	private int fee;
 	private boolean isRandom;
 	private String certification;
-	private Long uid;
+	private long uid;
+	private int certificationStartTime;
+	private int certificationEndTime;
 }

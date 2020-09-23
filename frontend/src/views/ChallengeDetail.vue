@@ -10,9 +10,9 @@
       <v-icon dark left>arrow_back</v-icon>
       메인으로
     </v-btn>
+
     <div style="margin-left: 20%; margin-top: 3%;">
       <v-card style="width:70%;">
-
           <v-img
               src="/lego.ico"
               height="4vh"
@@ -24,7 +24,6 @@
               인증하기
           </v-btn>
           <br style="clear:both;"/>
-
         <div>
           <span style="font-size:2.5vh; font-weight: bold; margin-left: 2%; margin-right: 3%;">{{ startDate }}</span> ~
           <span style="font-size:2.5vh; font-weight: bold; margin-left: 3%;">{{ endDate }} </span> <span
@@ -61,7 +60,7 @@
           </p>
           <div v-for="participant of userlist" v-bind:key="participant.id">
             <v-card style="margin : 5% 1%; margin-top : 1%; min-height: 32vh;"
-                    @click="clickParicipant(participant,total)">
+                    @click="clickParticipant(participant,total)">
               <div>
 
                 <div style="float:left; width:40%; height : 20vh;">
@@ -189,6 +188,60 @@ export default {
       total: 0,
       successlist: [],
       faillist: [],
+      timepick : [
+        "00:00",
+        "00:30",
+        "01:00",
+        "01:30",
+        "02:00",
+        "02:30",
+        "03:00",
+        "03:30",
+        "04:00",
+        "04:30",
+        "05:00",
+        "05:30",
+        "06:00",
+        "06:30",
+        "07:00",
+        "07:30",
+        "08:00",
+        "08:30",
+        "09:00",
+        "09:30",
+        "10:00",
+        "10:30",
+        "11:00",
+        "11:30",
+        "12:00",
+        "12:30",
+        "13:00",
+        "13:30",
+        "14:00",
+        "14:30",
+        "15:00",
+        "15:30",
+        "16:00",
+        "16:30",
+        "17:00",
+        "17:30",
+        "18:00",
+        "18:30",
+        "19:00",
+        "19:30",
+        "20:00",
+        "20:30",
+        "21:00",
+        "21:30",
+        "22:00",
+        "22:30",
+        "23:00",
+        "23:30",
+        "24:00"
+      ],
+      certificationStartTime : '',
+      certificationEndTime : '',
+      certificationAvailableTime : false,
 
     }
   },
@@ -197,7 +250,7 @@ export default {
     /*
     TODO : 추후 URL 수정 필요
     */
-    axios.get('/mock/challenge' + this.cid + '.json', {
+    axios.get('http://localhost:8080/blockchallen/challenge', {
       params: {
         id: Number(this.cid),
 
@@ -216,6 +269,8 @@ export default {
           this.startDate = this.startDate.replace(/-/g, '/')
           this.endDate = this.endDate.replace(/-/g, '/')
           this.expireDate = this.expireDate.replace(/-/g, '/')
+          this.certificationStartTime=res.data.certificationStartTime
+          this.certificationEndTime=res.data.certificationEndTime
           let today = new Date().toISOString().substr(0, 10)
           if (this.isRandom) {
             this.divide = '랜덤 차등 분배'
@@ -271,6 +326,11 @@ export default {
         this.remainTime()
       }, 1000); // 타이머 1초간격으로 수행
     }
+    if (this.challengeState == 'doing') {
+      setInterval(() => {
+        this.checkCertificationTime()
+      }, 1000); // 타이머 1초간격으로 수행
+    }
 
   },
   methods: {
@@ -312,6 +372,19 @@ export default {
 
       }
     },
+    checkCertificationTime(){
+      let hour = new Date().getHours()
+      let min = new Date().getMinutes()
+      let timepickIndex=(hour*60+min)/30
+
+      if(timepickIndex>=this.certificationStartTime&&timepickIndex<this.certificationEndTime){
+        this.certificationAvailableTime=true
+        return
+      }
+      else{
+        this.certificationAvailableTime=false
+      }
+    },
     /**
      * TODO : URL 수정
      */
@@ -345,7 +418,7 @@ export default {
           })
     },
 
-    clickParicipant(participant, total) {
+    clickParticipant(participant, total) {
       this.$modal.show(ChallengeModal, {
         participant: participant,
         total: total,
