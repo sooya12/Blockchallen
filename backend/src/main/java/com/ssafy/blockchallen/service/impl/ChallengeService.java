@@ -106,6 +106,7 @@ public class ChallengeService implements IChallengeService {
 				
 				challenges.add(new myChallengeDTO.Builder()
 						.id(challenge.getId())
+						.name(challenge.getName())
 						.fee(challenge.getFee())
 						.isRunning(running)
 						.progressRate((double)Math.round(rate*10)/10)

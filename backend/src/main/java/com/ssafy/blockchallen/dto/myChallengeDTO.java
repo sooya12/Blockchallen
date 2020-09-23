@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class myChallengeDTO {
 	private long id;
+	private String name;
 	private int fee;
 	private boolean isRunning;
 	private double progressRate;
@@ -14,6 +15,7 @@ public class myChallengeDTO {
 	
 	public static class Builder {
 		private long id;
+		private String name;
 		private int fee;
 		private boolean isRunning;
 		private double progressRate;
@@ -24,6 +26,10 @@ public class myChallengeDTO {
 		}
 		public Builder id(long id) {
 			this.id = id;
+			return this;
+		}
+		public Builder name(String name) {
+			this.name = name;
 			return this;
 		}
 		public Builder fee(int fee) {
@@ -48,6 +54,7 @@ public class myChallengeDTO {
 	}
 	private myChallengeDTO(Builder builder) {
 		id = builder.id;
+		name = builder.name;
 		fee = builder.fee;
 		isRunning = builder.isRunning;
 		progressRate = builder.progressRate;
