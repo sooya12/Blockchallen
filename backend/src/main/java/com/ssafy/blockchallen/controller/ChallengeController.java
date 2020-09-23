@@ -1,8 +1,6 @@
 package com.ssafy.blockchallen.controller;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.blockchallen.dto.certificationListDTO;
 import com.ssafy.blockchallen.dto.createChallengeDTO;
 import com.ssafy.blockchallen.dto.detailChallengeDTO;
+import com.ssafy.blockchallen.dto.myChallengeDTO;
 import com.ssafy.blockchallen.dto.resultChallengeDTO;
 import com.ssafy.blockchallen.service.IChallengeService;
 
@@ -56,8 +55,14 @@ public class ChallengeController {
 	}
 	
 	@RequestMapping(path = "/mychallenges/{id}", method = RequestMethod.GET)
-	public Object myChallenges(@PathVariable("id") long id) {
-		return new ResponseEntity<>(challengeService.MyChallenges(id), HttpStatus.OK);
+	public Object myChallenges(@PathVariable("id") long id) throws ParseException {
+		
+		List<myChallengeDTO> list = challengeService.MyChallenges(id);
+		if(list != null)
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		else
+			return new ResponseEntity<>("존재하지 않는 회원", HttpStatus.NO_CONTENT);
+			
 	}
 	
 	@RequestMapping(path = "/challenge/certification", method = RequestMethod.GET)
@@ -71,7 +76,7 @@ public class ChallengeController {
 	}
 	
 	@RequestMapping(path = "/challenge/result", method = RequestMethod.GET)
-	public Object challengeResult(@RequestParam long id) {
+	public Object challengeResult(@RequestParam long id) throws ParseException {
 		
 		resultChallengeDTO result = challengeService.getResult(id);
 		if(result != null)

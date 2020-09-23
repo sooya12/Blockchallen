@@ -21,6 +21,7 @@ import com.ssafy.blockchallen.dto.certificationListDTO;
 import com.ssafy.blockchallen.dto.createChallengeDTO;
 import com.ssafy.blockchallen.dto.detailChallengeDTO;
 import com.ssafy.blockchallen.dto.failDTO;
+import com.ssafy.blockchallen.dto.myChallengeDTO;
 import com.ssafy.blockchallen.dto.resultChallengeDTO;
 import com.ssafy.blockchallen.dto.successDTO;
 import com.ssafy.blockchallen.entity.Account;
@@ -84,10 +85,43 @@ public class ChallengeService implements IChallengeService {
 		return null;
 	}
 
-	public Set<Challenge> MyChallenges(long id) {
+	public List<myChallengeDTO> MyChallenges(long id) throws ParseException {
 		Optional<Account> account = accountRepository.findById(id);
+		List<myChallengeDTO> challenges = new ArrayList<myChallengeDTO>();
 		if(account.isPresent()) {
-			return account.get().getChallenges();
+			for (Challenge challenge : account.get().getChallenges()) {
+				
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+				
+				// 파싱해서 날짜 얻기
+				Date startDate = format.parse(challenge.getStartDate());
+				Date endDate = format.parse(challenge.getEndDate());
+				
+				long calDate = endDate.getTime() - startDate.getTime();
+				long challengeDays = calDate / (24*60*60*1000) + 1; // 날짜로 계산(시작일 포함)
+
+				Date date = new Date(endDate.getTime() + (24*60*60*1000));
+				boolean running = date.compareTo(new Date()) > 0 ? true:false;
+				double rate = (double)account.get().getCertifications().stream().filter(el->el.getChallenge().getId()==challenge.getId() && !el.getIsReported()).count()/challengeDays;
+				
+				challenges.add(new myChallengeDTO.Builder()
+						.id(challenge.getId())
+						.fee(challenge.getFee())
+						.isRunning(running)
+						.progressRate((double)Math.round(rate*10)/10)
+						.build());
+			}
+			return challenges.stream().sorted(new Comparator<myChallengeDTO>() {
+				public int compare(myChallengeDTO o1, myChallengeDTO o2) {
+					if(o1.isRunning() && !o2.isRunning()) {
+						return -1;
+					} else if (!o1.isRunning() && o2.isRunning()) {
+						return 1;
+					} else {
+						return o1.getEndDate().compareTo(o2.getEndDate());
+					}
+				}
+			}).collect(Collectors.toList());
 		}
 		return null;
 	}
@@ -151,7 +185,7 @@ public class ChallengeService implements IChallengeService {
 		return null;
 	}
 
-	public resultChallengeDTO getResult(long id) {
+	public resultChallengeDTO getResult(long id) throws ParseException {
 		Optional<Challenge> challenge = challengeRepository.findById(id);
 		if(challenge.isPresent()) {
 			String start = challenge.get().getStartDate();
@@ -160,79 +194,75 @@ public class ChallengeService implements IChallengeService {
 			int totalFee = challenge.get().getFee() * (int)challenge.get().getAccounts().stream().count();
 			int fee = challenge.get().getFee();
 			
-			try {
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-				
-				// 파싱해서 날짜 얻기
-				Date startDate = format.parse(start);
-				Date endDate = format.parse(end);
-				
-				long calDate = endDate.getTime() - startDate.getTime();
-				long challengeDays = calDate / (24*60*60*1000) + 1; // 날짜로 계산(시작일 포함)
-
-				List<successDTO> successlist = new ArrayList<successDTO>();
-				List<failDTO> faillist = new ArrayList<failDTO>();
-				int successcnt = (int)challenge.get().getAccounts().stream().filter(el->el.getCertifications().stream().filter(e->e.getChallenge().getId()==id && !e.getIsReported()).count()==challengeDays).count();
-				int failcnt = (int)challenge.get().getAccounts().stream().filter(el->el.getCertifications().stream().filter(e->e.getChallenge().getId()==id && !e.getIsReported()).count()!=challengeDays).count();
-				
-				if(!random) { // 균등
-					for (Account account : challenge.get().getAccounts()) {
-						if(account.getCertifications().stream().filter(el->el.getChallenge().getId()==id && !el.getIsReported()).count()==challengeDays) { // 성공
-							successlist.add(new successDTO.Builder()
-									.uid(account.getId())
-									.nickname(account.getNickname())
-									.prize(totalFee/successcnt)
-									.build());
-							
-						} else { // 실패
-							faillist.add(new failDTO.Builder()
-									.uid(account.getId())
-									.nickname(account.getNickname())
-									.build());
-						}
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+			
+			// 파싱해서 날짜 얻기
+			Date startDate = format.parse(start);
+			Date endDate = format.parse(end);
+			
+			long calDate = endDate.getTime() - startDate.getTime();
+			long challengeDays = calDate / (24*60*60*1000) + 1; // 날짜로 계산(시작일 포함)
+			
+			List<successDTO> successlist = new ArrayList<successDTO>();
+			List<failDTO> faillist = new ArrayList<failDTO>();
+			int successcnt = (int)challenge.get().getAccounts().stream().filter(el->el.getCertifications().stream().filter(e->e.getChallenge().getId()==id && !e.getIsReported()).count()==challengeDays).count();
+			int failcnt = (int)challenge.get().getAccounts().stream().filter(el->el.getCertifications().stream().filter(e->e.getChallenge().getId()==id && !e.getIsReported()).count()!=challengeDays).count();
+			
+			if(!random) { // 균등
+				for (Account account : challenge.get().getAccounts()) {
+					if(account.getCertifications().stream().filter(el->el.getChallenge().getId()==id && !el.getIsReported()).count()==challengeDays) { // 성공
+						successlist.add(new successDTO.Builder()
+								.uid(account.getId())
+								.nickname(account.getNickname())
+								.prize(totalFee/successcnt)
+								.build());
+						
+					} else { // 실패
+						faillist.add(new failDTO.Builder()
+								.uid(account.getId())
+								.nickname(account.getNickname())
+								.build());
 					}
-					
-				} else { // 랜덤
-					boolean[] use = new boolean[successcnt];
-					Random rand = new Random();
-					for (Account account : challenge.get().getAccounts()) {
-						if(account.getCertifications().stream().filter(el->el.getChallenge().getId()==id && !el.getIsReported()).count()==challengeDays) { // 성공
-							int divnum = 1;
-							if(successcnt%2==0) { // 성공 짝수
-								divnum = (successcnt-1)*(successcnt/2);
-							} else {
-								divnum = (successcnt-1)*(successcnt/2) + successcnt/2;
-							}
-							
-							int bonus = -1;
-							while(!use[bonus = rand.nextInt(successcnt)])
+				}
+				
+			} else { // 랜덤
+				boolean[] use = new boolean[successcnt];
+				Random rand = new Random();
+				for (Account account : challenge.get().getAccounts()) {
+					if(account.getCertifications().stream().filter(el->el.getChallenge().getId()==id && !el.getIsReported()).count()==challengeDays) { // 성공
+						int divnum = 1;
+						if(successcnt%2==0) { // 성공 짝수
+							divnum = (successcnt-1)*(successcnt/2);
+						} else {
+							divnum = (successcnt-1)*(successcnt/2) + successcnt/2;
+						}
+						
+						int bonus = -1;
+						while(!use[bonus = rand.nextInt(successcnt)])
 							
 							successlist.add(new successDTO.Builder()
 									.uid(account.getId())
 									.nickname(account.getNickname())
 									.prize(fee+(fee*failcnt)*(bonus/divnum))
 									.build());
-						} else { // 실패
-							faillist.add(new failDTO.Builder()
-									.uid(account.getId())
-									.nickname(account.getNickname())
-									.build());
-						}
+					} else { // 실패
+						faillist.add(new failDTO.Builder()
+								.uid(account.getId())
+								.nickname(account.getNickname())
+								.build());
 					}
 				}
-				
-				return new resultChallengeDTO.Builder()
-						.successlist(successlist.stream().sorted(new Comparator<successDTO>() {
-							public int compare(successDTO o1, successDTO o2) {
-								return o1.getPrize() > o2.getPrize() ? -1 : 1;
-							}
-						}).collect(Collectors.toList()))
-						.faillist(faillist)
-						.build();
-				
-			} catch(ParseException e) {
-				e.printStackTrace();
 			}
+			
+			return new resultChallengeDTO.Builder()
+					.successlist(successlist.stream().sorted(new Comparator<successDTO>() {
+						public int compare(successDTO o1, successDTO o2) {
+							return o1.getPrize() > o2.getPrize() ? -1 : 1;
+						}
+					}).collect(Collectors.toList()))
+					.faillist(faillist)
+					.build();
+			
 			
 		}
 		return null;
