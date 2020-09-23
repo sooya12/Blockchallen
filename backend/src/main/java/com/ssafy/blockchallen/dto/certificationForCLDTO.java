@@ -2,18 +2,19 @@ package com.ssafy.blockchallen.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
 public class certificationForCLDTO {
 	private long id;
-	private String picture;
+	private byte[] picture;
 	private String regDate;
 	private boolean isReported;
 	
 	public static class Builder {
 		private long id;
-		private String picture;
+		private byte[] picture;
 		private String regDate;
 		private boolean isReported;
 		
@@ -24,7 +25,7 @@ public class certificationForCLDTO {
 			this.id = id;
 			return this;
 		}
-		public Builder picture(String picture) {
+		public Builder picture(byte[] picture) {
 			this.picture = picture;
 			return this;
 		}
