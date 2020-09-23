@@ -111,6 +111,10 @@ public class ChallengeService implements IChallengeService {
 						.progressRate((double)Math.round(rate*10)/10)
 						.build());
 			}
+			
+//			if(challenges.size()==0)
+//				return challenges;
+			
 			return challenges.stream().sorted(new Comparator<myChallengeDTO>() {
 				public int compare(myChallengeDTO o1, myChallengeDTO o2) {
 					if(o1.isRunning() && !o2.isRunning()) {
