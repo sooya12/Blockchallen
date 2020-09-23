@@ -1,7 +1,9 @@
 package com.ssafy.blockchallen.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -57,9 +59,9 @@ public class ChallengeController {
 		return new ResponseEntity<>(challengeService.MyChallenges(id), HttpStatus.OK);
 	}
 	
-	@RequestMapping(path = "/challenge/certification")
+	@RequestMapping(path = "/challenge/certification", method = RequestMethod.GET)
 	public Object getCertifications(@RequestParam long id) {
-		
+		System.out.println(id);
 		List<certificationListDTO> list = challengeService.getCertifications(id);
 		if(list != null)
 			return new ResponseEntity<>(list, HttpStatus.OK);
@@ -67,9 +69,35 @@ public class ChallengeController {
 			return new ResponseEntity<>("존재하지 않는 챌린지", HttpStatus.NO_CONTENT);
 	}
 	
-	public Object challengeResult() {
-		
-		
+	@RequestMapping(path = "/testtest", method = RequestMethod.GET)
+	public Object test() {
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(path = "/challenge/result/{id}", method = RequestMethod.GET)
+	public Object challengeResult(@PathVariable("id") long id) {
+		
+		System.out.println("들어와줘");
+		
+//		String start = "2020-09-20";
+//		String end = "2020-09-23";
+//		
+//		try {
+//			SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+//			
+//			Date startDate = format.parse(start);
+//			Date endDate = format.parse(end);
+//			
+//			long calDate = endDate.getTime() - startDate.getTime();
+//			
+//			long challengeDays = calDate / (24*60*60*1000) - 1; // 날짜로 계산(시작일 포함)
+//			
+//			System.out.println("몇일 차이나니~? " + challengeDays + "일!");
+//			
+//		} catch(ParseException e) {
+//			e.printStackTrace();
+//		}
+		return new ResponseEntity<>(id, HttpStatus.OK);
 	}
 }

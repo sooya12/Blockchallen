@@ -1,7 +1,10 @@
 package com.ssafy.blockchallen.service.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Collection;
 import java.util.List;
@@ -148,6 +151,24 @@ public class ChallengeService implements IChallengeService {
 	public resultChallengeDTO getResult(long id) {
 		Optional<Challenge> challenge = challengeRepository.findById(id);
 		if(challenge.isPresent()) {
+			String start = challenge.get().getStartDate();
+			String end = challenge.get().getEndDate();
+			
+			try {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+				
+				Date startDate = format.parse(start);
+				Date endDate = format.parse(end);
+				
+				long calDate = endDate.getTime() - startDate.getTime();
+				
+				long challengeDays = calDate / (24*60*60*1000) - 1; // 날짜로 계산(시작일 포함)
+				
+				System.out.println("몇일 차이나니~?");
+				
+			} catch(ParseException e) {
+				e.printStackTrace();
+			}
 			
 		}
 		return null;
