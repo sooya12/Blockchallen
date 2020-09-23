@@ -170,6 +170,7 @@ export default {
     },
     charge() {
       alert("충전")
+
     },
     createChart() {
       const ctx = document.getElementById('myChart').getContext('2d')
