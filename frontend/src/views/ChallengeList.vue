@@ -98,6 +98,7 @@ export default {
         axios.get('http://localhost:8080/blockchallen/challenges',{
             params: {
               // limit: this.limit
+               option:''
             },
           })
             .then(res => {
@@ -122,7 +123,7 @@ export default {
         axios.get('http://localhost:8080/blockchallen/challenges', {
           params:{
             // limit:0,
-            options:this.options
+            option:this.options
           }
         })
               .then(res => {
