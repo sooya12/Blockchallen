@@ -109,6 +109,7 @@ public class ChallengeService implements IChallengeService {
 						.fee(challenge.getFee())
 						.isRunning(running)
 						.progressRate((double)Math.round(rate*10)/10)
+						.endDate(challenge.getEndDate())
 						.build());
 			}
 			
