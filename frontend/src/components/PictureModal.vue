@@ -3,7 +3,7 @@
         <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'>
         <p>{{picture.lastModifiedDate}}</p>
         <br style="clear:both;"/>
-        <v-btn @click="$emit('close')">확인</v-btn>
+        <v-btn @click="submit">확인</v-btn>
     </div>
 
 </template>

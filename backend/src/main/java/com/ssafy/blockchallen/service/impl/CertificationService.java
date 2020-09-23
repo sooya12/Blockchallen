@@ -26,7 +26,7 @@ public class CertificationService implements ICertificationService {
 	private ChallengeRepository challengeRepository;
 
 	@Override
-	public Certification register(long userId, long challengeId, String picture, String regDate) {
+	public Certification register(long userId, long challengeId, byte[] picture, String regDate) {
 		Certification certification = new Certification();
 		Optional<Account> account = accountRepository.findById(userId);
 		Optional<Challenge> challenge = challengeRepository.findById(challengeId);

@@ -1,5 +1,7 @@
 package com.ssafy.blockchallen.controller;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +10,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.blockchallen.dto.certificationDTO;
 import com.ssafy.blockchallen.dto.reportDTO;
@@ -33,10 +38,13 @@ public class CertificationController {
 	private ICertificationService certificationService;
 	
 	@ApiOperation(value = "인증 등록하기")
-	@RequestMapping(value = "/certification/register", method = RequestMethod.PUT)
-	public Object register(@RequestBody certificationDTO certification) {
-		Certification newCertification = certificationService.register(certification.getChallengeId(), certification.getUserId(), certification.getPicture(), certification.getRegDate());
-	
+	@RequestMapping(value = "/certification/register", method = RequestMethod.POST)
+	public Object register(@ModelAttribute certificationDTO certification) throws IOException {
+		System.out.println(certification.getCid());
+		System.out.println(certification.getUid());
+		System.out.println(certification.getPicture());
+		Certification newCertification = certificationService.register( certification.getUid(),certification.getCid(), certification.getPicture().getBytes(), " ");
+		
 		if(newCertification != null) {
 			return new ResponseEntity<>(newCertification, HttpStatus.OK);
 		}else {
