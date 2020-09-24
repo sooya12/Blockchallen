@@ -303,7 +303,7 @@ export default {
         this.certificationStartTime=0
         this.certificationEndTime=48
       }
-      axios.post('http://localhost:8080/blockchallen/challenge', {
+      axios.post(this.$store.state.server + '/challenge', {
         name: this.title,
         startDate: this.startdate,
         endDate: this.enddate,

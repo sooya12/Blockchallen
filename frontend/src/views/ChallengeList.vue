@@ -95,7 +95,7 @@ export default {
   },
   created() {
     // axios
-        axios.get('http://localhost:8080/blockchallen/challenges',{
+        axios.get(this.$store.state.server + '/challenges',{
             params: {
               // limit: this.limit
                option:''
@@ -120,7 +120,7 @@ export default {
     },
     sortfunction: function () {
 
-        axios.get('http://localhost:8080/blockchallen/challenges', {
+        axios.get(this.$store.state.server + '/challenges', {
           params:{
             // limit:0,
             option:this.options
@@ -134,7 +134,7 @@ export default {
 
     },
     // infiniteHandler($state) {
-    //   axios.get('http://localhost:8080/blockchallen/challenges',{
+    //   axios.get(this.$store.state.server + '/challenges',{
     //         params: {
     //           limit: this.limit+2
     //         },

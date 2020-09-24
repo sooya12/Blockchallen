@@ -41,7 +41,7 @@ export default {
 
 
             // axios로 multipart/form data Post 요청 보내기
-            axios.post('http://localhost:8080/blockchallen/certification/register', formData,{
+            axios.post(this.$store.state.server + '/certification/register', formData,{
                 headers:{
                     'Content-Type' : 'multipart/form-data'
                 }

@@ -23,7 +23,7 @@ export default {
     }
   }),
   mounted() {
-    axios.get('http://localhost:8080/blockchallen/account/' + this.id)
+    axios.get(this.$store.state.server + '/account/' + this.id)
         .then(res => {
           console.log(res)
           if (res.data.nickname != null && res.data.nickname != '') {

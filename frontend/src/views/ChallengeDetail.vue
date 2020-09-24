@@ -250,7 +250,7 @@ export default {
     /*
     TODO : 추후 URL 수정 필요
     */
-    axios.get('http://localhost:8080/blockchallen/challenge', {
+    axios.get(this.$store.state.server + '/challenge', {
       params: {
         id: Number(this.cid),
 
