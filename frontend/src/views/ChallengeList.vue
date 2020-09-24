@@ -11,10 +11,10 @@
         <v-btn @click="logout">로그아웃</v-btn>
       </div>
     </div>
-
+    <br style="clear:both;"/>
 
     <!-- 검색 -->
-    <v-form class="mt-3 px-3 d-flex">
+
 
       <v-text-field
           label="어떤 챌린지를 찾고 계신가요?"
@@ -26,7 +26,7 @@
           append-icon="mdi-magnify"
       >
       </v-text-field>
-    </v-form>
+ 
     <!-- select box-->
     <!-- <v-form class="mt-3 px-3 d-flex">
         <v-select
@@ -36,9 +36,9 @@
     </v-form> -->
 
     <!-- 챌린지 목록 -->
-    <v-container>
+    <div>
 
-        <v-btn style="float: left; width: 30%; line-height: 40px; margin: 20px" @click="ccreate">챌린지 만들기</v-btn>
+        <v-btn style="float: left; width: 35%; line-height: 40px; margin: 20px" @click="ccreate">챌린지 만들기</v-btn>
         <select v-model="options" class="selectbox" @change="sortfunction($event)">
           <option value="" selected disabled hidden>정렬 기준</option>
           <option value="fast">빠른 시작</option>
@@ -53,14 +53,14 @@
           :key="challenge.id"
       >
         <v-btn @click="ToDetail(challenge.id)"
-            style="width:100%; height:300px; border-radius: 50px;"
+            style="width:100%; height:250px; border-radius: 50px;"
         >{{ challenge.name }}<br>시작일 : {{ challenge.startDate }}<br>마감일 : {{ challenge.endDate }}<br>배팅 금액 :
           {{ challenge.fee }}
         </v-btn>
       </v-slide-item>
         <!-- 무한 스크롤 -->
     <!-- <infinite-loading @infinite="infiniteHandler" spinner="circles">  </infinite-loading> -->
-    </v-container>
+    </div>
   </div>
 
 </template>
@@ -170,7 +170,8 @@ export default {
 <style scoped>
 
 .ChallengeList {
-  width: 70%;
+  width: 100%;
+  max-width: 1000px;
   text-align: center;
   margin: 0px auto;
   padding: 20px
@@ -178,26 +179,28 @@ export default {
 
 .high {
   width: 100%;
-  padding: 20px;
-  margin: 20px
+  padding: 10px;
+  margin: 20px;
 }
 
 .name {
-  float: left
+  float: left;
 }
 
 .topbutton {
-  float: right
+  float: right;
 }
 
 .selectbox {
   float: right;
-  width: 20%;
+  width: 35%;
   line-height: 40px;
   background: url(https://farm1.staticflickr.com/379/19928272501_4ef877c265_t.jpg) no-repeat 95% 50%;
   z-index: 1;
   margin: 20px
 
 }
+
+
 
 </style>
