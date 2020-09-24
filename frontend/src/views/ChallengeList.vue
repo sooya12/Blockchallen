@@ -38,7 +38,12 @@
     <!-- 챌린지 목록 -->
     <div>
 
-        <v-btn style="float: left; width: 35%; line-height: 40px; margin: 20px" @click="ccreate">챌린지 만들기</v-btn>
+        <v-btn style="
+                float: left; 
+                width: 35%; 
+                line-height: 40px; 
+                margin: 20px" 
+            @click="ccreate" class="">챌린지 만들기</v-btn>
         <select v-model="options" class="selectbox" @change="sortfunction($event)">
           <option value="" selected disabled hidden>정렬 기준</option>
           <option value="fast">빠른 시작</option>
@@ -53,7 +58,13 @@
           :key="challenge.id"
       >
         <v-btn @click="ToDetail(challenge.id)"
-            style="width:100%; height:250px; border-radius: 50px;"
+            style="
+              width:100%; 
+              height:250px; 
+              border-radius: 50px;
+              "
+            class="white"
+
         >{{ challenge.name }}<br>시작일 : {{ challenge.startDate }}<br>마감일 : {{ challenge.endDate }}<br>배팅 금액 :
           {{ challenge.fee }}
         </v-btn>

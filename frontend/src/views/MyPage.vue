@@ -23,7 +23,7 @@
       </div>
       <div v-else>
         <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
-        <p>나의 잔고는 {{ myWallet.myEth }} 입니다.</p>
+        <p>나의 잔고는 {{ myWallet.myEth / 1000000000000000000 }} ETH 입니다.</p>
         <v-btn @click="charge">충전하기</v-btn>
         <!--<div v-if="!showPk" class="pkArea">
            <v-btn @click="showPkInput">비밀키 보기</v-btn>
@@ -44,16 +44,26 @@
       <div id="totalSuccessRate">
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
-      <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
-        <div class="progressSet">
-          <div class="challengeName"><p>{{ challenge.name }}</p></div>
-          <v-progress-linear
-              class="challengeProgress"
-              color="red lighten-2"
-              :buffer-value="challenge.progressRate"
-              stream
-          ></v-progress-linear>
+      <div v-if="progressBarFlag">
+        <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
+          <div class="progressSet">
+            <div class="challengeName"><p>{{ challenge.name }}</p></div>
+            <v-progress-linear
+                class="challengeProgress"
+                color="red lighten-2"
+                :buffer-value="challenge.progressRate"
+                stream
+            ></v-progress-linear>
+          </div>
         </div>
+      </div>
+      <div id="loading" v-else>
+        <v-progress-circular
+            :size="70"
+            :width="7"
+            color="purple"
+            indeterminate
+        ></v-progress-circular>
       </div>
     </div>
   </div>
@@ -97,6 +107,7 @@ export default {
       value => !(value.length < 4) || '최소 4자 이상'
     ],
     password: "",
+    progressBarFlag: false
   }),
   methods: {
     backHome() {
@@ -168,8 +179,18 @@ export default {
           })
         })
     },
-    charge() {
+    async charge() {
       alert("충전")
+      await web3.eth.sendTransaction({
+        from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
+        gasPrice: "200000000",
+        gas: "100000",
+        to: this.myWallet.walletAddress,
+        value: "1000000000000000000",
+        data: "",
+      }, 'ssafy').then(console.log)
+
+      this.getWalletInfo(this.myWallet.walletAddress)
     },
     createChart() {
       const ctx = document.getElementById('myChart').getContext('2d')
@@ -220,18 +241,6 @@ export default {
       // console.log(mte)
     },
   },
-  created() {
-    axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
-        .then(res => {
-          console.log('나의 챌린지 목록')
-          console.log(res)
-          this.user.challenges = res.data
-          console.log(this.user.challenges)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-  },
   mounted() {
     this.createChart()
 
@@ -248,6 +257,18 @@ export default {
         this.walletFlag = true
       }
     })
+
+    axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
+        .then(res => {
+          console.log('나의 챌린지 목록')
+          console.log(res)
+          this.user.challenges = res.data
+          console.log(this.user.challenges)
+          this.progressBarFlag = true
+        })
+        .catch(err => {
+          console.log(err)
+        })
   }
 }
 </script>
@@ -347,6 +368,10 @@ export default {
   margin-left: 3vw;
   margin-top: 1%;
   vertical-align: center;
+}
+
+#loading {
+  margin-top: 3%;
 }
 
 </style>
