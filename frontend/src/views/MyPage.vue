@@ -220,6 +220,18 @@ export default {
       // console.log(mte)
     },
   },
+  created() {
+    axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
+        .then(res => {
+          console.log('나의 챌린지 목록')
+          console.log(res)
+          this.user.challenges = res.data
+          console.log(this.user.challenges)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+  },
   mounted() {
     this.createChart()
 
@@ -235,17 +247,6 @@ export default {
         this.getWalletInfo(this.myWallet.walletAddress)
         this.walletFlag = true
       }
-    })
-
-    axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
-    .then(res => {
-      console.log('나의 챌린지 목록')
-      console.log(res)
-      this.user.challenges = res.data
-      console.log(this.user.challenges)
-    })
-    .catch(err => {
-      console.log(err)
     })
   }
 }
