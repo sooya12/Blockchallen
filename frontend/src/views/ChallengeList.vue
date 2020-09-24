@@ -137,7 +137,7 @@ export default {
               })
     },
     ToDetail(id){
-      this.$router.push(`/challenges/${id}`)
+      this.$router.push('challenges/'+id)
     },
     // infiniteHandler($state) {
     //   axios.get(this.$store.state.server + '/challenges',{

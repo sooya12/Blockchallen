@@ -52,7 +52,7 @@
       <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
         <div v-if="challengeState=='before'">
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">마감까지 {{ remain }}</p>
-
+          <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
         </div>
         <div v-if="challengeState=='doing'">
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">본 챌린지는 진행중입니다. </p>
@@ -144,7 +144,7 @@
         </div>
       </v-card>
       <div style="width:70%; padding: 1% 2%; margin-top: 3%; text-align: center;" v-if="challengeState=='before'">
-        <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;">
+        <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;" v-if="!alreadyParicipate" @click="participate">
           참여하기
         </v-btn>
 
@@ -243,14 +243,27 @@ export default {
       certificationStartTime : '',
       certificationEndTime : '',
       certificationAvailableTime : false,
+      alreadyParicipate:false,
 
     }
   },
   mounted() {
+    axios.get(this.$store.state.server + '/participate', {
+      params: {
+        cid: Number(this.cid),
+        uid: JSON.parse(sessionStorage.getItem("user")).id
 
-    /*
-    TODO : 추후 URL 수정 필요
-    */
+      }
+    })
+    .then((res)=>{
+      if(res.data){
+        this.alreadyParicipate=true
+      }else{
+        this.alreadyParicipate=false
+      }
+    })
+
+
     axios.get(this.$store.state.server + '/challenge', {
       params: {
         id: Number(this.cid),
@@ -391,7 +404,7 @@ export default {
      */
     doing() {
 
-      axios.get('/mock/userfeed' + this.cid + '.json', {
+      axios.get(this.$store.state.server +'/challenge/certification', {
         params: {
           "id": Number(this.cid)
         }
@@ -406,7 +419,7 @@ export default {
      * TODO : URL 수정
      */
     done() {
-      axios.get('/mock/result' + this.cid + '.json', {
+      axios.get(this.$store.state.server +'challenge/result', {
         params: {
           "id": Number(this.cid)
         }
@@ -459,6 +472,16 @@ export default {
 
     goMain(){
       this.$router.push('/challenges')
+    },
+
+    participate(){
+      axios.post(this.$store.state.server + '/participate', {
+          cid: Number(this.cid),
+          uid: JSON.parse(sessionStorage.getItem("user")).id
+      })
+      .then(()=>{
+        this.$router.go()
+      })
     },
 
 
