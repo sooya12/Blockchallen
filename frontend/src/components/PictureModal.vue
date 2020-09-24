@@ -2,8 +2,9 @@
     <div class="pictureCertification">
         <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'>
         <p>{{picture.lastModifiedDate}}</p>
-        <br style="clear:both;"/>
-        <v-btn @click="submit">확인</v-btn>
+        <!-- <br style="clear:both;"/> -->
+        <v-btn @click="submit">사진 올리기</v-btn>
+
     </div>
 
 </template>
@@ -30,10 +31,10 @@ export default {
             console.log(this.picture.lastModifiedDate)
             console.log(this.picture.name)
 
+           
         },
         submit(){
-
-            const formData = new FormData()
+             const formData = new FormData()
             formData.append('picture',this.picture)
             formData.append('uid',JSON.parse(sessionStorage.getItem("user")).id)
             formData.append('cid',this.challengeid)
@@ -48,11 +49,13 @@ export default {
 
             }).then((res)=>{
                 console.log(res)
-                this.$router.push({name:'picture'})
             }).catch((err)=>{
                 console.log(err)
             })
-        },
+
+            this.$emit('close')
+
+        }
     }
 }
 </script>
