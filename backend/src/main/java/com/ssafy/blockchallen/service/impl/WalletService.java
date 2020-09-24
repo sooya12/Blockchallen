@@ -32,7 +32,6 @@ public class WalletService implements IWalletService {
 	  }
 	  else
 		  return null;
-	
    }
 
    @Override

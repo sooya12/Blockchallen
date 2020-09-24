@@ -18,6 +18,8 @@ public class detailChallengeDTO {
 	private int fee;
 	private boolean isRandom;
 	private String certificationCondition;
+	private int certificationStartTime;
+	private int certificationEndTime;
 	private Set<Account> users;
 	
 	public static class Builder {
@@ -29,6 +31,8 @@ public class detailChallengeDTO {
 		private int fee = 0;
 		private boolean isRandom = false;
 		private String certificationCondition;
+		private int certificationStartTime;
+		private int certificationEndTime;
 		private Set<Account> users;
 		
 		public Builder() {
@@ -66,6 +70,14 @@ public class detailChallengeDTO {
 			this.certificationCondition = certificationCondition;
 			return this;
 		}
+		public Builder certificationStartTime(int certificationStartTime) {
+			this.certificationStartTime = certificationStartTime;
+			return this;
+		}
+		public Builder certificationEndTime(int certificationEntTime) {
+			this.certificationEndTime = certificationEntTime;
+			return this;
+		}
 		public Builder users(Set<Account> users) {
 			this.users = users;
 			return this;
@@ -84,6 +96,8 @@ public class detailChallengeDTO {
 		fee = builder.fee;
 		isRandom = builder.isRandom;
 		certificationCondition = builder.certificationCondition;
+		certificationStartTime = builder.certificationStartTime;
+		certificationEndTime = builder.certificationEndTime;
 		users = builder.users;
 	}
 }

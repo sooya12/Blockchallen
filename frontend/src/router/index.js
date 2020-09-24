@@ -9,6 +9,7 @@ import SignUp from '@/views/SignUp.vue'
 import SocialLogin from "@/views/SocialLogin"
 import tranferTest from "@/views/tranferTest";
 
+
 Vue.use(VueRouter)
 
 const routes = [

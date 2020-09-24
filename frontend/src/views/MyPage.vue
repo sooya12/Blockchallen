@@ -50,7 +50,7 @@
           <v-progress-linear
               class="challengeProgress"
               color="red lighten-2"
-              :buffer-value="challenge.rate"
+              :buffer-value="challenge.progressRate"
               stream
           ></v-progress-linear>
         </div>
@@ -156,7 +156,7 @@ export default {
         .then(res => {
           const address = res
 
-          axios.post('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: address})
+          axios.post(this.$store.state.server + '/wallet/create', {id: this.user.id, address: address})
           .then(res => {
             console.log(res)
             this.passwordFlag = 2
@@ -228,27 +228,27 @@ export default {
     checkPrivateKey() {
       // const mte = '0x' + bip39.mnemonicToEntropy(etm_prefix) + bip39.mnemonicToEntropy(etm_suffix)
       // console.log(mte)
-    }
+    },
+  },
+  created() {
+    axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
+        .then(res => {
+          console.log('나의 챌린지 목록')
+          console.log(res)
+          this.user.challenges = res.data
+          console.log(this.user.challenges)
+        })
+        .catch(err => {
+          console.log(err)
+        })
   },
   mounted() {
     this.createChart()
 
     const user = JSON.parse(sessionStorage.getItem("user"))
-    user.challenges = [
-      {
-        id: 1,
-        name: '6시 기상 챌린지',
-        rate: 80
-      },
-      {
-        id: 2,
-        name: '코로나 챌린지',
-        rate: 40
-      }
-    ]
     this.user = user
 
-    axios.get('http://localhost:8080/blockchallen/wallet/' + this.user.id)
+    axios.get(this.$store.state.server + '/wallet/' + this.user.id)
     .then(res => {
       const address = res.data.address
 
