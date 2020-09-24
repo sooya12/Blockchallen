@@ -21,7 +21,7 @@
               style="float:left; margin:2%;"
           ></v-img>
           <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;float:left; ">{{ title }}</p>
-          <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && !todaystate">
+          <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && todaystate">
               인증하기
           </v-btn>
           <br style="clear:both;"/>
@@ -263,6 +263,21 @@ export default {
         this.alreadyParicipate=true
       }else{
         this.alreadyParicipate=false
+      }
+    })
+
+    axios.get(this.$store.state.server + '/certification/date', {
+      params: {
+        cid: Number(this.cid),
+        uid: JSON.parse(sessionStorage.getItem("user")).id
+
+      }
+    })
+    .then((res)=>{
+      if(res.data){
+        this.todaystate=true
+      }else{
+        this.todaystate=false
       }
     })
 
