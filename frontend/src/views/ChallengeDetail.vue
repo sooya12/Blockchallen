@@ -419,7 +419,7 @@ export default {
      * TODO : URL 수정
      */
     done() {
-      axios.get(this.$store.state.server +'challenge/result', {
+      axios.get(this.$store.state.server +'/challenge/result', {
         params: {
           "id": Number(this.cid)
         }
