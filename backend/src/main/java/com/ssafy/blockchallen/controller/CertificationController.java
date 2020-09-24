@@ -43,7 +43,7 @@ public class CertificationController {
 		System.out.println(certification.getCid());
 		System.out.println(certification.getUid());
 		System.out.println(certification.getPicture());
-		Certification newCertification = certificationService.register( certification.getUid(),certification.getCid(), certification.getPicture().getBytes(), " ");
+		Certification newCertification = certificationService.register( certification.getUid(),certification.getCid(), certification.getPicture().getBytes(), certification.getRegDate());
 		
 		if(newCertification != null) {
 			return new ResponseEntity<>(newCertification, HttpStatus.OK);
