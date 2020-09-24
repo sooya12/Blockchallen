@@ -2,6 +2,7 @@ package com.ssafy.blockchallen.controller;
 
 import java.io.IOException;
 
+import org.hibernate.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,9 +68,9 @@ public class CertificationController {
 	
 	@ApiOperation(value = "인증 가능여부 체크")
 	@RequestMapping(value = "/certification/date", method = RequestMethod.GET)
-	public Boolean checkPicture(@ModelAttribute checkPictureDTO checkpicture) {// 인증사진 id 받아옴
+	public Boolean checkPicture(@RequestParam("uid") long uid, @RequestParam("cid") long cid) {// 인증사진 id 받아옴
 		
-		return certificationService.check(checkpicture.getUid(), checkpicture.getCid());
+		return certificationService.check(uid, cid);
 	}
 	
 }
