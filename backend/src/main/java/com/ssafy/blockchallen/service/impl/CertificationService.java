@@ -57,8 +57,6 @@ public class CertificationService implements ICertificationService {
 
 	@Override
 	public Boolean check(long uid, long cid) {
-		boolean flag = false;
-		
 		Optional<Account> account = accountRepository.findById(uid);
 		Optional<Challenge> challenge = challengeRepository.findById(cid);
 			
@@ -75,18 +73,33 @@ public class CertificationService implements ICertificationService {
 		});
 		
 		Calendar cal = Calendar.getInstance();
-		System.out.println(cal);
 
 		int year = cal.get(Calendar.YEAR);
 		int month = cal.get(Calendar.MONTH) + 1;
 		int day = cal.get(Calendar.DAY_OF_MONTH);
-		int hour = cal.get(Calendar.HOUR_OF_DAY);
-		int min = cal.get(Calendar.MINUTE);
-		int sec = cal.get(Calendar.SECOND);
-		System.out.println("현재 시각은 " + year + "년도 " + month + "월 " + day + "일 " + hour + "시 " + min + "분 " + sec + "초입니다.");
+	
+		StringBuilder sb = new StringBuilder();
+		String date;
+		if(month/10 < 1) {
+			if(day/10 < 1) {
+				 date = sb.append(year).append("-").append(0).append(month).append("-").append(0).append(day).toString();
+			}
+			else {
+				 date = sb.append(year).append("-").append(0).append(month).append("-").append(day).toString();
+			}
+		}else {
+			if(day/10 < 1) {
+				 date = sb.append(year).append("-").append(month).append("-").append(0).append(day).toString();
+			}
+			else {
+				 date = sb.append(year).append("-").append(month).append("-").append(day).toString();
+			}
+		}
 		
-		//certification.get(0).getRegDate()
-		
-		return flag;
+		if(date.compareTo(certification.get(0).getRegDate()) != 0) {
+			return true; // 인증할 수 있다.
+		}else {
+			return false; // 인증할 수 없다.
+		}
 	}
 }
