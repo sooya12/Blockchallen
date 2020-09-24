@@ -21,6 +21,7 @@ import com.ssafy.blockchallen.dto.certificationListDTO;
 import com.ssafy.blockchallen.dto.createChallengeDTO;
 import com.ssafy.blockchallen.dto.detailChallengeDTO;
 import com.ssafy.blockchallen.dto.failDTO;
+import com.ssafy.blockchallen.dto.idDTO;
 import com.ssafy.blockchallen.dto.myChallengeDTO;
 import com.ssafy.blockchallen.dto.resultChallengeDTO;
 import com.ssafy.blockchallen.dto.successDTO;
@@ -272,5 +273,29 @@ public class ChallengeService implements IChallengeService {
 			
 		}
 		return null;
+	}
+
+	public Object challengeParticipate(idDTO ids) {
+		Optional<Account> account = accountRepository.findById(ids.getUid());
+		Optional<Challenge> challenge = challengeRepository.findById(ids.getCid());
+		
+		if(account.isPresent() && challenge.isPresent()) {
+			if(!challenge.get().getAccounts().stream().anyMatch(el->el.getId().equals(ids.getUid()))) {
+				challenge.get().addAccount(account.get());
+				challengeRepository.save(challenge.get());
+				return true;
+			} else
+				return false;
+		} else
+			return null;
+		
+	}
+
+	public Object checkParticipate(long uid, long cid) {
+		Optional<Challenge> challenge = challengeRepository.findById(cid);
+		if(challenge.isPresent()) {
+			return challenge.get().getAccounts().stream().anyMatch(el->el.getId().equals(uid));
+		} else
+			return null;
 	}
 }

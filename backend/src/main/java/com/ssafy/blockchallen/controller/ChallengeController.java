@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.blockchallen.dto.certificationListDTO;
 import com.ssafy.blockchallen.dto.createChallengeDTO;
 import com.ssafy.blockchallen.dto.detailChallengeDTO;
+import com.ssafy.blockchallen.dto.idDTO;
 import com.ssafy.blockchallen.dto.myChallengeDTO;
 import com.ssafy.blockchallen.dto.resultChallengeDTO;
 import com.ssafy.blockchallen.service.IChallengeService;
@@ -35,7 +36,6 @@ public class ChallengeController {
 		if(challengeService.createChallenge(challenge)) {
 			return new ResponseEntity<>("챌린지 생성 성공", HttpStatus.OK);
 		}
-		
 		return new ResponseEntity<>("챌린지 생성 실패", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
@@ -84,4 +84,27 @@ public class ChallengeController {
 		else
 			return new ResponseEntity<>("존재하지 않는 챌린지", HttpStatus.NO_CONTENT);
 	}
+	
+	@RequestMapping(path = "/participate", method = RequestMethod.POST)
+	public Object challengeParticipate(@RequestBody idDTO ids) {
+		Object result = challengeService.challengeParticipate(ids); 
+		if(result!=null) {
+			if((boolean)result)
+				return new ResponseEntity<>("챌린지 참여 성공", HttpStatus.OK);
+			else
+				return new ResponseEntity<>("이미 참여한 챌린지", HttpStatus.OK);
+		}
+		else
+			return new ResponseEntity<>("해당 회원 또는 챌린지를 찾을 수 없음", HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@RequestMapping(path = "/participate", method = RequestMethod.GET)
+	public Object checkParticipate(@RequestParam long uid, @RequestParam long cid) {
+		Object result = challengeService.checkParticipate(uid, cid);
+		if(result!=null) {
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} else
+			return new ResponseEntity<>("존재하지 않는 챌린지", HttpStatus.NO_CONTENT);
+	}
+	
 }
