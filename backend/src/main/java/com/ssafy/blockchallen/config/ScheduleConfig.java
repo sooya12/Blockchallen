@@ -18,4 +18,6 @@ public class ScheduleConfig implements SchedulingConfigurer {
 
         taskRegistrar.setTaskScheduler(threadPoolTaskScheduler);
     }
+
+    // 스케쥴링이 필요한 메서드에서 @Scheduled(cron = ) 어노테이션 추가
 }
