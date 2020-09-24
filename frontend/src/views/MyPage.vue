@@ -44,16 +44,26 @@
       <div id="totalSuccessRate">
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
-      <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
-        <div class="progressSet">
-          <div class="challengeName"><p>{{ challenge.name }}</p></div>
-          <v-progress-linear
-              class="challengeProgress"
-              color="red lighten-2"
-              :buffer-value="challenge.progressRate"
-              stream
-          ></v-progress-linear>
+      <div v-if="progressBarFlag">
+        <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
+          <div class="progressSet">
+            <div class="challengeName"><p>{{ challenge.name }}</p></div>
+            <v-progress-linear
+                class="challengeProgress"
+                color="red lighten-2"
+                :buffer-value="challenge.progressRate"
+                stream
+            ></v-progress-linear>
+          </div>
         </div>
+      </div>
+      <div id="loading" v-else>
+        <v-progress-circular
+            :size="70"
+            :width="7"
+            color="purple"
+            indeterminate
+        ></v-progress-circular>
       </div>
     </div>
   </div>
@@ -97,6 +107,7 @@ export default {
       value => !(value.length < 4) || '최소 4자 이상'
     ],
     password: "",
+    progressBarFlag: false
   }),
   methods: {
     backHome() {
@@ -230,18 +241,6 @@ export default {
       // console.log(mte)
     },
   },
-  created() {
-    axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
-        .then(res => {
-          console.log('나의 챌린지 목록')
-          console.log(res)
-          this.user.challenges = res.data
-          console.log(this.user.challenges)
-        })
-        .catch(err => {
-          console.log(err)
-        })
-  },
   mounted() {
     this.createChart()
 
@@ -258,6 +257,18 @@ export default {
         this.walletFlag = true
       }
     })
+
+    axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
+        .then(res => {
+          console.log('나의 챌린지 목록')
+          console.log(res)
+          this.user.challenges = res.data
+          console.log(this.user.challenges)
+          this.progressBarFlag = true
+        })
+        .catch(err => {
+          console.log(err)
+        })
   }
 }
 </script>
@@ -357,6 +368,10 @@ export default {
   margin-left: 3vw;
   margin-top: 1%;
   vertical-align: center;
+}
+
+#loading {
+  margin-top: 3%;
 }
 
 </style>
