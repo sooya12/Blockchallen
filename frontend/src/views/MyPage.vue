@@ -168,8 +168,18 @@ export default {
           })
         })
     },
-    charge() {
+    async charge() {
       alert("충전")
+      await web3.eth.sendTransaction({
+        from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
+        gasPrice: "20000000000",
+        gas: "20000",
+        to: this.myWallet.walletAddress,
+        value: "1000000000000000000",
+        data: "",
+      }, 'ssafy').then(console.log)
+
+      this.getWalletInfo(this.myWallet.walletAddress)
     },
     createChart() {
       const ctx = document.getElementById('myChart').getContext('2d')
