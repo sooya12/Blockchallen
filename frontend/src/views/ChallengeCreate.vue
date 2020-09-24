@@ -6,6 +6,7 @@
         top
         left
         style="margin : 2%;"
+        @click="goMain"
     >
       <v-icon dark left>arrow_back</v-icon>
       메인으로
@@ -303,7 +304,7 @@ export default {
         this.certificationStartTime=0
         this.certificationEndTime=48
       }
-      axios.post('http://localhost:8080/blockchallen/challenge', {
+      axios.post(this.$store.state.server + '/challenge', {
         name: this.title,
         startDate: this.startdate,
         endDate: this.enddate,
@@ -311,16 +312,20 @@ export default {
         fee: this.bet,
         isRandom: this.isRandom,
         certification: this.certificateCondition,
-        uid: 61,
+        uid: JSON.parse(sessionStorage.getItem("user")).id,
         certificationStartTime:this.certificationStartTime,
         certificationEndTime : this.certificationEndTime,
       })
           .then(() => {
-            this.$router.push('/') //상세페이지로 이동하자
+            this.$router.push('/challenges') //상세페이지로 이동하자
           })
           .catch((err)=>{
             console.log(err)
           })
+    },
+
+    goMain(){
+      this.$router.push('/challenges')
     }
   },
   watch: {

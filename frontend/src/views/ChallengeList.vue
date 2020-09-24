@@ -37,20 +37,22 @@
 
     <!-- 챌린지 목록 -->
     <v-container>
-      <select v-model="options" class="selectbox" @change="sortfunction($event)">
-        <option value="fast">빠른 시작</option>
-        <option value="slow">느린 시작</option>
-        <option value="expensive">비싼 배팅</option>
-        <option value="cheap">저렴한 배팅</option>
-        >
 
-      </select>
+        <v-btn style="float: left; width: 30%; line-height: 40px; margin: 20px" @click="ccreate">챌린지 만들기</v-btn>
+        <select v-model="options" class="selectbox" @change="sortfunction($event)">
+          <option value="" selected disabled hidden>정렬 기준</option>
+          <option value="fast">빠른 시작</option>
+          <option value="slow">느린 시작</option>
+          <option value="expensive">비싼 배팅</option>
+          <option value="cheap">저렴한 배팅</option>
+          >
+        </select>
       <v-slide-item
           v-for="challenge in challengelist
                         .filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)"
           :key="challenge.id"
       >
-        <v-btn
+        <v-btn @click="ToDetail(challenge.id)"
             style="width:100%; height:300px; border-radius: 50px;"
         >{{ challenge.name }}<br>시작일 : {{ challenge.startDate }}<br>마감일 : {{ challenge.endDate }}<br>배팅 금액 :
           {{ challenge.fee }}
@@ -95,7 +97,7 @@ export default {
   },
   created() {
     // axios
-        axios.get('http://localhost:8080/blockchallen/challenges',{
+        axios.get(this.$store.state.server + '/challenges',{
             params: {
               // limit: this.limit
                option:''
@@ -118,9 +120,12 @@ export default {
     ToMyPage: function () {
       this.$router.push('/mypage')
     },
+    ccreate: function () {
+      this.$router.push('/challenges/create')
+    },
     sortfunction: function () {
 
-        axios.get('http://localhost:8080/blockchallen/challenges', {
+        axios.get(this.$store.state.server + '/challenges', {
           params:{
             // limit:0,
             option:this.options
@@ -130,11 +135,12 @@ export default {
                  this.challengelist = res.data
                 //  this.limit =2
               })
-      
-
+    },
+    ToDetail(id){
+      this.$router.push(`/challenges/${id}`)
     },
     // infiniteHandler($state) {
-    //   axios.get('http://localhost:8080/blockchallen/challenges',{
+    //   axios.get(this.$store.state.server + '/challenges',{
     //         params: {
     //           limit: this.limit+2
     //         },

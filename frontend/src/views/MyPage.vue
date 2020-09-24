@@ -156,7 +156,7 @@ export default {
         .then(res => {
           const address = res
 
-          axios.post('http://localhost:8080/blockchallen/wallet/create', {id: this.user.id, address: address})
+          axios.post(this.$store.state.server + '/wallet/create', {id: this.user.id, address: address})
           .then(res => {
             console.log(res)
             this.passwordFlag = 2
@@ -226,7 +226,7 @@ export default {
     const user = JSON.parse(sessionStorage.getItem("user"))
     this.user = user
 
-    axios.get('http://localhost:8080/blockchallen/wallet/' + this.user.id)
+    axios.get(this.$store.state.server + '/wallet/' + this.user.id)
     .then(res => {
       const address = res.data.address
 
@@ -237,7 +237,7 @@ export default {
       }
     })
 
-    axios.get('http://localhost:8080/blockchallen/mychallenges/' + this.user.id)
+    axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
     .then(res => {
       console.log('나의 챌린지 목록')
       console.log(res)

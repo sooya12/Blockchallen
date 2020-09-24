@@ -6,6 +6,7 @@
         top
         left
         style="margin : 2%;"
+        @click="goMain"
     >
       <v-icon dark left>arrow_back</v-icon>
       메인으로
@@ -250,7 +251,7 @@ export default {
     /*
     TODO : 추후 URL 수정 필요
     */
-    axios.get('http://localhost:8080/blockchallen/challenge', {
+    axios.get(this.$store.state.server + '/challenge', {
       params: {
         id: Number(this.cid),
 
@@ -454,6 +455,10 @@ export default {
         comma += 3
       }
       return tempstr
+    },
+
+    goMain(){
+      this.$router.push('/challenges')
     },
 
 
