@@ -52,7 +52,7 @@
                         .filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)"
           :key="challenge.id"
       >
-        <v-btn
+        <v-btn @click="ToDetail(challenge.id)"
             style="width:100%; height:300px; border-radius: 50px;"
         >{{ challenge.name }}<br>시작일 : {{ challenge.startDate }}<br>마감일 : {{ challenge.endDate }}<br>배팅 금액 :
           {{ challenge.fee }}
@@ -135,8 +135,9 @@ export default {
                  this.challengelist = res.data
                 //  this.limit =2
               })
-      
-
+    },
+    ToDetail(id){
+      this.$router.push(`/challenges/${id}`)
     },
     // infiniteHandler($state) {
     //   axios.get(this.$store.state.server + '/challenges',{
