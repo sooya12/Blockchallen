@@ -28,7 +28,7 @@ export default {
             console.log(this.$refs)
             this.picture = this.$refs.picture.files[0]
             console.log(this.picture.type)
-            console.log(this.picture.lastModifiedDate)
+            console.log(this.picture.lastModifiedDate.toISOString().substr(0, 10))
             console.log(this.picture.name)
 
            
@@ -38,7 +38,7 @@ export default {
             formData.append('picture',this.picture)
             formData.append('uid',JSON.parse(sessionStorage.getItem("user")).id)
             formData.append('cid',this.challengeid)
-            formData.append('regDate',this.picture.lastModifiedDate)
+            formData.append('regDate',this.picture.lastModifiedDate.toISOString().substr(0, 10))
 
 
             // axios로 multipart/form data Post 요청 보내기
