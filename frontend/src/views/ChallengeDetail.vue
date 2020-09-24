@@ -6,6 +6,7 @@
         top
         left
         style="margin : 2%;"
+        @click="goMain"
     >
       <v-icon dark left>arrow_back</v-icon>
       메인으로
@@ -454,6 +455,10 @@ export default {
         comma += 3
       }
       return tempstr
+    },
+
+    goMain(){
+      this.$router.push('/challenges')
     },
 
 
