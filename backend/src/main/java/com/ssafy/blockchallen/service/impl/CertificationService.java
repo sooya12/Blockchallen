@@ -1,5 +1,8 @@
 package com.ssafy.blockchallen.service.impl;
 
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +39,9 @@ public class CertificationService implements ICertificationService {
 		certification.setPicture(picture);
 		certification.setRegDate(regDate);
 		
-		// 해당 챌린지의 시작 시간과 종료 시간을 받아와서 regDate값이 그 사이 값이면 실패 아니면 성공 처리?
-		
 		return certificationRepository.save(certification);
 	}
 
-	// 신고자도 같이??
 	@Override
 	public Certification report(long id) {
 		Optional<Certification> certification = certificationRepository.findById(id);
@@ -53,5 +53,40 @@ public class CertificationService implements ICertificationService {
 		else {
 			return null;
 		}
+	}
+
+	@Override
+	public Boolean check(long uid, long cid) {
+		boolean flag = false;
+		
+		Optional<Account> account = accountRepository.findById(uid);
+		Optional<Challenge> challenge = challengeRepository.findById(cid);
+			
+		List<Certification> certification = certificationRepository.findByAccountAndChallenge(account.get(), challenge.get());
+		certification.sort(new Comparator<Certification>() {
+			@Override
+			public int compare(Certification o1, Certification o2) {
+				if(o1.getRegDate().compareTo(o2.getRegDate()) > 0) {
+					return -1;
+				}
+				else
+					return 1;
+			}
+		});
+		
+		Calendar cal = Calendar.getInstance();
+		System.out.println(cal);
+
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int min = cal.get(Calendar.MINUTE);
+		int sec = cal.get(Calendar.SECOND);
+		System.out.println("현재 시각은 " + year + "년도 " + month + "월 " + day + "일 " + hour + "시 " + min + "분 " + sec + "초입니다.");
+		
+		//certification.get(0).getRegDate()
+		
+		return flag;
 	}
 }

@@ -1,5 +1,6 @@
 package com.ssafy.blockchallen.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,5 @@ import com.ssafy.blockchallen.entity.Wallet;
 public interface CertificationRepository extends JpaRepository<Certification, Long> {
 	Optional<Wallet> findByAccount(Account account);
 	Optional<Challenge> findByChallenge(Challenge challenge);
+	List<Certification> findByAccountAndChallenge(Account account, Challenge challenge);
 }
