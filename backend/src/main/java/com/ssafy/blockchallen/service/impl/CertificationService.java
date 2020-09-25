@@ -38,6 +38,9 @@ public class CertificationService implements ICertificationService {
 		certification.setChallenge(challenge.get());
 		certification.setPicture(picture);
 		certification.setRegDate(regDate);
+		certification.setIsReported(false); // 감자가
+		account.get().addCertification(certification); // 추가한
+		challenge.get().addCertification(certification); // 부분이에요
 		
 		return certificationRepository.save(certification);
 	}
@@ -96,9 +99,11 @@ public class CertificationService implements ICertificationService {
 			}
 		}
 		
-		if(date.compareTo(certification.get(0).getRegDate()) != 0) {
+		if(certification.size()==0) { // 감자가 수정한 부분입니다
+			return true;
+		} else if(date.compareTo(certification.get(0).getRegDate()) != 0) {
 			return true; // 인증할 수 있다.
-		}else {
+		} else {
 			return false; // 인증할 수 없다.
 		}
 	}

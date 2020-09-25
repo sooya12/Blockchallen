@@ -105,7 +105,11 @@ public class ChallengeService implements IChallengeService {
 				boolean running = date.compareTo(new Date()) > 0 ? true:false;
 				double rate = (double)account.get().getCertifications().stream().filter(el->el.getChallenge().getId()==challenge.getId() && !el.getIsReported()).count()/challengeDays;
 //				int count=0;
+//				int idx = 0;
 //				for (Certification c : account.get().getCertifications()) {
+//					System.out.println(idx++);
+//					boolean a = c.getChallenge().getId()==challenge.getId();
+//					boolean b = !c.getIsReported();
 //					if(c.getChallenge().getId()==challenge.getId() && !c.getIsReported()) {
 //						count++;
 //					}
