@@ -54,6 +54,7 @@ export default {
             })
 
             this.$emit('close')
+            this.$router.push('/challenges/'+this.challengeid)
 
         }
     }
