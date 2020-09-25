@@ -104,6 +104,13 @@ public class ChallengeService implements IChallengeService {
 				Date date = new Date(endDate.getTime() + (24*60*60*1000));
 				boolean running = date.compareTo(new Date()) > 0 ? true:false;
 				double rate = (double)account.get().getCertifications().stream().filter(el->el.getChallenge().getId()==challenge.getId() && !el.getIsReported()).count()/challengeDays;
+//				int count=0;
+//				for (Certification c : account.get().getCertifications()) {
+//					if(c.getChallenge().getId()==challenge.getId() && !c.getIsReported()) {
+//						count++;
+//					}
+//				}
+//				double rate = (double)count/challengeDays;
 				
 				challenges.add(new myChallengeDTO.Builder()
 						.id(challenge.getId())
