@@ -54,6 +54,7 @@ export default {
             })
 
             this.$emit('close')
+            window.location.reload()
 
         }
     }
