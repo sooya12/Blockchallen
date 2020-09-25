@@ -107,21 +107,19 @@ public class ChallengeService implements IChallengeService {
 //				int count=0;
 //				int idx = 0;
 //				for (Certification c : account.get().getCertifications()) {
-//					System.out.println(idx++);
+////					System.out.println(idx++);
 //					boolean a = c.getChallenge().getId()==challenge.getId();
 //					boolean b = !c.getIsReported();
 //					if(c.getChallenge().getId()==challenge.getId() && !c.getIsReported()) {
 //						count++;
 //					}
 //				}
-//				double rate = (double)count/challengeDays;
-				
 				challenges.add(new myChallengeDTO.Builder()
 						.id(challenge.getId())
 						.name(challenge.getName())
 						.fee(challenge.getFee())
 						.isRunning(running)
-						.progressRate((double)Math.round(rate*10)/10)
+						.progressRate((double)Math.round(rate*1000)/10)
 						.endDate(challenge.getEndDate())
 						.build());
 			}
