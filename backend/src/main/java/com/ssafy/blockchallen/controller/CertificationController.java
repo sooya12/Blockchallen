@@ -2,6 +2,7 @@ package com.ssafy.blockchallen.controller;
 
 import java.io.IOException;
 
+import org.hibernate.annotations.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.blockchallen.dto.certificationDTO;
+import com.ssafy.blockchallen.dto.checkPictureDTO;
 import com.ssafy.blockchallen.dto.reportDTO;
 import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Certification;
@@ -43,7 +45,7 @@ public class CertificationController {
 		System.out.println(certification.getCid());
 		System.out.println(certification.getUid());
 		System.out.println(certification.getPicture());
-		Certification newCertification = certificationService.register( certification.getUid(),certification.getCid(), certification.getPicture().getBytes(), " ");
+		Certification newCertification = certificationService.register( certification.getUid(),certification.getCid(), certification.getPicture().getBytes(),certification.getRegDate());
 		
 		if(newCertification != null) {
 			return new ResponseEntity<>(newCertification, HttpStatus.OK);
@@ -62,5 +64,13 @@ public class CertificationController {
 		else {
 			return new ResponseEntity<>("인증 신고 실패",HttpStatus.NO_CONTENT);
 		}
-	}	
+	}
+	
+	@ApiOperation(value = "인증 가능여부 체크")
+	@RequestMapping(value = "/certification/date", method = RequestMethod.GET)
+	public Boolean checkPicture(@RequestParam("uid") long uid, @RequestParam("cid") long cid) {// 인증사진 id 받아옴
+		
+		return certificationService.check(uid, cid);
+	}
+	
 }

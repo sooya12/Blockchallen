@@ -25,18 +25,6 @@
         <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
         <p>나의 잔고는 {{ myWallet.myEth / 1000000000000000000 }} ETH 입니다.</p>
         <v-btn @click="charge">충전하기</v-btn>
-        <!--<div v-if="!showPk" class="pkArea">
-           <v-btn @click="showPkInput">비밀키 보기</v-btn>
-         </div>
-         <div v-else class="pkArea">
-           <div id="inputPk">
-             <p>나의 비밀키</p>
-             <v-text-field :rules="pkRules" hint="blockchallen.txt 단어 16개 입력" v-model="pkWords"></v-text-field>
-           </div>
-           <div id="btnPk">
-             <v-btn small color="primary" @click="checkPrivateKey">확인</v-btn>
-           </div>
-         </div>-->
       </div>
     </div>
     <div id="challenge">
@@ -75,8 +63,6 @@ import axios from 'axios'
 
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://j3a102.p.ssafy.io:8545'))
-// const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/132d48f7fad8474db95aa5359cec4524'))
-// const bip39 = require('bip39')
 
 export default {
   name: "MyPage",
@@ -95,12 +81,6 @@ export default {
       walletAddress: "",
       myEth: 0,
     },
-    /* Mnemonic 관련 변수 */
-    // showPk: false,
-    // pkWords: "",
-    // pkRules: [
-    //     value => !!value || 'blockchallen.txt 단어 16개 입력'
-    // ],
     passwordFlag: 0,
     pwRules: [
       value => !!value || '지갑의 비밀번호를 입력해주세요',
@@ -115,51 +95,6 @@ export default {
     },
     async createWallet() {
       this.passwordFlag = 1
-
-      /*
-      accounts.create()로 계정 생성
-      privateKey Mnemonic 처리해서 사용자에게 자동 다운로드
-      백엔드와 post 통신하여 DB에 계정 주소 저장
-      */
-      // let wallet = await web3.eth.accounts.create();
-      // console.log(wallet)
-      //
-      // this.myWallet.privateKey = wallet.privateKey
-      // this.myWallet.walletAddress = wallet.address
-      // this.getWalletInfo(this.myWallet.walletAddress)
-      //
-      // const pkString = this.myWallet.privateKey.toString().substring(2)
-      //
-      // bip39.setDefaultWordlist('korean')
-      //
-      // const etm_prefix = bip39.entropyToMnemonic(pkString.substring(0, 32))
-      // const etm_suffix = bip39.entropyToMnemonic(pkString.substring(32))
-      //
-      // this.download(etm_prefix + " " + etm_suffix)
-      //
-
-      /* rpc로 새로운 계정 생성 */
-      // axios(
-      //   {
-      //     method: 'post',
-      //     url: 'http://j3a102.p.ssafy.io:8545',
-      //     headers: {
-      //       "Content-Type": "application/json"
-      //     },
-      //     data: {
-      //       "jsonrpc": '2.0',
-      //       "method": 'personal_newAccount',
-      //       'params': ['pass'],
-      //       "id": 1
-      //     }
-      //   }
-      // )
-      // .then(res => {
-      //   console.log(res)
-      // })
-      // .catch(err => {
-      //   console.log(err)
-      // })
     },
     async submitPw() {
       console.log(this.password)
@@ -227,7 +162,7 @@ export default {
       this.myWallet.myEth = await web3.eth.getBalance(walletAddress)
     },
     download(content) {
-      var pom = document.createElement('a')
+      let pom = document.createElement('a')
       pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content.normalize()))
       pom.setAttribute('download', 'blockchallenKey.txt')
 
@@ -235,10 +170,6 @@ export default {
     },
     showPkInput() {
       this.showPk = true
-    },
-    checkPrivateKey() {
-      // const mte = '0x' + bip39.mnemonicToEntropy(etm_prefix) + bip39.mnemonicToEntropy(etm_suffix)
-      // console.log(mte)
     },
   },
   mounted() {

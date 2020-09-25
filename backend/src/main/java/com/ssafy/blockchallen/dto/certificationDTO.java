@@ -11,5 +11,6 @@ public class certificationDTO {
 	private long uid;
 	private long cid;
 	private MultipartFile picture;
+	private String regDate;
 	//private String regDate;
 }

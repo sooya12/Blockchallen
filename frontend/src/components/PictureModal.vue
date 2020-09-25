@@ -2,8 +2,9 @@
     <div class="pictureCertification">
         <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'>
         <p>{{picture.lastModifiedDate}}</p>
-        <br style="clear:both;"/>
-        <v-btn @click="submit">확인</v-btn>
+        <!-- <br style="clear:both;"/> -->
+        <v-btn @click="submit">사진 올리기</v-btn>
+
     </div>
 
 </template>
@@ -27,17 +28,17 @@ export default {
             console.log(this.$refs)
             this.picture = this.$refs.picture.files[0]
             console.log(this.picture.type)
-            console.log(this.picture.lastModifiedDate)
+            console.log(this.picture.lastModifiedDate.toISOString().substr(0, 10))
             console.log(this.picture.name)
 
+           
         },
         submit(){
-
-            const formData = new FormData()
+             const formData = new FormData()
             formData.append('picture',this.picture)
             formData.append('uid',JSON.parse(sessionStorage.getItem("user")).id)
             formData.append('cid',this.challengeid)
-            formData.append('regDate',this.picture.lastModifiedDate)
+            formData.append('regDate',this.picture.lastModifiedDate.toISOString().substr(0, 10))
 
 
             // axios로 multipart/form data Post 요청 보내기
@@ -48,11 +49,13 @@ export default {
 
             }).then((res)=>{
                 console.log(res)
-                this.$router.push({name:'picture'})
             }).catch((err)=>{
                 console.log(err)
             })
-        },
+
+            this.$emit('close')
+
+        }
     }
 }
 </script>

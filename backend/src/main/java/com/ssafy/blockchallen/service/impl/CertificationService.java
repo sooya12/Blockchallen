@@ -1,5 +1,8 @@
 package com.ssafy.blockchallen.service.impl;
 
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +39,9 @@ public class CertificationService implements ICertificationService {
 		certification.setPicture(picture);
 		certification.setRegDate(regDate);
 		
-		// 해당 챌린지의 시작 시간과 종료 시간을 받아와서 regDate값이 그 사이 값이면 실패 아니면 성공 처리?
-		
 		return certificationRepository.save(certification);
 	}
 
-	// 신고자도 같이??
 	@Override
 	public Certification report(long id) {
 		Optional<Certification> certification = certificationRepository.findById(id);
@@ -52,6 +52,54 @@ public class CertificationService implements ICertificationService {
 		}
 		else {
 			return null;
+		}
+	}
+
+	@Override
+	public Boolean check(long uid, long cid) {
+		Optional<Account> account = accountRepository.findById(uid);
+		Optional<Challenge> challenge = challengeRepository.findById(cid);
+			
+		List<Certification> certification = certificationRepository.findByAccountAndChallenge(account.get(), challenge.get());
+		certification.sort(new Comparator<Certification>() {
+			@Override
+			public int compare(Certification o1, Certification o2) {
+				if(o1.getRegDate().compareTo(o2.getRegDate()) > 0) {
+					return -1;
+				}
+				else
+					return 1;
+			}
+		});
+		
+		Calendar cal = Calendar.getInstance();
+
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+	
+		StringBuilder sb = new StringBuilder();
+		String date;
+		if(month/10 < 1) {
+			if(day/10 < 1) {
+				 date = sb.append(year).append("-").append(0).append(month).append("-").append(0).append(day).toString();
+			}
+			else {
+				 date = sb.append(year).append("-").append(0).append(month).append("-").append(day).toString();
+			}
+		}else {
+			if(day/10 < 1) {
+				 date = sb.append(year).append("-").append(month).append("-").append(0).append(day).toString();
+			}
+			else {
+				 date = sb.append(year).append("-").append(month).append("-").append(day).toString();
+			}
+		}
+		
+		if(date.compareTo(certification.get(0).getRegDate()) != 0) {
+			return true; // 인증할 수 있다.
+		}else {
+			return false; // 인증할 수 없다.
 		}
 	}
 }

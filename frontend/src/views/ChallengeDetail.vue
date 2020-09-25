@@ -21,7 +21,7 @@
               style="float:left; margin:2%;"
           ></v-img>
           <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;float:left; ">{{ title }}</p>
-          <v-btn style="float:right; margin:2%; " @click="certification(cid)">
+          <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && todaystate">
               인증하기
           </v-btn>
           <br style="clear:both;"/>
@@ -245,6 +245,9 @@ export default {
       certificationAvailableTime : false,
       alreadyParicipate:false,
 
+      todaystate:false, // 오늘 했는지 안했는지 (하루에 1번)
+
+
     }
   },
   mounted() {
@@ -263,13 +266,28 @@ export default {
       }
     })
 
+    axios.get(this.$store.state.server + '/certification/date', {
+      params: {
+        cid: Number(this.cid),
+        uid: JSON.parse(sessionStorage.getItem("user")).id
+
+      }
+    })
+    .then((res)=>{
+      if(res.data){
+        this.todaystate=true
+      }else{
+        this.todaystate=false
+      }
+    })
+
 
     axios.get(this.$store.state.server + '/challenge', {
       params: {
         id: Number(this.cid),
 
       }
-    })
+    }) 
         .then((res) => {
           this.title = res.data.name
           this.startDate = res.data.startDate.substr(2, 8)
