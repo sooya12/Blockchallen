@@ -5,20 +5,25 @@
         <v-icon dark left>arrow_back</v-icon>
         메인으로
       </v-btn>
+      <v-btn dark top right style="margin: 2%; float: right;" @click="kakaoLogout">로그아웃</v-btn>
     </div>
     <div id="header">
-      <h1><span style="color: red;">{{ user.nickname }}</span>님의 마이페이지</h1>
-      <v-btn @click="kakaoLogout">로그아웃</v-btn>
+      <h1><span>{{ user.nickname }}</span>님의 마이페이지</h1>
     </div>
     <div id="wallet">
       <h2>나의 지갑</h2>
-      <div v-if="!flag">
-        <v-btn @click="createWallet">생성하기</v-btn>
+      <div v-if="!walletFlag">
+        <v-btn @click="createWallet" v-if="passwordFlag == 0">생성하기</v-btn>
+        <div id="passwordArea" v-else-if="passwordFlag == 1">
+          <p>비밀번호는 이더 사용/충전에 필요하며, 수정/재발급이 불가합니다. 꼭 기억해주세요!</p>
+          <span id="passwordSpan">지갑 비밀번호</span>
+          <v-text-field id="passwordInput" :rules="pwRules" v-model="password"></v-text-field>
+          <v-btn id="passwordBtn" @click="submitPw">입력 완료</v-btn>
+        </div>
       </div>
       <div v-else>
-        <!--<p>나의 비밀키 {{ myWallet.privateKey }}</p>-->
         <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
-        <p>나의 잔고는 {{ myWallet.myEth }} 입니다.</p>
+        <p>나의 잔고는 {{ myWallet.myEth / 1000000000000000000 }} ETH 입니다.</p>
         <v-btn @click="charge">충전하기</v-btn>
       </div>
     </div>
@@ -27,16 +32,26 @@
       <div id="totalSuccessRate">
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
-      <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
-        <div class="progressSet">
-          <div class="challengeName"><p>{{ challenge.name }}</p></div>
-          <v-progress-linear
-              class="challengeProgress"
-              color="red lighten-2"
-              :buffer-value="challenge.rate"
-              stream
-          ></v-progress-linear>
+      <div v-if="progressBarFlag">
+        <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
+          <div class="progressSet">
+            <div class="challengeName"><p>{{ challenge.name }}</p></div>
+            <v-progress-linear
+                class="challengeProgress"
+                color="red lighten-2"
+                :buffer-value="challenge.progressRate"
+                stream
+            ></v-progress-linear>
+          </div>
         </div>
+      </div>
+      <div id="loading" v-else>
+        <v-progress-circular
+            :size="70"
+            :width="7"
+            color="purple"
+            indeterminate
+        ></v-progress-circular>
       </div>
     </div>
   </div>
@@ -44,9 +59,10 @@
 
 <script>
 import Chart from 'chart.js'
-import Web3 from 'web3'
+import axios from 'axios'
 
-var web3 = new Web3(Web3.givenProvider || 'http://j3a102.p.ssafy.io:8545')
+const Web3 = require('web3')
+const web3 = new Web3(new Web3.providers.HttpProvider('http://j3a102.p.ssafy.io:8545'))
 
 export default {
   name: "MyPage",
@@ -59,41 +75,60 @@ export default {
       access_token: "",
       walletAddress: "",
     },
-    flag: false,
+    walletFlag: false,
     myWallet: {
       privateKey: "",
       walletAddress: "",
       myEth: 0,
     },
+    passwordFlag: 0,
+    pwRules: [
+      value => !!value || '지갑의 비밀번호를 입력해주세요',
+      value => !(value.length < 4) || '최소 4자 이상'
+    ],
+    password: "",
+    progressBarFlag: false
   }),
   methods: {
     backHome() {
       this.$router.push("/challenges")
     },
     async createWallet() {
-      alert("지갑 생성")
-
-      // let wallet = web3.eth.accounts.create();
-      //
-      // console.log(wallet)
-      // console.log(wallet.privateKey)
-      // console.log(wallet.address)
-      //
-      // web3.eth.getAccounts(console.log)
-
-      // this.myWallet.privateKey = wallet.privateKey
-      // this.myWallet.walletAddress = wallet.address
-
-      this.myWallet.walletAddress = await web3.eth.personal.newAccount()
-      // this.myWallet.myEth = await web3.eth.getBalance(address)
-      this.getWalletInfo(this.myWallet.walletAddress)
-      this.flag = true
+      this.passwordFlag = 1
     },
-    charge() {
+    async submitPw() {
+      console.log(this.password)
+      await web3.eth.personal.newAccount(this.password)
+        .then(res => {
+          const address = res
+
+          axios.post(this.$store.state.server + '/wallet/create', {id: this.user.id, address: address})
+          .then(res => {
+            console.log(res)
+            this.passwordFlag = 2
+            this.myWallet.walletAddress = address
+            this.walletFlag = true
+          })
+          .catch(err => {
+            console.log(err)
+          })
+        })
+    },
+    async charge() {
       alert("충전")
+      await web3.eth.sendTransaction({
+        from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
+        gasPrice: "200000000",
+        gas: "100000",
+        to: this.myWallet.walletAddress,
+        value: "1000000000000000000",
+        data: "",
+      }, 'ssafy').then(console.log)
+
+      this.getWalletInfo(this.myWallet.walletAddress)
     },
     createChart() {
-      var ctx = document.getElementById('myChart').getContext('2d')
+      const ctx = document.getElementById('myChart').getContext('2d')
       window.chart = new Chart(ctx, {
         type: 'pie',
         data: {
@@ -103,8 +138,6 @@ export default {
               20
             ],
             backgroundColor: [
-              // 'rgba(119, 146, 174, 0.7)',
-              // 'rgba(192, 41, 66, 0.7)'
               'rgb(91, 132, 177)',
               'rgb(252, 118, 106)'
             ],
@@ -122,37 +155,51 @@ export default {
     kakaoLogout() {
       let win = window.open('https://accounts.kakao.com/logout?continue=https://accounts.kakao.com/weblogin/account')
       win.close()
+      sessionStorage.removeItem("user")
       this.$router.push("/")
     },
     async getWalletInfo(walletAddress) {
       this.myWallet.myEth = await web3.eth.getBalance(walletAddress)
-    }
+    },
+    download(content) {
+      let pom = document.createElement('a')
+      pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content.normalize()))
+      pom.setAttribute('download', 'blockchallenKey.txt')
+
+      pom.click()
+    },
+    showPkInput() {
+      this.showPk = true
+    },
   },
   mounted() {
     this.createChart()
 
     const user = JSON.parse(sessionStorage.getItem("user"))
-    user.challenges = [
-      {
-        id: 1,
-        name: '6시 기상 챌린지',
-        rate: 80
-      },
-      {
-        id: 2,
-        name: '코로나 챌린지',
-        rate: 40
-      }
-    ]
     this.user = user
 
-    console.log(this.user.walletAddress)
-    if (this.user.walletAddress != "") {
-      this.flag = true
-      this.myWallet.walletAddress = this.user.walletAddress
+    axios.get(this.$store.state.server + '/wallet/' + this.user.id)
+    .then(res => {
+      const address = res.data.address
 
-      this.getWalletInfo(this.myWallet.walletAddress)
-    }
+      if(address != null && address != ' ' && address != '') {
+        this.myWallet.walletAddress = address
+        this.getWalletInfo(this.myWallet.walletAddress)
+        this.walletFlag = true
+      }
+    })
+
+    axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
+        .then(res => {
+          console.log('나의 챌린지 목록')
+          console.log(res)
+          this.user.challenges = res.data
+          console.log(this.user.challenges)
+          this.progressBarFlag = true
+        })
+        .catch(err => {
+          console.log(err)
+        })
   }
 }
 </script>
@@ -171,11 +218,42 @@ export default {
   text-align: center;
 }
 
+#header h1 span {
+  color: red;
+}
+
 #wallet {
   width: 80%;
   height: auto;
   margin-top: 3%;
   text-align: center;
+}
+
+#passwordArea {
+  width: 100%;
+  height: auto;
+  margin-top: 3%;
+}
+
+#passwordSpan {
+  width: 30%;
+  height: auto;
+  float: left;
+  margin-top: 1%;
+}
+
+.theme--light.v-input {
+  padding: 0;
+  margin: 0;
+}
+
+#passwordArea > div {
+  width: 45%;
+  float: left;
+}
+
+#passwordArea p {
+  color: red;
 }
 
 #challenge {
@@ -205,7 +283,7 @@ export default {
   width: 100%;
   height: 5vh;
   margin-top: 1%;
-  maring: 0 auto;
+  margin: 0 auto;
   float: none;
 }
 
@@ -221,6 +299,10 @@ export default {
   margin-left: 3vw;
   margin-top: 1%;
   vertical-align: center;
+}
+
+#loading {
+  margin-top: 3%;
 }
 
 </style>

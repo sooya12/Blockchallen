@@ -6,6 +6,7 @@
         top
         left
         style="margin : 2%;"
+        @click="goMain"
     >
       <v-icon dark left>arrow_back</v-icon>
       메인으로
@@ -102,10 +103,35 @@
           <p style="text-align: left;">분배방식</p>
           <v-radio-group v-model="isRandom" :mandatory="true" row>
             <v-radio label="랜덤 차등 분배" value="true"></v-radio>
-            <v-radio label="균등 분배" value="false" style="margin-left: 5%;"></v-radio>
+            <v-radio label="균등 분배" value="false"  style="margin-left: 5%;"></v-radio>
           </v-radio-group>
+
         </div>
         <div style="margin-top: 2%;">
+          <p style="text-align: left;">사진 인증 가능 시간</p>
+          <v-switch
+              v-model="certificationAvailableTime"
+              class="mt-0"
+              color="green lighten-2"
+              hide-details
+              label="24시간 내내 가능"
+              style="margin-bottom: 2%;"
+          ></v-switch>
+          <v-spacer></v-spacer>
+          <div v-if="!certificationAvailableTime">
+            <p style="text-align: left; margin-top:2%; font-weight: bold;">시간 선택</p>
+            <v-range-slider
+                v-model="certificationTime"
+                :value="[certificationStartTime, certificationEndTime]"
+                min="0"
+                max="48"
+            >
+              <template v-slot:thumb-label="props">
+                {{timepick[props.value]}}
+              </template>
+            </v-range-slider>
+            <p style="text-align: left; margin-top:2%; font-weight: bold;">{{ Math.floor((certificationStartTime*30)/60) }}:{{ (certificationStartTime*30)%60==0?"00":"30" }} ~ {{ Math.floor((certificationEndTime*30)/60) }}:{{ (certificationEndTime*30)%60==0?"00":"30" }}</p>
+          </div>
           <p style="text-align: left;">사진 인증 조건 (선택)</p>
           <v-text-field
               v-model="certificateCondition"
@@ -173,6 +199,7 @@
 
 
       <v-btn class="ma-2" color="primary" :disabled="!(checktitle&&(bet>0)&&checkdate)"
+             @click="register"
       >
         챌린지 만들기
         <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
@@ -202,6 +229,61 @@ export default {
       certificateCondition: '',
       expiredate: new Date().toISOString().substr(0, 10),
       expiremenu: false,
+      certificationAvailableTime:true,
+      certificationStartTime : 0,
+      certificationEndTime : 48,
+      certificationTime:[0,48],
+      timepick : [
+        "00:00",
+        "00:30",
+        "01:00",
+        "01:30",
+        "02:00",
+        "02:30",
+        "03:00",
+        "03:30",
+        "04:00",
+        "04:30",
+        "05:00",
+        "05:30",
+        "06:00",
+        "06:30",
+        "07:00",
+        "07:30",
+        "08:00",
+        "08:30",
+        "09:00",
+        "09:30",
+        "10:00",
+        "10:30",
+        "11:00",
+        "11:30",
+        "12:00",
+        "12:30",
+        "13:00",
+        "13:30",
+        "14:00",
+        "14:30",
+        "15:00",
+        "15:30",
+        "16:00",
+        "16:30",
+        "17:00",
+        "17:30",
+        "18:00",
+        "18:30",
+        "19:00",
+        "19:30",
+        "20:00",
+        "20:30",
+        "21:00",
+        "21:30",
+        "22:00",
+        "22:30",
+        "23:00",
+        "23:30",
+        "24:00"
+      ],
       snackbar: false,
       snackbarcolor: 'red',
       snackbarmode: 'vertical',
@@ -213,21 +295,37 @@ export default {
 
     }
   },
+  mounted() {
+
+  },
   methods: {
     register: function () {
-      axios.post('/blockchallen/challenge', {
+      if(this.certificationAvailableTime){
+        this.certificationStartTime=0
+        this.certificationEndTime=48
+      }
+      axios.post(this.$store.state.server + '/challenge', {
         name: this.title,
         startDate: this.startdate,
         endDate: this.enddate,
         expireDate: this.expiredate,
         fee: this.bet,
         isRandom: this.isRandom,
-        certificationCondition: this.certificateCondition,
-        uid: '로그인 이후 구현',
+        certification: this.certificateCondition,
+        uid: JSON.parse(sessionStorage.getItem("user")).id,
+        certificationStartTime:this.certificationStartTime,
+        certificationEndTime : this.certificationEndTime,
       })
           .then(() => {
-            this.$router.push('/') //상세페이지로 이동하자
+            this.$router.push('/challenges') //상세페이지로 이동하자
           })
+          .catch((err)=>{
+            console.log(err)
+          })
+    },
+
+    goMain(){
+      this.$router.push('/challenges')
     }
   },
   watch: {
@@ -296,8 +394,13 @@ export default {
         this.expiredate = tempDate.toISOString().substr(0, 10)
       }
 
-      console.log(this.bet)
-    }
+    },
+
+    certificationTime :function (newVal){
+      this.certificationStartTime=newVal[0]
+      this.certificationEndTime=newVal[1]
+
+    },
 
   }
 }

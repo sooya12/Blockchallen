@@ -47,7 +47,7 @@ export default {
       this.$router.push("/")
     },
     duplicationCheck() {
-      axios.get('http://localhost:8080/blockchallen/account/nickname/' + this.nickname)
+      axios.get(this.$store.state.server + '/account/nickname/' + this.nickname)
           .then((res) => {
             console.log(res.data)
             this.flag = true
@@ -62,7 +62,7 @@ export default {
         nickname: this.nickname
       }
 
-      axios.put('http://localhost:8080/blockchallen/account', account)
+      axios.put(this.$store.state.server + '/account', account)
           .then((res) => {
             sessionStorage.removeItem("user")
             sessionStorage.setItem("user", JSON.stringify(res.data))

@@ -1,14 +1,13 @@
 package com.ssafy.blockchallen.service;
 
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
-import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Certification;
 
 public interface ICertificationService {
-	@Transactional
-	Certification register(Certification certification);
+	Certification register(long userId, long challengeId, byte[] picture, String regDate);
 	
-	@Transactional
-	Certification report(Account account ,Certification certification);
+	Certification report(long id);
+	
+	Boolean check(long uid, long cid);
 }
