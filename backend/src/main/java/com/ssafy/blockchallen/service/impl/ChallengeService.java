@@ -310,4 +310,15 @@ public class ChallengeService implements IChallengeService {
 		} else
 			return null;
 	}
+
+	@Override
+	public void deleteUnderachieving() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+		String today = format.format(new Date());
+		
+		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
+		for (Challenge challenge : challenges) {
+			challengeRepository.deleteById(challenge.getId());
+		}
+	}
 }

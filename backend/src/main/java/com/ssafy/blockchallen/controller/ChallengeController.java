@@ -110,5 +110,12 @@ public class ChallengeController {
 		} else
 			return new ResponseEntity<>("존재하지 않는 챌린지", HttpStatus.NO_CONTENT);
 	}
+
+
+	@ApiOperation(value = "참여자 미달 챌린지 삭제")
+	public Object deleteUnderachieving() {
+		challengeService.deleteUnderachieving();
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 	
 }
