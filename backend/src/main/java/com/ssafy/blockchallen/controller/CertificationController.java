@@ -55,9 +55,10 @@ public class CertificationController {
 	}
 	
 	@ApiOperation(value = "인증 신고하기")
-	@RequestMapping(value = "/certification/{id}", method = RequestMethod.POST)
-	public Object setReport(@PathVariable("id") long id) {// 인증사진 id 받아옴
-		Certification report = certificationService.report(id);
+	@RequestMapping(value = "/certification/report", method = RequestMethod.POST)
+	public Object setReport(@RequestParam("pid") long pid, @RequestParam("uid") long uid) {// 인증사진 id 받아옴
+		
+		Certification report = certificationService.report(pid, uid);
 		if(report != null) {
 			return new ResponseEntity<>(report,HttpStatus.OK);
 		}

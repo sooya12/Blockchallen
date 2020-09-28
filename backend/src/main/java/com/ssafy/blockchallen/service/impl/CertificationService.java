@@ -46,10 +46,12 @@ public class CertificationService implements ICertificationService {
 	}
 
 	@Override
-	public Certification report(long id) {
-		Optional<Certification> certification = certificationRepository.findById(id);
+	public Certification report(long pid, long uid) {
+		Optional<Certification> certification = certificationRepository.findById(pid);
+		Optional<Account> account = accountRepository.findById(uid);
 		if(certification.isPresent()) {
 			certification.get().setIsReported(true);
+			certification.get().setReporter(account.get());
 			certificationRepository.save(certification.get());
 			return certification.get();
 		}
