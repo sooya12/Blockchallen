@@ -32,7 +32,7 @@
         <my-page-loading></my-page-loading>
       </div>
     </div>
-    <div id="challenge" v-if="!chargeFlag">
+    <div id="challenge" v-show="!chargeFlag">
       <h2>나의 챌린지</h2>
       <div id="totalSuccessRate">
         <canvas id="myChart" width="100" height="100"></canvas>
