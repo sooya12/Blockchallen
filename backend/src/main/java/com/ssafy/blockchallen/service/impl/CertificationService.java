@@ -68,11 +68,9 @@ public class CertificationService implements ICertificationService {
 			account.get().addCertification(certification); // 추가한
 			challenge.get().addCertification(certification); // 부분이에요
 			certificationRepository.save(certification);
-			System.out.println("저장성공");
 			return true;
 			
 		}else { // 저장 안됨
-			System.out.println("저장실패");
 			return false;
 		}
 	}
