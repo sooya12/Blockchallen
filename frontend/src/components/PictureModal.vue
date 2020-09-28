@@ -1,7 +1,7 @@
 <template>
     <div class="pictureCertification">
         <!-- <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'> -->
-        <v-img :src="imageUrl" v-if="imageUrl" style="width:100%; "></v-img>
+        <v-img :src="imageUrl" v-if="imageUrl" style="width:auto; max-height:40vh; max-width:30vw; min-width:20vw;"></v-img>
         <br style="clear:both;"/>
             <v-file-input
                 v-model="picture"
@@ -132,6 +132,7 @@ export default {
 .pictureCertification{
   text-align: center;
   margin: 0px auto;
-  padding: 85px;
+  padding: 100px;
+  
 }
 </style>

@@ -473,8 +473,8 @@ export default {
 
       },{
         name: 'dynamic-modal',
-        width: '100%',
-        height: '85%',
+        width: '80%',
+        height: '80%',
         draggable: false,
       })
     },
