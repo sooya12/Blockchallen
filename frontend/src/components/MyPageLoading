@@ -1,0 +1,273 @@
+<template lang="pug">
+  section.man
+    .head.header
+        .face
+          .eye#eye1
+          .eye#eye2
+          .mouth
+    .neck
+    .arm.leftarmy#arm1
+      .hand
+    .arm.rightarmy#arm2
+      .hand
+    .body.boogie
+    .hips.wiggle
+    .crotch
+    .leg.leggit#leg1
+      .foot
+    .leg.leggit#leg2
+      .foot
+    .block
+      .shadow.shifter
+</template>
+
+<script>
+
+</script>
+
+<style scoped lang="scss">
+$color : red;
+$grey : grey;
+html,body { background: #444444;}
+div {background: $color; position:relative}
+.man {position:relative; height: 300px; width: 200px; margin: 5vh auto;}
+.head, .body, .hips {  margin: 0 auto;}
+.head {
+  width: 45%;
+  padding: 10% 0 3% 0;
+  border-radius: 45% 45% 50% 50% / 40% 40% 10% 10%;
+  top:2%;
+}
+.face {
+  position: relative;
+  background: yellow;
+  width: 70%;
+  margin: 10% auto;
+  padding: 25% 0;
+  border-radius:  15% 15% 35% 35% / 30%;
+  box-shadow: 0 6px 0 rgba(50,50,50,0.5) inset, 0 -2px 0 5px rgba(50,50,50,0.25);
+}
+.eye {
+  position: absolute;
+  background: black;
+  width: 15%;
+  padding: 7.5% 0;
+  border-radius: 50%;
+  top: 25%;
+}
+
+.eye#eye1 {
+  left: 25%;
+}
+.eye#eye2 {
+  right: 25%;
+}
+
+.mouth {
+  position:absolute;
+  background: transparent;
+  width: 40%;
+  padding: 12% 0;
+  border-radius: 50%;
+  border-bottom: 6px solid black;
+  left: 0; right: 0;
+  margin: 0 auto;
+  bottom: 14%;
+}
+.body {
+  background: red;
+  width: 60%;
+  padding: 25% 0;
+  border-radius: 15% / 100% 100% 0 0;
+  box-shadow: 0 -5px 0 0 rgba(50,50,50,0.2) inset
+}
+.neck {
+  margin: 0 auto;
+  width: 40%;
+  padding: 2% 0;
+  border-radius: 30% 30% 0 0;
+  background: darken($color, 6);
+}
+.hips {
+  position: relative;
+  width: 56%;
+  padding: 5% 0;
+  background: darken($color, 4);
+  box-shadow: 0 -5px 0 0 rgba(50,50,50,0.2) inset
+}
+.crotch {
+  width: 50%;
+  padding: 8% 0;
+  margin: 0 auto;
+  box-shadow: 0 -15px 0 0 rgba(50,50,50,0.2) inset
+}
+.leg {
+  position:absolute;
+  width: 25%;
+  padding: 22% 0;
+  top: 69.5%
+}
+.leg#leg1 {
+  left: 22%;
+}
+.leg#leg2 {
+  left: 53%;
+}
+.foot {
+  position:absolute;
+  width:110%;
+  padding: 20% 0;
+  bottom: 0;
+  left: -5%;
+  box-shadow: 0 -5px 0 0 rgba(50,50,50,0.3)
+}
+.arm {
+  position: absolute;
+  width: 15%;
+  padding: 20% 0;
+  background: darken($color, 6);
+  top: 32%;
+  box-shadow: 0 -20px 4px 0px red inset;
+}
+.arm#arm1 {
+  border-radius: 100% 20% 10% 10%/ 90% 0% 20% 20%;
+  left: 6.5%;
+  transform: rotate(14deg)
+}
+.arm#arm2 {
+  border-radius: 20% 100% 10% 10%/ 0% 90% 20% 20%;
+  right: 6.5%;
+  transform: rotate(-14deg);
+}
+.hand {
+  position:absolute;
+  width:80%;
+  padding: 40% 0;
+  border: 10px solid $color;
+  border-bottom-color: transparent;
+  background: transparent;
+  border-radius: 50%;
+  top: 110%;
+  left: -20%;
+  z-index: 5;
+}
+.hand:after {
+  position: absolute;
+  content: ' ';
+  width: 100%;
+  padding: 20% 0;
+  top: -73%;
+  background: darken($color, 6);
+}
+.block{
+  position: relative;
+  top: 16%;
+  width: 130%;
+  left: -15%;
+  background: $grey;
+  border-radius: 5% 5% 0 0;
+}
+.block:after, .block:before {
+  content: ' ';
+  position: absolute;
+  width: 15%;
+  padding: 3% 0;
+  background: darken($grey, 10);
+  box-shadow: 20px 0 0 0 lighten($grey, 10) inset;
+  border-radius: 20% 20% 0 0;
+}
+.block:before { left: 5%; top: -30%}
+.block:after { right: 5%; top: -30%}
+.block .shadow {
+  position: relative;
+  width: 46%;
+  padding: 10% 0;
+  background: rgba(0,0,0,0.2);
+  left: 37%;
+  transform: skew(45deg);
+}
+//.lighting .spot {
+//  position: absolute;
+//  top: 0;
+//}
+//
+//.lighting .spot#spot1 {
+//  left: 70%;
+//  width: 30%;
+//  padding: 50% 0;
+//  background: rgba(255,255,50,0.2);
+//  transform: skew(45deg);
+//}
+//
+//.lighting .spot#spot2 {
+//  left: 80%;
+//  width: 20%;
+//  padding: 50% 0;
+//  background: rgba(255,255,50,0.2);
+//  transform: skew(45deg);
+//}
+
+.boogie {animation: boogie 1.5s infinite}
+.wiggle {animation: wiggle 1.5s infinite}
+.leggit {animation: leggit 1.5s infinite}
+.header {animation: header 1.5s infinite}
+.leftarmy {animation: leftarmy 1.5s infinite}
+.rightarmy {animation: rightarmy 1.5s infinite}
+.shifter {animation: shifter 1.5s infinite}
+.lightup1 { animation: lightup 5s infinite}
+.lightup2 { animation: lightup 5s infinite; animation-delay: 2s}
+
+
+
+
+@keyframes boogie {
+  0%, 100% { transform: skew(0deg)}
+  20% { transform:skew(10deg)}
+  80% { transform:skew(-10deg)}
+}
+
+@keyframes wiggle {
+  0%, 100% { left: 0}
+  20% {left: 6%}
+  80% {left: -6%}
+}
+
+@keyframes boogie {
+  0%, 100% { transform: skew(0deg)}
+  20% { transform:skew(8deg)}
+  80% { transform:skew(-8deg)}
+}
+
+@keyframes leggit {
+  0%, 100% { transform: skew(0deg)}
+  20% { transform:skew(-12deg)}
+  80% { transform:skew(12deg)}
+}
+
+@keyframes header {
+  0%, 100% { left: 0}
+  20% {left: 2%; transform: rotate(2deg)}
+  80% {left: -2%; transform: rotate(-2deg)}
+}
+
+@keyframes leftarmy {
+  0%, 40%, 100% { left: 8%; padding: 20% 0 }
+  20% { left: 10%; padding: 10% 0 }
+}
+
+@keyframes rightarmy {
+  0%, 60%, 100% { right: 8%; padding: 20% 0 }
+  80% { right: 10%; padding: 10% 0 }
+}
+@keyframes shifter {
+  0%, 100% { left: 37%; }
+  20% { left: 27%;  }
+  80% { left: 47%;  }
+}
+
+@keyframes lightup {
+  0%, 100% { transform: skew(45deg)}
+  50% { left: 10%; transform: skew(-15deg)}
+}
+
+</style>
