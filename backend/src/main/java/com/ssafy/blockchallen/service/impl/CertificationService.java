@@ -55,7 +55,7 @@ public class CertificationService implements ICertificationService {
 			}
 		}
 		
-		if(date.compareTo(regDate) != 0) { // 캘린더의 오늘 날짜와 사진의 오늘날짜 비교해서 같으면
+		if(date.compareTo(regDate) == 0) { // 캘린더의 오늘 날짜와 사진의 오늘날짜 비교해서 같으면
 			
 			Certification certification = new Certification();
 			Optional<Account> account = accountRepository.findById(userId);
@@ -68,9 +68,11 @@ public class CertificationService implements ICertificationService {
 			account.get().addCertification(certification); // 추가한
 			challenge.get().addCertification(certification); // 부분이에요
 			certificationRepository.save(certification);
+			System.out.println("저장성공");
 			return true;
 			
 		}else { // 저장 안됨
+			System.out.println("저장실패");
 			return false;
 		}
 	}

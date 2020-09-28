@@ -42,10 +42,6 @@ public class CertificationController {
 	@ApiOperation(value = "인증 등록하기")
 	@RequestMapping(value = "/certification/register", method = RequestMethod.POST)
 	public Boolean register(@ModelAttribute certificationDTO certification) throws IOException {
-		System.out.println(certification.getCid());
-		System.out.println(certification.getUid());
-		System.out.println(certification.getPicture());
-				
 		return certificationService.register( certification.getUid(),certification.getCid(), certification.getPicture().getBytes(),certification.getRegDate());
 	}
 	
