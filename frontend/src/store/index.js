@@ -11,7 +11,7 @@ export default new Vuex.Store({
     ],
     state:{
         server: 'http://localhost:8080/blockchallen',
-        // server: 'http://j3a102.p.ssafy.io/blockchallen',
+        // server: 'https://j3a102.p.ssafy.io/blockchallen',
     },
     getters: {
 
