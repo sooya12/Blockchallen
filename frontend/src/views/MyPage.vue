@@ -23,8 +23,20 @@
           </div>
         </div>
         <div v-else>
-          <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
-          <p>나의 잔고는 {{ myWallet.myEth / 1000000000000000000 }} ETH 입니다.</p>
+<!--          <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>-->
+          <v-text-field
+              :value="myWallet.walletAddress"
+              label="나의 계정 주소"
+              outlined
+              readonly
+          ></v-text-field>
+<!--          <p>나의 잔고는 {{ myWallet.myEth / 1000000000000000000 }} ETH 입니다.</p>-->
+          <v-text-field
+              :value="myWallet.myEth / 1000000000000000000"
+              label="나의 잔고"
+              outlined
+              readonly
+          ></v-text-field>
           <v-btn @click="charge">충전하기</v-btn>
         </div>
       </div>
@@ -130,8 +142,8 @@ export default {
 
       await web3.eth.sendTransaction({
         from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
-        gasPrice: "1600000000",
-        gas: "2100000",
+        gasPrice: "10000000000000000",
+        gas: "4700000",
         to: this.myWallet.walletAddress,
         value: "1000000000000000000",
         data: "",
