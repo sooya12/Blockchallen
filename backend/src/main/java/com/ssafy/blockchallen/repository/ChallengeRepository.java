@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.ssafy.blockchallen.entity.Challenge;
@@ -21,4 +20,5 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 	Collection<Challenge> findAllOrderByFeeAsc();
 	@Query(value = "select * from challenge order by fee desc", nativeQuery = true)
 	Collection<Challenge> findAllOrderByFeeDesc();
+	Collection<Challenge> findAllByStartDate(String startDate);
 }
