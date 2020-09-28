@@ -58,6 +58,17 @@ public class Challenge {
     @ApiModelProperty(required = true, value = "사진인증조건")
     private String certificationCondition;
     
+    @ApiModelProperty(required = true, value = "사진인증조건 예시")
+    @Column(name = "", columnDefinition = "MEDIUMBLOB")
+    private byte[] samplepicture;
+    
+    @ApiModelProperty(value = "인증가능 시작시간")
+    private Integer certificationStartTime;
+
+    @ApiModelProperty(value = "인증가능 종료시간")
+    private Integer certificationEndTime;
+    
+    
     @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
     @JsonBackReference
     @ApiModelProperty(value = "인증 set")
@@ -98,6 +109,9 @@ public class Challenge {
 		private Integer fee = 0;
 		private Boolean isRandom = false;
 		private String certificationCondition = "";
+		private byte[] samplepicture;
+	    private Integer certificationStartTime;
+	    private Integer certificationEndTime;
 		private Set<Certification> certifications;
 		private Set<Account> accounts;
 		
@@ -132,6 +146,18 @@ public class Challenge {
 			this.certificationCondition = certificationCondition;
 			return this;
 		}
+		public Builder samplepicture(byte[] samplepicture) {
+			this.samplepicture = samplepicture;
+			return this;
+		}
+		public Builder certificationStartTime(int certificationStartTime) {
+			this.certificationStartTime = certificationStartTime;
+			return this;
+		}
+		public Builder certificationEndTime(int certificationEndTime) {
+			this.certificationEndTime = certificationEndTime;
+			return this;
+		}
 		public Builder certifications(Set<Certification> certifications) {
 			this.certifications = certifications;
 			return this;
@@ -152,8 +178,11 @@ public class Challenge {
 		fee = builder.fee;
 		isRandom = builder.isRandom;
 		certificationCondition = builder.certificationCondition;
+		samplepicture = builder.samplepicture;
 		certifications = builder.certifications;
 		accounts = builder.accounts;
+		certificationStartTime = builder.certificationStartTime;
+		certificationEndTime = builder.certificationEndTime;
 	}
 	
 }

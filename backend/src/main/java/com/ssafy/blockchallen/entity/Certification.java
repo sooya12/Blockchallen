@@ -1,6 +1,5 @@
 package com.ssafy.blockchallen.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,7 +41,8 @@ public class Certification {
 	private Account account;
 	
 	@ApiModelProperty(required = true, value = "인증 사진")
-	private String picture;
+	@Column(name="picture", columnDefinition="MEDIUMBLOB")
+	private byte[] picture;
 
 	@Column(name = "reg_date")
 	@ApiModelProperty(required = true, value = "등록시간")
@@ -59,7 +59,7 @@ public class Certification {
 	public static class Builder {
 		private Challenge challenge;
 		private Account account;
-		private String picture = "";
+		private byte[] picture;
 		private String regDate;
 		private Boolean isReported = false;
 		private Account reporter;
@@ -75,7 +75,7 @@ public class Certification {
 			this.account = account;
 			return this;
 		}
-		public Builder picture(String picture) {
+		public Builder picture(byte[] picture) {
 			this.picture = picture;
 			return this;
 		}
@@ -98,7 +98,7 @@ public class Certification {
 	private Certification(Builder builder) {
 		challenge = builder.challenge;
 		account = builder.account;
-		picture = builder.picture;
+		//picture = builder.picture;
 		regDate = builder.regDate;
 		isReported = builder.isReported;
 		reporter = builder.reporter;

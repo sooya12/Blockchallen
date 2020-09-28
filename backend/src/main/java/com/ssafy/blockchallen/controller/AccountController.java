@@ -31,6 +31,8 @@ import com.google.gson.JsonParser;
 import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.service.IAccountService;
 
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/blockchallen")
@@ -41,10 +43,12 @@ public class AccountController {
 
 	private final String BACK_SERVER_URI = "http://localhost:8080";
 	private final String FRONT_SERVER_URI = "http://localhost:3030";
+//	private final String BACK_SERVER_URI = "https://j3a102.p.ssafy.io";
+//	private final String FRONT_SERVER_URI = "https://j3a102.p.ssafy.io";
 	private final String kakaoRedirectBackURI = BACK_SERVER_URI + "/blockchallen/login";
 	private final String kakaoRedirectFrontURI = FRONT_SERVER_URI + "/login/";
 
-	
+	@ApiOperation(value = "회원 정보 조회")
 	@RequestMapping(value = "/account/{id}", method = RequestMethod.GET)
 	public Object findAccount(@PathVariable("id") long id) {
 
@@ -57,11 +61,13 @@ public class AccountController {
 
 	}
 
-	@RequestMapping(value = "/account/nickname/{nickname}")
+	@ApiOperation(value = "닉네임 중복 확인")
+	@RequestMapping(value = "/account/nickname/{nickname}", method = RequestMethod.GET)
 	public Object duplicateNicknameCheck(@PathVariable("nickname") String nickname) {
 		return new ResponseEntity<>(accountService.duplicateCheck(nickname), HttpStatus.OK);
 	}
 
+	@ApiOperation(value = "닉네임 설정")
 	@RequestMapping(value = "/account", method = RequestMethod.PUT)
 	public Object setNickname(@RequestBody setNicknameDTO account) {
 
@@ -74,6 +80,7 @@ public class AccountController {
 		}
 	}
 
+	@ApiOperation(value = "회원 탈퇴")
 	@RequestMapping(value = "/account", method = RequestMethod.DELETE)
 	public Object signout(@RequestBody Account account) {
 		if(accountService.signout(account))
@@ -82,7 +89,7 @@ public class AccountController {
 			return new ResponseEntity<>("fail", HttpStatus.NO_CONTENT);
 	}
 	
-	
+	@ApiOperation(value = "로그인")
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public Object login(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		

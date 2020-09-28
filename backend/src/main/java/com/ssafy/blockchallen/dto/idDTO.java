@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class walletDTO {
-	private long id;
-	private String address;
+public class idDTO {
+	long uid;
+	long cid;
 }

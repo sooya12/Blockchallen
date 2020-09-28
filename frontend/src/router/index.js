@@ -7,6 +7,8 @@ import ChallengeList from '@/views/ChallengeList.vue'
 import MyPage from '@/views/MyPage.vue'
 import SignUp from '@/views/SignUp.vue'
 import SocialLogin from "@/views/SocialLogin"
+import tranferTest from "@/views/tranferTest";
+
 
 Vue.use(VueRouter)
 
@@ -48,6 +50,11 @@ const routes = [
         name: 'SocialLogin',
         component: SocialLogin,
         props: true
+    },
+    {
+        path: '/tt',
+        name: 'tranferTest',
+        component: tranferTest,
     }
 ]
 

@@ -6,19 +6,25 @@
         top
         left
         style="margin : 2%;"
+        @click="goMain"
     >
       <v-icon dark left>arrow_back</v-icon>
       메인으로
     </v-btn>
+
     <div style="margin-left: 20%; margin-top: 3%;">
       <v-card style="width:70%;">
-        <v-img
-            src="/lego.ico"
-            height="4vh"
-            width="4vh"
-            style="float:left; margin:2%;"
-        ></v-img>
-        <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;">{{ title }}</p>
+          <v-img
+              src="/lego.ico"
+              height="4vh"
+              width="4vh"
+              style="float:left; margin:2%;"
+          ></v-img>
+          <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;float:left; ">{{ title }}</p>
+          <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && todaystate && certificationAvailableTime">
+              인증하기
+          </v-btn>
+          <br style="clear:both;"/>
         <div>
           <span style="font-size:2.5vh; font-weight: bold; margin-left: 2%; margin-right: 3%;">{{ startDate }}</span> ~
           <span style="font-size:2.5vh; font-weight: bold; margin-left: 3%;">{{ endDate }} </span> <span
@@ -34,6 +40,12 @@
           }}</span></p>
         <p style="font-size:2.5vh; margin-top: 2%;">인증 조건 : <span
             style="font-size:2.5vh; font-weight: bold"> {{ certificationCondition }}</span></p>
+        <p style="font-size:2.5vh; margin-top: 2%;">인증 가능 시간 : <span
+            style="font-size:2.5vh; font-weight: bold"> {{ timepick[certificationStartTime] }} ~ {{ timepick[certificationEndTime] }}</span></p>
+        <div v-if="samplepicture">
+          <p style="font-size:2.5vh; margin-top: 2%;">인증 예시 </p>
+          <v-img :src="samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
+        </div>
       </v-card>
       <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;">현재 참여 인원 : {{ users.length }}명</p>
@@ -46,7 +58,7 @@
       <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
         <div v-if="challengeState=='before'">
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">마감까지 {{ remain }}</p>
-
+          <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
         </div>
         <div v-if="challengeState=='doing'">
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">본 챌린지는 진행중입니다. </p>
@@ -55,7 +67,7 @@
           </p>
           <div v-for="participant of userlist" v-bind:key="participant.id">
             <v-card style="margin : 5% 1%; margin-top : 1%; min-height: 32vh;"
-                    @click="clickParicipant(participant,total)">
+                    @click="clickParticipant(participant,total)">
               <div>
 
                 <div style="float:left; width:40%; height : 20vh;">
@@ -138,7 +150,7 @@
         </div>
       </v-card>
       <div style="width:70%; padding: 1% 2%; margin-top: 3%; text-align: center;" v-if="challengeState=='before'">
-        <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;">
+        <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;" v-if="!alreadyParicipate" @click="participate">
           참여하기
         </v-btn>
 
@@ -151,6 +163,7 @@
 import axios from 'axios'
 import BlockProgress from "@/components/BlockProgress";
 import ChallengeModal from "@/components/ChallengeModal";
+import PictureModal from "@/components/PictureModal";
 
 export default {
   name: "challengeDetail",
@@ -182,20 +195,106 @@ export default {
       total: 0,
       successlist: [],
       faillist: [],
+      timepick : [
+        "00:00",
+        "00:30",
+        "01:00",
+        "01:30",
+        "02:00",
+        "02:30",
+        "03:00",
+        "03:30",
+        "04:00",
+        "04:30",
+        "05:00",
+        "05:30",
+        "06:00",
+        "06:30",
+        "07:00",
+        "07:30",
+        "08:00",
+        "08:30",
+        "09:00",
+        "09:30",
+        "10:00",
+        "10:30",
+        "11:00",
+        "11:30",
+        "12:00",
+        "12:30",
+        "13:00",
+        "13:30",
+        "14:00",
+        "14:30",
+        "15:00",
+        "15:30",
+        "16:00",
+        "16:30",
+        "17:00",
+        "17:30",
+        "18:00",
+        "18:30",
+        "19:00",
+        "19:30",
+        "20:00",
+        "20:30",
+        "21:00",
+        "21:30",
+        "22:00",
+        "22:30",
+        "23:00",
+        "23:30",
+        "24:00"
+      ],
+      certificationStartTime : '',
+      certificationEndTime : '',
+      certificationAvailableTime : false,
+      alreadyParicipate:false,
+
+      todaystate:false, // 오늘 했는지 안했는지 (하루에 1번)
+      samplepicture: ''
+
 
     }
   },
   mounted() {
+    axios.get(this.$store.state.server + '/participate', {
+      params: {
+        cid: Number(this.cid),
+        uid: JSON.parse(sessionStorage.getItem("user")).id
 
-    /*
-    TODO : 추후 URL 수정 필요
-    */
-    axios.get('/mock/challenge' + this.cid + '.json', {
+      }
+    })
+    .then((res)=>{
+      if(res.data){
+        this.alreadyParicipate=true
+      }else{
+        this.alreadyParicipate=false
+      }
+    })
+
+    axios.get(this.$store.state.server + '/certification/date', {
+      params: {
+        cid: Number(this.cid),
+        uid: JSON.parse(sessionStorage.getItem("user")).id
+
+      }
+    })
+    .then((res)=>{
+      if(res.data){
+        this.todaystate=true
+      }else{
+        this.todaystate=false
+      }
+    })
+
+
+    axios.get(this.$store.state.server + '/challenge', {
       params: {
         id: Number(this.cid),
 
       }
-    })
+    }) 
         .then((res) => {
           this.title = res.data.name
           this.startDate = res.data.startDate.substr(2, 8)
@@ -209,15 +308,22 @@ export default {
           this.startDate = this.startDate.replace(/-/g, '/')
           this.endDate = this.endDate.replace(/-/g, '/')
           this.expireDate = this.expireDate.replace(/-/g, '/')
+          this.certificationStartTime=res.data.certificationStartTime
+          this.certificationEndTime=res.data.certificationEndTime
+
+          if(res.data.samplepicture!=null){
+            this.samplepicture="data:;base64, "+res.data.samplepicture
+          }
+
           let today = new Date().toISOString().substr(0, 10)
           if (this.isRandom) {
             this.divide = '랜덤 차등 분배'
           } else {
             this.divide = '균등 분배'
           }
-          if (res.data.expireDate >= today) {
+          if (res.data.expireDate > today) {
             this.challengeState = 'before'
-          } else if (res.data.expireDate < today && res.data.endDate > today) {
+          } else if (res.data.expireDate <= today && res.data.endDate >= today) {
             this.challengeState = 'doing'
             this.doing()
           } else {
@@ -250,6 +356,20 @@ export default {
           }
           this.checkdate = true;
           this.periods = differ
+
+
+
+
+          if (this.challengeState == 'before') {
+            setInterval(() => {
+              this.remainTime()
+            }, 1000); // 타이머 1초간격으로 수행
+          }
+          if (this.challengeState == 'doing') {
+            setInterval(() => {
+              this.checkCertificationTime()
+            }, 1000); // 타이머 1초간격으로 수행
+          }
         })
         .catch(() => {
           /*
@@ -259,11 +379,6 @@ export default {
         })
 
 
-    if (this.challengeState == 'before') {
-      setInterval(() => {
-        this.remainTime()
-      }, 1000); // 타이머 1초간격으로 수행
-    }
 
   },
   methods: {
@@ -305,18 +420,47 @@ export default {
 
       }
     },
+    checkCertificationTime(){
+      let hour = new Date().getHours()
+      let min = new Date().getMinutes()
+      let timepickIndex=(hour*60+min)/30
+      if(timepickIndex>=this.certificationStartTime&&timepickIndex<this.certificationEndTime){
+        this.certificationAvailableTime=true
+        return
+      }
+      else{
+        this.certificationAvailableTime=false
+      }
+    },
     /**
      * TODO : URL 수정
      */
     doing() {
 
-      axios.get('/mock/userfeed' + this.cid + '.json', {
+      axios.get(this.$store.state.server +'/challenge/certification', {
         params: {
           "id": Number(this.cid)
         }
       })
           .then((res) => {
-            this.userlist = res.data.list
+
+            for(let i=0;i<res.data.length;i++){
+              if(res.data[i].certification[0]!=null){
+                this.userlist.push({
+                  id:res.data[i].id,
+                  nickname:res.data[i].nickname,
+                  progress:res.data[i].progress,
+                  certification:{
+                    id:res.data[i].certification[0].id,
+                    picture:"data:;base64, "+res.data[i].certification[0].picture,
+                    isReported : res.data[i].certification[0].reported,
+                    regDate : res.data[i].certification[0].regDate
+
+                  }
+                })
+              }
+            }
+
 
           })
 
@@ -325,7 +469,7 @@ export default {
      * TODO : URL 수정
      */
     done() {
-      axios.get('/mock/result' + this.cid + '.json', {
+      axios.get(this.$store.state.server +'/challenge/result', {
         params: {
           "id": Number(this.cid)
         }
@@ -338,7 +482,7 @@ export default {
           })
     },
 
-    clickParicipant(participant, total) {
+    clickParticipant(participant, total) {
       this.$modal.show(ChallengeModal, {
         participant: participant,
         total: total,
@@ -347,6 +491,19 @@ export default {
         name: 'dynamic-modal',
         width: '50%',
         height: '40%',
+        draggable: false,
+      })
+    },
+
+    certification:function(challengeid){
+      this.$modal.show(PictureModal,{
+        modal: this.$modal,
+        challengeid:challengeid,
+
+      },{
+        name: 'dynamic-modal',
+        width: '80%',
+        height: '80%',
         draggable: false,
       })
     },
@@ -361,7 +518,22 @@ export default {
         comma += 3
       }
       return tempstr
-    }
+    },
+
+    goMain(){
+      this.$router.push('/challenges')
+    },
+
+    participate(){
+      axios.post(this.$store.state.server + '/participate', {
+          cid: Number(this.cid),
+          uid: JSON.parse(sessionStorage.getItem("user")).id
+      })
+      .then(()=>{
+        this.$router.go()
+      })
+    },
+
 
 
   }

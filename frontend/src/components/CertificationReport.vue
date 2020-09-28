@@ -37,8 +37,7 @@
         <div style="position: relative; margin: 0 auto; text-align: center; float:left;  width: 100%;">
           <v-btn
               color="#ff5555"
-              v-bind="attrs"
-              v-on="on"
+
               @click="clickReport(participant)"
               :disabled="!activateReport"
               style="margin-right: 2%; "
@@ -49,8 +48,7 @@
 
           <v-btn
               color="#ff5555"
-              v-bind="attrs"
-              v-on="on"
+
               @click="cancel"
               style="margin-left: 2%;"
           >
@@ -84,14 +82,18 @@ export default {
   },
   mounted() {
 
-
   },
   methods: {
     clickReport(participant) {
-      console.log(participant)
-      axios.post('url', {})
-          .then((res) => {
-            console.log(res)
+      axios.get(this.$store.state.server +'/certification/report', {
+        params : {
+          'pid': Number(participant.certification.id),
+          'uid': Number(participant.id)
+        }
+      })
+          .then(() => {
+            this.$emit('close')
+            window.location.reload()
           })
 
 
