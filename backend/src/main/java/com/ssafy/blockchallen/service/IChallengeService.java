@@ -24,4 +24,5 @@ public interface IChallengeService {
 	resultChallengeDTO getResult(long id) throws ParseException;
 	Object challengeParticipate(idDTO ids);
 	Object checkParticipate(long uid, long cid);
+	void deleteUnderachieving();
 }

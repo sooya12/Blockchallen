@@ -40,6 +40,12 @@
           }}</span></p>
         <p style="font-size:2.5vh; margin-top: 2%;">인증 조건 : <span
             style="font-size:2.5vh; font-weight: bold"> {{ certificationCondition }}</span></p>
+        <p style="font-size:2.5vh; margin-top: 2%;">인증 가능 시간 : <span
+            style="font-size:2.5vh; font-weight: bold"> {{ timepick[certificationStartTime] }} ~ {{ timepick[certificationEndTime] }}</span></p>
+        <div v-if="samplepicture">
+          <p style="font-size:2.5vh; margin-top: 2%;">인증 예시 </p>
+          <v-img :src="samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
+        </div>
       </v-card>
       <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;">현재 참여 인원 : {{ users.length }}명</p>
@@ -246,6 +252,7 @@ export default {
       alreadyParicipate:false,
 
       todaystate:false, // 오늘 했는지 안했는지 (하루에 1번)
+      samplepicture: ''
 
 
     }
@@ -303,6 +310,11 @@ export default {
           this.expireDate = this.expireDate.replace(/-/g, '/')
           this.certificationStartTime=res.data.certificationStartTime
           this.certificationEndTime=res.data.certificationEndTime
+
+          if(res.data.samplepicture!=null){
+            this.samplepicture="data:;base64, "+res.data.samplepicture
+          }
+
           let today = new Date().toISOString().substr(0, 10)
           if (this.isRandom) {
             this.divide = '랜덤 차등 분배'
@@ -431,7 +443,24 @@ export default {
         }
       })
           .then((res) => {
-            this.userlist = res.data.list
+
+            for(let i=0;i<res.data.length;i++){
+              if(res.data[i].certification[0]!=null){
+                this.userlist.push({
+                  id:res.data[i].id,
+                  nickname:res.data[i].nickname,
+                  progress:res.data[i].progress,
+                  certification:{
+                    id:res.data[i].certification[0].id,
+                    picture:"data:;base64, "+res.data[i].certification[0].picture,
+                    isReported : res.data[i].certification[0].reported,
+                    regDate : res.data[i].certification[0].regDate
+
+                  }
+                })
+              }
+            }
+
 
           })
 

@@ -69,6 +69,9 @@ export default {
                 }
 
             }).then((res)=>{
+                console.log(res)
+                this.$emit('close')
+                window.location.reload()
                 if(res.data){
                     alert("사진 등록이 완료되었습니다.")
                 }else{
@@ -78,8 +81,6 @@ export default {
                 console.log(err)
             })
 
-            this.$emit('close')
-            window.location.reload()
 
         },
         //////////////////// 스마트 컨트랙트 ///////////////////////////

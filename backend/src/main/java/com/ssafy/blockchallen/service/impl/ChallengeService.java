@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.blockchallen.dto.certificationForCLDTO;
@@ -78,6 +79,7 @@ public class ChallengeService implements IChallengeService {
 					.fee(challenge.get().getFee())
 					.isRandom(challenge.get().getIsRandom())
 					.certificationCondition(challenge.get().getCertificationCondition())
+					.samplepicture(challenge.get().getSamplepicture())
 					.certificationStartTime(challenge.get().getCertificationStartTime())
 					.certificationEndTime(challenge.get().getCertificationEndTime())
 					.users(challenge.get().getAccounts())
@@ -308,5 +310,17 @@ public class ChallengeService implements IChallengeService {
 			return challenge.get().getAccounts().stream().anyMatch(el->el.getId().equals(uid));
 		} else
 			return null;
+	}
+
+	@Scheduled(cron = "0 0 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
+	@Override
+	public void deleteUnderachieving() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+		String today = format.format(new Date());
+		
+		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
+		for (Challenge challenge : challenges) {
+			challengeRepository.deleteById(challenge.getId());
+		}
 	}
 }
