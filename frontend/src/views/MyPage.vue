@@ -118,8 +118,8 @@ export default {
       alert("충전")
       await web3.eth.sendTransaction({
         from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
-        gasPrice: "200000000",
-        gas: "100000",
+        gasPrice: "800000000",
+        gas: "2100000",
         to: this.myWallet.walletAddress,
         value: "1000000000000000000",
         data: "",
