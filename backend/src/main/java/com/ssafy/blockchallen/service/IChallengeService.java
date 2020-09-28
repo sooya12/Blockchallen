@@ -1,5 +1,6 @@
 package com.ssafy.blockchallen.service;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.List;
@@ -15,7 +16,7 @@ import com.ssafy.blockchallen.entity.Challenge;
 
 public interface IChallengeService {
 	
-	boolean createChallenge(createChallengeDTO challenge);
+	boolean createChallenge(createChallengeDTO challenge) throws IOException;
 	detailChallengeDTO detailChallenge(long id);
 	List<myChallengeDTO> MyChallenges(long id) throws ParseException;
 	Collection<Challenge> getChallenges(String option);
