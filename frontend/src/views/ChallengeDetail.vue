@@ -440,7 +440,24 @@ export default {
         }
       })
           .then((res) => {
-            this.userlist = res.data.list
+            console.log(res)
+            for(let i=0;i<res.data.length;i++){
+              if(res.data[i].certification[0]!=null){
+                this.userlist.push({
+                  id:res.data[i].id,
+                  nickname:res.data[i].nickname,
+                  progress:res.data[i].progress,
+                  certification:{
+                    id:res.data[i].certification[0].id,
+                    picture:"data:;base64, "+res.data[i].certification[0].picture,
+                    isReported : res.data[i].certification[0].reported,
+                    regDate : res.data[i].certification[0].regDate
+
+                  }
+                })
+              }
+            }
+
 
           })
 
@@ -483,7 +500,7 @@ export default {
       },{
         name: 'dynamic-modal',
         width: '100%',
-        height: '40%',
+        height: '85%',
         draggable: false,
       })
     },

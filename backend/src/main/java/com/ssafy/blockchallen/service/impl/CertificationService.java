@@ -29,27 +29,59 @@ public class CertificationService implements ICertificationService {
 	private ChallengeRepository challengeRepository;
 
 	@Override
-	public Certification register(long userId, long challengeId, byte[] picture, String regDate) {
-		Certification certification = new Certification();
-		Optional<Account> account = accountRepository.findById(userId);
-		Optional<Challenge> challenge = challengeRepository.findById(challengeId);
+	public Boolean register(long userId, long challengeId, byte[] picture, String regDate) {
 		
-		certification.setAccount(account.get());
-		certification.setChallenge(challenge.get());
-		certification.setPicture(picture);
-		certification.setRegDate(regDate);
-		certification.setIsReported(false); // 감자가
-		account.get().addCertification(certification); // 추가한
-		challenge.get().addCertification(certification); // 부분이에요
+		Calendar cal = Calendar.getInstance();
+
+		int year = cal.get(Calendar.YEAR);
+		int month = cal.get(Calendar.MONTH) + 1;
+		int day = cal.get(Calendar.DAY_OF_MONTH);
+	
+		StringBuilder sb = new StringBuilder();
+		String date; // 오늘 날짜
+		if(month/10 < 1) {
+			if(day/10 < 1) {
+				 date = sb.append(year).append("-").append(0).append(month).append("-").append(0).append(day).toString();
+			}
+			else {
+				 date = sb.append(year).append("-").append(0).append(month).append("-").append(day).toString();
+			}
+		}else {
+			if(day/10 < 1) {
+				 date = sb.append(year).append("-").append(month).append("-").append(0).append(day).toString();
+			}
+			else {
+				 date = sb.append(year).append("-").append(month).append("-").append(day).toString();
+			}
+		}
 		
-		return certificationRepository.save(certification);
+		if(date.compareTo(regDate) == 0) { // 캘린더의 오늘 날짜와 사진의 오늘날짜 비교해서 같으면
+			
+			Certification certification = new Certification();
+			Optional<Account> account = accountRepository.findById(userId);
+			Optional<Challenge> challenge = challengeRepository.findById(challengeId);
+			certification.setAccount(account.get());
+			certification.setChallenge(challenge.get());
+			certification.setPicture(picture);
+			certification.setRegDate(regDate);
+			certification.setIsReported(false); // 감자가
+			account.get().addCertification(certification); // 추가한
+			challenge.get().addCertification(certification); // 부분이에요
+			certificationRepository.save(certification);
+			return true;
+			
+		}else { // 저장 안됨
+			return false;
+		}
 	}
 
 	@Override
-	public Certification report(long id) {
-		Optional<Certification> certification = certificationRepository.findById(id);
+	public Certification report(long pid, long uid) {
+		Optional<Certification> certification = certificationRepository.findById(pid);
+		Optional<Account> account = accountRepository.findById(uid);
 		if(certification.isPresent()) {
 			certification.get().setIsReported(true);
+			certification.get().setReporter(account.get());
 			certificationRepository.save(certification.get());
 			return certification.get();
 		}
