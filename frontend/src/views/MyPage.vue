@@ -12,22 +12,39 @@
     </div>
     <div id="wallet">
       <h2>나의 지갑</h2>
-      <div v-if="!walletFlag">
-        <v-btn @click="createWallet" v-if="passwordFlag == 0">생성하기</v-btn>
-        <div id="passwordArea" v-else-if="passwordFlag == 1">
-          <p>비밀번호는 이더 사용/충전에 필요하며, 수정/재발급이 불가합니다. 꼭 기억해주세요!</p>
-          <span id="passwordSpan">지갑 비밀번호</span>
-          <v-text-field id="passwordInput" :rules="pwRules" v-model="password"></v-text-field>
-          <v-btn id="passwordBtn" @click="submitPw">입력 완료</v-btn>
+      <div v-if="!chargeFlag">
+        <div v-if="!walletFlag">
+          <v-btn @click="createWallet" v-if="passwordFlag == 0">생성하기</v-btn>
+          <div id="passwordArea" v-else-if="passwordFlag == 1">
+            <p>비밀번호는 이더 사용/충전에 필요하며, 수정/재발급이 불가합니다. 꼭 기억해주세요!</p>
+            <span id="passwordSpan">지갑 비밀번호</span>
+            <v-text-field id="passwordInput" :rules="pwRules" v-model="password"></v-text-field>
+            <v-btn id="passwordBtn" @click="submitPw">입력 완료</v-btn>
+          </div>
+        </div>
+        <div v-else>
+<!--          <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>-->
+          <v-text-field
+              :value="myWallet.walletAddress"
+              label="나의 계정 주소"
+              outlined
+              readonly
+          ></v-text-field>
+<!--          <p>나의 잔고는 {{ myWallet.myEth / 1000000000000000000 }} ETH 입니다.</p>-->
+          <v-text-field
+              :value="myWallet.myEth / 1000000000000000000"
+              label="나의 잔고"
+              outlined
+              readonly
+          ></v-text-field>
+          <v-btn @click="charge">충전하기</v-btn>
         </div>
       </div>
-      <div v-else>
-        <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>
-        <p>나의 잔고는 {{ myWallet.myEth / 1000000000000000000 }} ETH 입니다.</p>
-        <v-btn @click="charge">충전하기</v-btn>
+      <div id="loadingArea" v-else>
+        <my-page-loading></my-page-loading>
       </div>
     </div>
-    <div id="challenge">
+    <div id="challenge" v-show="!chargeFlag">
       <h2>나의 챌린지</h2>
       <div id="totalSuccessRate">
         <canvas id="myChart" width="100" height="100"></canvas>
@@ -60,6 +77,7 @@
 <script>
 import Chart from 'chart.js'
 import axios from 'axios'
+import MyPageLoading from '@/components/MyPageLoading.vue'
 
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://j3a102.p.ssafy.io:8545'))
@@ -75,6 +93,7 @@ export default {
       access_token: "",
       walletAddress: "",
     },
+    chargeFlag: false,
     walletFlag: false,
     myWallet: {
       privateKey: "",
@@ -89,6 +108,9 @@ export default {
     password: "",
     progressBarFlag: false
   }),
+  components: {
+    MyPageLoading
+  },
   methods: {
     backHome() {
       this.$router.push("/challenges")
@@ -116,14 +138,19 @@ export default {
     },
     async charge() {
       alert("충전")
+      this.chargeFlag = true
+
       await web3.eth.sendTransaction({
         from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
-        gasPrice: "200000000",
-        gas: "100000",
+        gasPrice: "10000000000000000",
+        gas: "4700000",
         to: this.myWallet.walletAddress,
         value: "1000000000000000000",
         data: "",
-      }, 'ssafy').then(console.log)
+      }, 'ssafy').then(() => {
+        this.chargeFlag = false
+        this.createChart()
+      })
 
       this.getWalletInfo(this.myWallet.walletAddress)
     },
@@ -227,6 +254,12 @@ export default {
   height: auto;
   margin-top: 3%;
   text-align: center;
+}
+
+#loadingArea {
+  width: 100%;
+  height: 35vh;
+  margin-bottom: 3%;
 }
 
 #passwordArea {
