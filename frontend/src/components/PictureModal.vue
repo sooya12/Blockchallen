@@ -24,6 +24,10 @@
 
 <script>
 import axios from 'axios'
+import Web3 from 'web3'
+
+var web3 = new Web3('http://j3a102.p.ssafy.io:8545')
+var sha256 = require('js-sha256');
 
 export default {
     name: 'pictureCertification',
@@ -49,7 +53,6 @@ export default {
             console.log(this.picture.lastModifiedDate.toISOString().substr(0, 10))
             console.log(this.picture.name)
 
-           
         },
         submit(){
             const formData = new FormData()
@@ -78,17 +81,49 @@ export default {
             this.$emit('close')
             window.location.reload()
 
-        }
+        },
+        //////////////////// 스마트 컨트랙트 ///////////////////////////
+        sendCertification(){
+            let hashingDatabefore = sha256.hex(this.picture.name) // 이름말고
+            let hashingData='0x'+hashingDatabefore
+
+            web3.eth.personal.unlockAccount("0x51ec5dfdf9a50762ba34d3ac08abb43cdb54d597", "pass5", 600).then(()=>{
+              web3.eth.sendTransaction({
+                from: "0x51ec5dfdf9a50762ba34d3ac08abb43cdb54d597",
+                gasPrice: "200000000",
+                gas: "1000000",
+                to: '0x51465bd3f63f275ed5fde5918d31c2a51650b964', 
+                value: "0",
+                data: hashingData // deploying a contracrt
+              }).then((res)=>{
+                console.log(res)
+              })
+              .catch(()=>{console.log('error')})
+            
+            })
+            //////////////////////////////////
+            // web3.eth.personal.unlockAccount("0x51ec5dfdf9a50762ba34d3ac08abb43cdb54d597", "pass5", 600).then(()=>{
+            //     web3.eth.getTransaction(this.transactionHash).then((res)=>{
+
+            //     this.checkflag=true
+            //     this.sameCheck=hashingData==String(res.input)
+            //     })
+            //     .catch(()=>{console.log('error')})
+
+            // })
+
+
+            }
     },
     watch:{
         picture:function (newVal){
-      if(newVal==null){
-        this.imageUrl=null
-        return;
-      }
-      this.imageUrl = URL.createObjectURL(newVal);
+            if(newVal==null){
+                this.imageUrl=null
+                return;
+            }
+            this.imageUrl = URL.createObjectURL(newVal);
 
-    },
+            },
     }
 }
 </script>
