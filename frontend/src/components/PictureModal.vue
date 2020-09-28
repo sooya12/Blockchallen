@@ -1,8 +1,19 @@
 <template>
     <div class="pictureCertification">
-        <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'>
-        <br style="clear:both;"/>
+        <!-- <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'> -->
         <v-img :src="imageUrl" v-if="imageUrl" style="width:100%; "></v-img>
+        <br style="clear:both;"/>
+            <v-file-input
+                v-model="picture"
+                accept="image/png, image/jpeg, image/bmp, image/gif"
+                prepend-icon="mdi-camera"
+                :rules="picturelimit"
+
+            >
+
+            </v-file-input>
+        
+        <!-- <v-img :src="imageUrl" v-if="imageUrl" style="width:100%; "></v-img> -->
         <!-- <p>{{picture.lastModifiedDate}}</p> -->
         <br style="clear:both;"/>
         <v-btn @click="submit">사진 올리기</v-btn>
@@ -23,6 +34,9 @@ export default {
         return{
             picture:'', // 사진 정보
             imageUrl:'', // 사진 url
+            picturelimit:[
+                value => !value || value.size < 16000000 || '이미지가 선택되지 않았거나 이미지 크기는 16MB 이하여야 합니다.!',
+            ],
         }
     },
 
@@ -65,6 +79,16 @@ export default {
             window.location.reload()
 
         }
+    },
+    watch:{
+        picture:function (newVal){
+      if(newVal==null){
+        this.imageUrl=null
+        return;
+      }
+      this.imageUrl = URL.createObjectURL(newVal);
+
+    },
     }
 }
 </script>
@@ -73,6 +97,6 @@ export default {
 .pictureCertification{
   text-align: center;
   margin: 0px auto;
-  padding: 100px;
+  padding: 85px;
 }
 </style>
