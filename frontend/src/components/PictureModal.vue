@@ -48,7 +48,11 @@ export default {
                 }
 
             }).then((res)=>{
-                console.log(res)
+                if(res.data){
+                    alert("사진 등록이 완료되었습니다.")
+                }else{
+                    alert("올바른 날짜의 사진이 아닙니다. 재업로드 해주세요.")
+                }
             }).catch((err)=>{
                 console.log(err)
             })
