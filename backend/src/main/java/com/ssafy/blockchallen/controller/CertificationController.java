@@ -41,23 +41,15 @@ public class CertificationController {
 	
 	@ApiOperation(value = "인증 등록하기")
 	@RequestMapping(value = "/certification/register", method = RequestMethod.POST)
-	public Object register(@ModelAttribute certificationDTO certification) throws IOException {
-		System.out.println(certification.getCid());
-		System.out.println(certification.getUid());
-		System.out.println(certification.getPicture());
-		Certification newCertification = certificationService.register( certification.getUid(),certification.getCid(), certification.getPicture().getBytes(),certification.getRegDate());
-		
-		if(newCertification != null) {
-			return new ResponseEntity<>(newCertification, HttpStatus.OK);
-		}else {
-			return new ResponseEntity<>("인증 등록 실패", HttpStatus.NO_CONTENT);
-		}
+	public Boolean register(@ModelAttribute certificationDTO certification) throws IOException {
+		return certificationService.register( certification.getUid(),certification.getCid(), certification.getPicture().getBytes(),certification.getRegDate());
 	}
 	
 	@ApiOperation(value = "인증 신고하기")
-	@RequestMapping(value = "/certification/{id}", method = RequestMethod.POST)
-	public Object setReport(@PathVariable("id") long id) {// 인증사진 id 받아옴
-		Certification report = certificationService.report(id);
+	@RequestMapping(value = "/certification/report", method = RequestMethod.POST)
+	public Object setReport(@RequestParam("pid") long pid, @RequestParam("uid") long uid) {// 인증사진 id 받아옴
+		
+		Certification report = certificationService.report(pid, uid);
 		if(report != null) {
 			return new ResponseEntity<>(report,HttpStatus.OK);
 		}
