@@ -52,7 +52,7 @@
       <div v-if="progressBarFlag">
         <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
           <div class="progressSet">
-            <div class="challengeName"><p>{{ challenge.name }}</p></div>
+            <div class="challengeName"><p @click="moveChallenge(challenge.id)">{{ challenge.name }}</p></div>
             <v-progress-linear
                 class="challengeProgress"
                 color="red lighten-2"
@@ -199,6 +199,9 @@ export default {
     async getWalletInfo(walletAddress) {
       this.myWallet.myEth = await web3.eth.getBalance(walletAddress)
     },
+    moveChallenge(id) {
+      this.$router.push("/challenges/" + id)
+    }
   },
   mounted() {
     this.createChart()
