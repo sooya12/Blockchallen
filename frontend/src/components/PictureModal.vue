@@ -34,7 +34,7 @@ export default {
            
         },
         submit(){
-             const formData = new FormData()
+            const formData = new FormData()
             formData.append('picture',this.picture)
             formData.append('uid',JSON.parse(sessionStorage.getItem("user")).id)
             formData.append('cid',this.challengeid)
