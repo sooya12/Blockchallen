@@ -1,8 +1,10 @@
 <template>
     <div class="pictureCertification">
         <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'>
-        <p>{{picture.lastModifiedDate}}</p>
-        <!-- <br style="clear:both;"/> -->
+        <br style="clear:both;"/>
+        <v-img :src="imageUrl" v-if="imageUrl" style="width:100%; "></v-img>
+        <!-- <p>{{picture.lastModifiedDate}}</p> -->
+        <br style="clear:both;"/>
         <v-btn @click="submit">사진 올리기</v-btn>
 
     </div>
@@ -20,6 +22,7 @@ export default {
     data(){
         return{
             picture:'', // 사진 정보
+            imageUrl:'', // 사진 url
         }
     },
 
@@ -27,6 +30,7 @@ export default {
         piccer(){
             console.log(this.$refs)
             this.picture = this.$refs.picture.files[0]
+            this.imageUrl = URL.createObjectURL(this.picture)
             console.log(this.picture.type)
             console.log(this.picture.lastModifiedDate.toISOString().substr(0, 10))
             console.log(this.picture.name)
