@@ -143,7 +143,7 @@
 
           ></v-text-field>
 
-
+g
 
           <div >
             <v-img :src="imageUrl" v-if="imageUrl" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>

@@ -19,4 +19,21 @@ public class createChallengeDTO {
 	private long uid;
 	private int certificationStartTime;
 	private int certificationEndTime;
+
+	@Override
+	public String toString() {
+		return "createChallengeDTO{" +
+				"name='" + name + '\'' +
+				", startDate='" + startDate + '\'' +
+				", endDate='" + endDate + '\'' +
+				", expireDate='" + expireDate + '\'' +
+				", fee=" + fee +
+				", isRandom=" + isRandom +
+				", certification='" + certification + '\'' +
+				", samplepicture=" + samplepicture +
+				", uid=" + uid +
+				", certificationStartTime=" + certificationStartTime +
+				", certificationEndTime=" + certificationEndTime +
+				'}';
+	}
 }
