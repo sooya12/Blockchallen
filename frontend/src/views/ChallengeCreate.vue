@@ -142,6 +142,23 @@
               outlined
 
           ></v-text-field>
+
+
+
+          <div >
+            <v-img :src="imageUrl" v-if="imageUrl" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
+            <v-file-input
+                v-model="picture"
+                accept="image/png, image/jpeg, image/bmp, image/gif"
+                prepend-icon="mdi-camera"
+                label="인증 사진 예시를 올려주면 더 좋아요"
+                :rules="picturelimit"
+
+            >
+
+            </v-file-input>
+            <p  style="margin-left:5%;margin-bottom:5%; text-align: left; color:#aaa;">사진 용량은 16MB이하만 가능합니다.</p>
+          </div>
         </div>
         <div>
           <p style="text-align: left;">모집 마감 기간</p>
@@ -210,6 +227,7 @@
 
 <script>
 import axios from 'axios'
+
 
 export default {
   name: "challengeCreate",
@@ -291,6 +309,11 @@ export default {
       snackbarmsg: '정보 없음',
       checktitle: false,
       checkdate: false,
+      picture:[],
+      imageUrl:'',
+      picturelimit:[
+          value => !value || value.size < 16000000 || '이미지가 선택되지 않았거나 이미지 크기는 16MB 이하여야 합니다.!',
+      ],
 
 
     }
@@ -300,21 +323,27 @@ export default {
   },
   methods: {
     register: function () {
+      let formData = new FormData
       if(this.certificationAvailableTime){
         this.certificationStartTime=0
         this.certificationEndTime=48
       }
-      axios.post(this.$store.state.server + '/challenge', {
-        name: this.title,
-        startDate: this.startdate,
-        endDate: this.enddate,
-        expireDate: this.expiredate,
-        fee: this.bet,
-        isRandom: this.isRandom,
-        certification: this.certificateCondition,
-        uid: JSON.parse(sessionStorage.getItem("user")).id,
-        certificationStartTime:this.certificationStartTime,
-        certificationEndTime : this.certificationEndTime,
+      formData.append("name",this.title)
+      formData.append("startDate",this.startdate)
+      formData.append("endDate",this.enddate)
+      formData.append("expireDate",this.expiredate)
+      formData.append("fee",this.bet)
+      formData.append("isRandom",this.isRandom)
+      formData.append("certification",this.certificateCondition)
+      formData.append("uid",JSON.parse(sessionStorage.getItem("user")).id)
+      formData.append("certificationStartTime",this.certificationStartTime)
+      formData.append("certificationEndTime",this.certificationEndTime)
+      formData.append("samplepicture",this.picture)
+
+      axios.post(this.$store.state.server + '/challenge',formData, {
+        headers:{
+          'Content-Type' : 'multipart/form-data'
+        }
       })
           .then(() => {
             this.$router.push('/challenges') //상세페이지로 이동하자
@@ -326,7 +355,13 @@ export default {
 
     goMain(){
       this.$router.push('/challenges')
-    }
+    },
+    piccer(){
+      this.picture = this.$refs.picture
+      this.checkflag=false
+      this.imageUrl = URL.createObjectURL(this.picture);
+      console.log('hi')
+    },
   },
   watch: {
     title: function (newVal) {
@@ -401,6 +436,17 @@ export default {
       this.certificationEndTime=newVal[1]
 
     },
+
+    picture:function (newVal){
+      if(newVal==null){
+        this.imageUrl=null
+        return;
+      }
+      this.imageUrl = URL.createObjectURL(newVal);
+
+    },
+
+
 
   }
 }
