@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.blockchallen.dto.certificationForCLDTO;
@@ -311,6 +312,7 @@ public class ChallengeService implements IChallengeService {
 			return null;
 	}
 
+	@Scheduled(cron = "0 0 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
 	@Override
 	public void deleteUnderachieving() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
