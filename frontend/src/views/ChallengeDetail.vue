@@ -440,7 +440,23 @@ export default {
         }
       })
           .then((res) => {
-            this.userlist = res.data.list
+            console.log(res)
+            for(let i=0;i<res.data.length;i++){
+              if(res.data[i].certification[0]!=null){
+                this.userlist.push({
+                  id:res.data[i].id,
+                  nickname:res.data[i].nickname,
+                  progress:res.data[i].progress,
+                  certification:{
+                    picture:"data:;base64, "+res.data[i].certification[0].picture,
+                    isReported : res.data[i].certification[0].reported,
+                    regDate : res.data[i].certification[0].regDate
+
+                  }
+                })
+              }
+            }
+
 
           })
 

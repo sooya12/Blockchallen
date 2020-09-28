@@ -89,7 +89,7 @@ export default {
   methods: {
     clickReport(participant) {
       console.log(participant)
-      axios.post('url', {})
+      axios.post(this.$store.state.server +'', {})
           .then((res) => {
             console.log(res)
           })

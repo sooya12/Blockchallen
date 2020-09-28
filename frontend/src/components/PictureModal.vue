@@ -49,12 +49,12 @@ export default {
 
             }).then((res)=>{
                 console.log(res)
+                this.$emit('close')
+                window.location.reload()
             }).catch((err)=>{
                 console.log(err)
             })
 
-            this.$emit('close')
-            window.location.reload()
 
         }
     }
