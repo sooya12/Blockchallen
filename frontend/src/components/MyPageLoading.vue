@@ -24,14 +24,8 @@
          width="79"
          height="auto"
          class="wallet-front"/>
-
   </div>
-
 </template>
-
-<script>
-
-</script>
 
 <style>
 .loan-funded {
