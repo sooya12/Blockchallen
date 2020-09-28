@@ -40,6 +40,8 @@
           }}</span></p>
         <p style="font-size:2.5vh; margin-top: 2%;">인증 조건 : <span
             style="font-size:2.5vh; font-weight: bold"> {{ certificationCondition }}</span></p>
+        <p style="font-size:2.5vh; margin-top: 2%;">인증 가능 시간 : <span
+            style="font-size:2.5vh; font-weight: bold"> {{ timepick[certificationStartTime] }} ~ {{ timepick[certificationEndTime] }}</span></p>
         <div v-if="samplepicture">
           <p style="font-size:2.5vh; margin-top: 2%;">인증 예시 </p>
           <v-img :src="samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
@@ -308,6 +310,7 @@ export default {
           this.expireDate = this.expireDate.replace(/-/g, '/')
           this.certificationStartTime=res.data.certificationStartTime
           this.certificationEndTime=res.data.certificationEndTime
+
           if(res.data.samplepicture!=null){
             this.samplepicture="data:;base64, "+res.data.samplepicture
           }
@@ -440,7 +443,7 @@ export default {
         }
       })
           .then((res) => {
-            console.log(res)
+
             for(let i=0;i<res.data.length;i++){
               if(res.data[i].certification[0]!=null){
                 this.userlist.push({
