@@ -21,7 +21,7 @@
               style="float:left; margin:2%;"
           ></v-img>
           <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;float:left; ">{{ title }}</p>
-          <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && todaystate">
+          <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && todaystate && certificationAvailableTime">
               인증하기
           </v-btn>
           <br style="clear:both;"/>
@@ -309,9 +309,9 @@ export default {
           } else {
             this.divide = '균등 분배'
           }
-          if (res.data.expireDate >= today) {
+          if (res.data.expireDate > today) {
             this.challengeState = 'before'
-          } else if (res.data.expireDate < today && res.data.endDate > today) {
+          } else if (res.data.expireDate <= today && res.data.endDate >= today) {
             this.challengeState = 'doing'
             this.doing()
           } else {
@@ -344,6 +344,20 @@ export default {
           }
           this.checkdate = true;
           this.periods = differ
+
+
+
+
+          if (this.challengeState == 'before') {
+            setInterval(() => {
+              this.remainTime()
+            }, 1000); // 타이머 1초간격으로 수행
+          }
+          if (this.challengeState == 'doing') {
+            setInterval(() => {
+              this.checkCertificationTime()
+            }, 1000); // 타이머 1초간격으로 수행
+          }
         })
         .catch(() => {
           /*
@@ -353,16 +367,6 @@ export default {
         })
 
 
-    if (this.challengeState == 'before') {
-      setInterval(() => {
-        this.remainTime()
-      }, 1000); // 타이머 1초간격으로 수행
-    }
-    if (this.challengeState == 'doing') {
-      setInterval(() => {
-        this.checkCertificationTime()
-      }, 1000); // 타이머 1초간격으로 수행
-    }
 
   },
   methods: {
@@ -408,7 +412,6 @@ export default {
       let hour = new Date().getHours()
       let min = new Date().getMinutes()
       let timepickIndex=(hour*60+min)/30
-
       if(timepickIndex>=this.certificationStartTime&&timepickIndex<this.certificationEndTime){
         this.certificationAvailableTime=true
         return
