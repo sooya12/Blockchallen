@@ -75,5 +75,6 @@ $ nohup geth --networkid 1225 --maxpeers 2 --datadir /node1/ --rpc --rpcapi "adm
 // geth 접속
 $ geth attach rpc:http://localhost:8545
 $ geth attach rpc:http://j3a102.p.ssafy.io:8545
+
 ```
 
