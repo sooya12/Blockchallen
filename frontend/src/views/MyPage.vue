@@ -78,9 +78,20 @@
 import Chart from 'chart.js'
 import axios from 'axios'
 import MyPageLoading from '@/components/MyPageLoading.vue'
+// import fs from 'fs'
+// const fs = require('fs')
+// const fs = require('file-system')
 
 const Web3 = require('web3')
+// const HttpsProvider = require('web3-ssl-ext')
 const web3 = new Web3(new Web3.providers.HttpProvider('http://j3a102.p.ssafy.io:8545'))
+
+// const key = fs.mkdirSync('/etc/letsencrypt/live/j3a102.p.ssafy.io/privkey.pem')
+// const cert = fs.mkdirSync('/etc/letsencrypt/live/j3a102.p.ssafy.io/cert.pem')
+// const ca = fs.mkdirSync('/etc/letsencrypt/live/j3a102.p.ssafy.io/fullchain.pem')
+// const rejectUnauthorized = true
+//
+// const web3 = new Web3(new HttpsProvider('https://j3a102.p.ssafy.io:8545/', key, cert, ca, rejectUnauthorized))
 
 export default {
   name: "MyPage",
@@ -187,16 +198,6 @@ export default {
     },
     async getWalletInfo(walletAddress) {
       this.myWallet.myEth = await web3.eth.getBalance(walletAddress)
-    },
-    download(content) {
-      let pom = document.createElement('a')
-      pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content.normalize()))
-      pom.setAttribute('download', 'blockchallenKey.txt')
-
-      pom.click()
-    },
-    showPkInput() {
-      this.showPk = true
     },
   },
   mounted() {
