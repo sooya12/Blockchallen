@@ -1,5 +1,6 @@
 package com.ssafy.blockchallen.service.impl;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class ChallengeService implements IChallengeService {
 	@Autowired
 	ChallengeRepository challengeRepository;
 	
-	public boolean createChallenge(createChallengeDTO challenge) {
+	public boolean createChallenge(createChallengeDTO challenge) throws IOException {
 		Optional<Account> account = accountRepository.findById(challenge.getUid());
 		if(!account.isPresent()) {
 			return false;
@@ -55,6 +56,7 @@ public class ChallengeService implements IChallengeService {
 				.fee(challenge.getFee())
 				.isRandom(challenge.isRandom())
 				.certificationCondition(challenge.getCertification())
+				.samplepicture(challenge.getSamplepicture().getBytes())
 				.certificationStartTime(challenge.getCertificationStartTime())
 				.certificationEndTime(challenge.getCertificationEndTime())
 				.build();

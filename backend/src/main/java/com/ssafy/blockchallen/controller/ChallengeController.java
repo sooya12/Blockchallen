@@ -1,5 +1,6 @@
 package com.ssafy.blockchallen.controller;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class ChallengeController {
 	private IChallengeService challengeService;
 	
 	@RequestMapping(path = "/challenge", method = RequestMethod.POST)	
-	public Object createChallenge(@RequestBody createChallengeDTO challenge) {
+	public Object createChallenge(@RequestBody createChallengeDTO challenge) throws IOException {
 		
 		if(challengeService.createChallenge(challenge)) {
 			return new ResponseEntity<>("챌린지 생성 성공", HttpStatus.OK);
