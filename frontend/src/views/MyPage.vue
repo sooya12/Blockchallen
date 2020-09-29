@@ -78,7 +78,8 @@ import axios from 'axios'
 import MyPageLoading from '@/components/MyPageLoading.vue'
 
 const Web3 = require('web3')
-const web3 = new Web3(new Web3.providers.HttpProvider('http://j3a102.p.ssafy.io:8545'))
+// const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io:8545'))
+const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
 
 export default {
   name: "MyPage",
