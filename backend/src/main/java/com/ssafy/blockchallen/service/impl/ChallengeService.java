@@ -96,7 +96,7 @@ public class ChallengeService implements IChallengeService {
 		if(account.isPresent()) {
 			for (Challenge challenge : account.get().getChallenges()) {
 				
-				SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 				
 				// 파싱해서 날짜 얻기
 				Date startDate = format.parse(challenge.getStartDate());
@@ -214,7 +214,7 @@ public class ChallengeService implements IChallengeService {
 			int totalFee = challenge.get().getFee() * (int)challenge.get().getAccounts().stream().count();
 			int fee = challenge.get().getFee();
 			
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 			
 			// 파싱해서 날짜 얻기
 			Date startDate = format.parse(start);
@@ -315,7 +315,7 @@ public class ChallengeService implements IChallengeService {
 	@Scheduled(cron = "0 0 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
 	@Override
 	public void deleteUnderachieving() {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String today = format.format(new Date());
 		
 		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
