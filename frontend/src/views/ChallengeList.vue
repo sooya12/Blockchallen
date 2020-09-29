@@ -1,6 +1,7 @@
 <template>
 
   <div class="ChallengeList">
+
     <!-- 상단 -->
     <div class="high">
       <div class="name">
@@ -26,14 +27,7 @@
           append-icon="mdi-magnify"
       >
       </v-text-field>
- 
-    <!-- select box-->
-    <!-- <v-form class="mt-3 px-3 d-flex">
-        <v-select
-        :items="items"
-        label="정렬기준"
-        ></v-select>
-    </v-form> -->
+
 
     <!-- 챌린지 목록 -->
     <div>
@@ -178,14 +172,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 
 .ChallengeList {
   width: 100%;
   max-width: 1000px;
   text-align: center;
   margin: 0px auto;
-  padding: 20px
+  padding: 20px;
+
 }
 
 .high {

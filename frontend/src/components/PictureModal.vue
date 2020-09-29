@@ -95,7 +95,7 @@ export default {
         },
         //////////////////// 스마트 컨트랙트 ///////////////////////////
         sendCertification(){
-            let hashingDatabefore = sha256.hex(this.picture.name) // 이름말고
+            let hashingDatabefore = sha256.hex(this.picture.name) // 이름말고 바이트배열
             let hashingData='0x'+hashingDatabefore
 
             web3.eth.personal.unlockAccount("0x51ec5dfdf9a50762ba34d3ac08abb43cdb54d597", "pass5", 600).then(()=>{
