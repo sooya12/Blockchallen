@@ -7,8 +7,7 @@ import ChallengeList from '@/views/ChallengeList.vue'
 import MyPage from '@/views/MyPage.vue'
 import SignUp from '@/views/SignUp.vue'
 import SocialLogin from "@/views/SocialLogin"
-import tranferTest from "@/views/tranferTest";
-
+import PageNotFound from "@/views/PageNotFound";
 
 Vue.use(VueRouter)
 
@@ -52,10 +51,14 @@ const routes = [
         props: true
     },
     {
-        path: '/tt',
-        name: 'tranferTest',
-        component: tranferTest,
-    }
+        path: '*',
+        redirect: '/404',
+    },
+    {
+        path: '/404',
+        name: 'PageNotFound',
+        component: PageNotFound,
+    },
 ]
 
 const router = new VueRouter({
