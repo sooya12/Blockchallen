@@ -56,10 +56,16 @@ export default {
         },
         submit(){
             const formData = new FormData()
+            const offset = new Date().getTimezoneOffset()*60000
+            const rdate = new Date(this.picture.lastModifiedDate - offset)
+
             formData.append('picture',this.picture)
             formData.append('uid',JSON.parse(sessionStorage.getItem("user")).id)
             formData.append('cid',this.challengeid)
-            formData.append('regDate',this.picture.lastModifiedDate.toISOString().substr(0, 10))
+            formData.append('regDate',rdate.toISOString().substr(0, 10))
+
+            console.log(this.picture.lastModifiedDate.toISOString().substr(0, 10))
+            console.log(rdate.toISOString().substr(0, 10)) // 변경된 시간
 
             console.log(this.picture.lastModifiedDate)
             console.log(this.picture.lastModifiedDate.toISOString())
