@@ -23,14 +23,12 @@
           </div>
         </div>
         <div v-else>
-<!--          <p>나의 계정 주소 {{ myWallet.walletAddress }}</p>-->
           <v-text-field
               :value="myWallet.walletAddress"
               label="나의 계정 주소"
               outlined
               readonly
           ></v-text-field>
-<!--          <p>나의 잔고는 {{ myWallet.myEth / 1000000000000000000 }} ETH 입니다.</p>-->
           <v-text-field
               :value="myWallet.myEth / 1000000000000000000"
               label="나의 잔고"
@@ -50,12 +48,12 @@
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
       <div v-if="progressBarFlag">
-        <div id="progressBars" v-for="challenge in user.challenges" :key="challenge.id">
+        <div id="progressBars" v-for="(challenge, index) in user.challenges" :key="challenge.id">
           <div class="progressSet">
-            <div class="challengeName"><p>{{ challenge.name }}</p></div>
+            <div class="challengeName"><p @click="moveChallenge(challenge.id)">{{ challenge.name }}</p></div>
             <v-progress-linear
                 class="challengeProgress"
-                color="red lighten-2"
+                :color="progressColor[index % progressColor.length]"
                 :buffer-value="challenge.progressRate"
                 stream
             ></v-progress-linear>
@@ -78,20 +76,10 @@
 import Chart from 'chart.js'
 import axios from 'axios'
 import MyPageLoading from '@/components/MyPageLoading.vue'
-// import fs from 'fs'
-// const fs = require('fs')
-// const fs = require('file-system')
 
 const Web3 = require('web3')
-// const HttpsProvider = require('web3-ssl-ext')
-const web3 = new Web3(new Web3.providers.HttpProvider('http://j3a102.p.ssafy.io:8545'))
-
-// const key = fs.mkdirSync('/etc/letsencrypt/live/j3a102.p.ssafy.io/privkey.pem')
-// const cert = fs.mkdirSync('/etc/letsencrypt/live/j3a102.p.ssafy.io/cert.pem')
-// const ca = fs.mkdirSync('/etc/letsencrypt/live/j3a102.p.ssafy.io/fullchain.pem')
-// const rejectUnauthorized = true
-//
-// const web3 = new Web3(new HttpsProvider('https://j3a102.p.ssafy.io:8545/', key, cert, ca, rejectUnauthorized))
+// const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io:8545'))
+const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
 
 export default {
   name: "MyPage",
@@ -117,7 +105,14 @@ export default {
       value => !(value.length < 4) || '최소 4자 이상'
     ],
     password: "",
-    progressBarFlag: false
+    progressBarFlag: false,
+    progressColor: [
+      'red lighten-2',
+      'orange darken-1',
+      'yellow darken-2',
+      'green',
+      'cyan'
+    ]
   }),
   components: {
     MyPageLoading
@@ -132,20 +127,20 @@ export default {
     async submitPw() {
       console.log(this.password)
       await web3.eth.personal.newAccount(this.password)
-        .then(res => {
-          const address = res
-
-          axios.post(this.$store.state.server + '/wallet/create', {id: this.user.id, address: address})
           .then(res => {
-            console.log(res)
-            this.passwordFlag = 2
-            this.myWallet.walletAddress = address
-            this.walletFlag = true
+            const address = res
+
+            axios.post(this.$store.state.server + '/wallet/create', {id: this.user.id, address: address})
+                .then(res => {
+                  console.log(res)
+                  this.passwordFlag = 2
+                  this.myWallet.walletAddress = address
+                  this.walletFlag = true
+                })
+                .catch(err => {
+                  console.log(err)
+                })
           })
-          .catch(err => {
-            console.log(err)
-          })
-        })
     },
     async charge() {
       alert("충전")
@@ -199,6 +194,9 @@ export default {
     async getWalletInfo(walletAddress) {
       this.myWallet.myEth = await web3.eth.getBalance(walletAddress)
     },
+    moveChallenge(id) {
+      this.$router.push("/challenges/" + id)
+    }
   },
   mounted() {
     this.createChart()
@@ -207,15 +205,15 @@ export default {
     this.user = user
 
     axios.get(this.$store.state.server + '/wallet/' + this.user.id)
-    .then(res => {
-      const address = res.data.address
+        .then(res => {
+          const address = res.data.address
 
-      if(address != null && address != ' ' && address != '') {
-        this.myWallet.walletAddress = address
-        this.getWalletInfo(this.myWallet.walletAddress)
-        this.walletFlag = true
-      }
-    })
+          if (address != null && address != ' ' && address != '') {
+            this.myWallet.walletAddress = address
+            this.getWalletInfo(this.myWallet.walletAddress)
+            this.walletFlag = true
+          }
+        })
 
     axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
         .then(res => {
@@ -233,10 +231,18 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: 'yg-jalnan';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 #app {
   width: 100%;
   height: 1vh;
   margin: 0 auto;
+  font-family: 'yg-jalnan';
 }
 
 #header, #wallet, #challenge {

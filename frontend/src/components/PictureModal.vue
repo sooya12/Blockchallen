@@ -67,6 +67,10 @@ export default {
             console.log(this.picture.lastModifiedDate.toISOString().substr(0, 10))
             console.log(rdate.toISOString().substr(0, 10)) // 변경된 시간
 
+            console.log(this.picture.lastModifiedDate)
+            console.log(this.picture.lastModifiedDate.toISOString())
+            console.log(this.picture.lastModifiedDate.toISOString().substr(0, 10))
+
 
             // axios로 multipart/form data Post 요청 보내기
             axios.post(this.$store.state.server + '/certification/register', formData,{
