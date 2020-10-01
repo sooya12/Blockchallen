@@ -7,22 +7,22 @@
       </v-btn>
     </div>
     <div id="terms">
-      <p>서비스 이용 약관</p>
+      <p><font-awesome-icon icon="exclamation-circle"/> 블록챌린 이용 약관을 읽어주세요.</p>
       <div>
         <v-textarea :value="userInfoAgree" outlined label="서비스 이용 약관" readonly></v-textarea>
       </div>
     </div>
     <div id="nicknameForm">
-      <p>닉네임 입력 후, 중복확인을 해주세요</p>
+      <p><font-awesome-icon icon="user-check"/> 닉네임 입력 후, 중복확인을 해주세요.</p>
       <div id="nickname">
         <v-text-field v-model="nickname" label="닉네임" :rules="nicknameRules" hide-details="auto"></v-text-field>
       </div>
       <div id="nicknameCheck">
-        <v-btn small color="primary" @click="duplicationCheck">중복확인</v-btn>
+        <v-btn medium color="primary" @click="duplicationCheck">중복확인</v-btn>
       </div>
     </div>
     <div id="signUp">
-      <v-btn large color="primary" @click="signUp" :disabled="!flag">가입하기</v-btn>
+      <v-btn large color="#f39c14" @click="signUp" :disabled="!flag">가입하기</v-btn>
     </div>
   </div>
 </template>
@@ -50,10 +50,15 @@ export default {
       axios.get(this.$store.state.server + '/account/nickname/' + this.nickname)
           .then((res) => {
             console.log(res.data)
-            this.flag = true
+            if(res.data) {
+              this.flag = true
+            } else {
+              this.flag = false
+            }
           })
           .catch((err) => {
             console.log(err)
+            this.flag = false
           })
     },
     signUp() {
@@ -93,15 +98,13 @@ export default {
 #terms {
   width: 80%;
   height: 40vh;
-  margin: 0 auto;
-  margin-top: 5%;
+  margin: 0 auto 5%;
 }
 
 #nicknameForm {
   width: 80%;
   height: 15vh;
-  margin: 0 auto;
-  margin-top: 5%;
+  margin: 0 auto 5%;
 }
 
 #nickname {
@@ -116,8 +119,8 @@ export default {
 
 #nicknameCheck {
   width: 15%;
-  float: right;
-  text-align: right;
+  float: left;
+  margin-left: 3vw;
 }
 
 p {
