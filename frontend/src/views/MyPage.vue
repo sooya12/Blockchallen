@@ -57,15 +57,22 @@
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
       <div v-if="progressBarFlag">
-        <div id="progressBars" v-for="(challenge, index) in user.challenges" :key="challenge.id">
+        <div id="progressBars" v-for="(challenge) in user.challenges" :key="challenge.id">
           <div class="progressSet">
-            <div class="challengeName"><p @click="moveChallenge(challenge.id)">{{ challenge.name }}</p></div>
-            <v-progress-linear
-                class="challengeProgress"
-                :color="progressColor[index % progressColor.length]"
-                :buffer-value="challenge.progressRate"
-                stream
-            ></v-progress-linear>
+            <v-card class="challengeCard" elevation="5" @click="moveChallenge(challenge.id)">
+              <div class="challengeName">
+                <span> {{ challenge.name }} </span>
+                <v-chip small v-if="challenge.running" color="#f39c14">진행 중</v-chip>
+                <v-chip small v-else-if="challenge.progressRate < 85" color="#FC766A">실패</v-chip>
+                <v-chip small v-else color="#5C84B1">성공</v-chip>
+              </div>
+              <v-progress-linear
+                  class="challengeProgress"
+                  color="black"
+                  :buffer-value="challenge.progressRate"
+                  stream
+              ></v-progress-linear>
+            </v-card>
           </div>
         </div>
       </div>
@@ -119,7 +126,8 @@ export default {
       'orange darken-1',
       'yellow darken-2',
       'green',
-      'cyan'
+      'cyan',
+      'black darken-5'
     ],
     showDiv: true
   }),
@@ -180,8 +188,8 @@ export default {
               20
             ],
             backgroundColor: [
-              'rgb(91, 132, 177)',
-              'rgb(252, 118, 106)'
+              '#5C84B1',
+              '#FC766A'
             ],
           }],
           labels: [
@@ -233,6 +241,7 @@ export default {
 
     axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
         .then(res => {
+          console.log(res)
           this.user.challenges = res.data
           this.progressBarFlag = true
         })
@@ -263,7 +272,7 @@ export default {
 
 #tabs {
   width: 100%;
-  margin-bottom: 5%;
+  margin-bottom: 7%;
 }
 
 #walletInfo {
@@ -319,16 +328,22 @@ export default {
 
 #progressBars {
   width: 100%;
-  height: 10vh;
+  height: 12vh;
   padding-top: 3vh;
   margin: 0 auto;
 }
 
 .progressSet {
   width: 100%;
-  height: 5vh;
-  margin-top: 1%;
+  height: 12vh;
+  margin-bottom: 3vh;
   float: none;
+}
+
+.challengeCard {
+  width: 100%;
+  height: 10vh;
+  padding: 1vw;
 }
 
 .challengeName {
@@ -338,10 +353,9 @@ export default {
 }
 
 .challengeProgress {
-  width: 80%;
+  width: 90%;
   float: right;
-  margin-left: 3vw;
-  margin-top: 1%;
+  margin: 2vh;
   vertical-align: center;
 }
 
