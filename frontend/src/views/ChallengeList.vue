@@ -63,7 +63,9 @@
 
                   >
                   </v-img> -->
-                  <v-img :src="samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
+                  <div v-if="challenge.samplepicture">
+                    <v-img :src="challenge.samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
+                  </div>
               </div>
               <div class="card-title">
                 <a @click="ToDetail(challenge.id)" class="toggle-info btn">
@@ -151,8 +153,9 @@ export default {
               console.log(res)
               this.challengelist = res.data
               
-              if(this.challengelist.samplepicture!=null){
-                this.samplepicture="data:;base64, "+this.challengelist.samplepicture
+              for (let i = 0; i < res.data.length; i++) {
+                if(this.challengelist[i].samplepicture!=null)
+                  this.challengelist[i].samplepicture = "data:;base64, " + this.challengelist[i].samplepicture
               }
 
             })
@@ -181,6 +184,12 @@ export default {
         })
               .then(res => {
                  this.challengelist = res.data
+
+for (let i = 0; i < res.data.length; i++) {
+                  if(this.challengelist[i].samplepicture!=null)
+                    this.challengelist[i].samplepicture = "data:;base64, " + this.challengelist[i].samplepicture
+                }
+
                 //  this.limit =2
               })
     },
