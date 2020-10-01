@@ -12,8 +12,8 @@
     </div>
     <div id="tabs">
       <v-tabs fixed centered>
-        <v-tab @click="changeDivs"><h2><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h2></v-tab>
-        <v-tab @click="changeDivs"><h2><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h2></v-tab>
+        <v-tab @click="changeDivs"><h3><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h3></v-tab>
+        <v-tab @click="changeDivs"><h3><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h3></v-tab>
       </v-tabs>
     </div>
     <div id="wallet" v-show="showDiv">
