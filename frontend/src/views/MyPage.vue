@@ -17,7 +17,6 @@
       </v-tabs>
     </div>
     <div id="wallet" v-show="showDiv">
-      <!--<h2><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h2>-->
       <div id="walletInfo" v-if="!chargeFlag">
         <div v-if="!walletFlag">
           <v-btn @click="createWallet" v-if="passwordFlag == 0">생성하기</v-btn>
@@ -53,8 +52,7 @@
         </div>
       </div>
     </div>
-    <div id="challenge" v-show="!chargeFlag && !showDiv">
-      <!--<h2><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h2>-->
+    <div id="challenge" v-show="!showDiv">
       <div id="totalSuccessRate">
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
@@ -89,7 +87,6 @@ import axios from 'axios'
 import MyWalletCharging from '@/components/MyWalletCharging.vue'
 
 const Web3 = require('web3')
-// const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io:8545'))
 const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
 
 export default {
@@ -236,10 +233,7 @@ export default {
 
     axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
         .then(res => {
-          console.log('나의 챌린지 목록')
-          console.log(res)
           this.user.challenges = res.data
-          console.log(this.user.challenges)
           this.progressBarFlag = true
         })
         .catch(err => {
