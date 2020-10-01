@@ -10,8 +10,14 @@
     <div id="header">
       <h1><span>{{ user.nickname }}</span>님의 마이페이지</h1>
     </div>
-    <div id="wallet">
-      <h2><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h2>
+    <div id="tabs">
+      <v-tabs fixed centered>
+        <v-tab @click="changeDivs"><h2><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h2></v-tab>
+        <v-tab @click="changeDivs"><h2><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h2></v-tab>
+      </v-tabs>
+    </div>
+    <div id="wallet" v-show="showDiv">
+      <!--<h2><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h2>-->
       <div id="walletInfo" v-if="!chargeFlag">
         <div v-if="!walletFlag">
           <v-btn @click="createWallet" v-if="passwordFlag == 0">생성하기</v-btn>
@@ -39,7 +45,7 @@
         </div>
       </div>
       <div id="loadingArea" v-else>
-        <my-page-loading></my-page-loading>
+        <my-wallet-charging></my-wallet-charging>
         <div>
           <p>충전 중입니다.</p>
           <p><span>수 초</span> ~ <span>수 분</span>이 걸릴 수 있습니다.</p>
@@ -47,8 +53,8 @@
         </div>
       </div>
     </div>
-    <div id="challenge" v-show="!chargeFlag">
-      <h2><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h2>
+    <div id="challenge" v-show="!chargeFlag && !showDiv">
+      <!--<h2><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h2>-->
       <div id="totalSuccessRate">
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
@@ -80,7 +86,7 @@
 <script>
 import Chart from 'chart.js'
 import axios from 'axios'
-import MyPageLoading from '@/components/MyPageLoading.vue'
+import MyWalletCharging from '@/components/MyWalletCharging.vue'
 
 const Web3 = require('web3')
 // const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io:8545'))
@@ -117,10 +123,11 @@ export default {
       'yellow darken-2',
       'green',
       'cyan'
-    ]
+    ],
+    showDiv: true
   }),
   components: {
-    MyPageLoading
+    MyWalletCharging
   },
   methods: {
     backHome() {
@@ -201,6 +208,13 @@ export default {
     },
     moveChallenge(id) {
       this.$router.push("/challenges/" + id)
+    },
+    changeDivs() {
+      if(this.showDiv == true) {
+        this.showDiv = false
+      } else {
+        this.showDiv = true
+      }
     }
   },
   mounted() {
@@ -245,12 +259,17 @@ export default {
 #header, #wallet, #challenge {
   width: 80%;
   height: auto;
-  margin: 0 auto 7%;
+  margin: 0 auto 5%;
   text-align: center;
 }
 
 #header h1 span {
   color: red;
+}
+
+#tabs {
+  width: 100%;
+  margin-bottom: 5%;
 }
 
 #walletInfo {
