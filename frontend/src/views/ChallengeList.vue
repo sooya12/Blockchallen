@@ -55,7 +55,9 @@
       >
             <div class="card"  >
               <div class="card-image-holder">
-                <!-- <img class="card-image" src="https://source.unsplash.com/280x210/?wave" alt="wave" /> -->
+                <div v-if="!challenge.samplepicture">
+                   <img class="card-image" src="https://source.unsplash.com/280x210/?wave" alt="wave" />
+                </div>
                 <!-- <v-img
                       :src=challenge.samplepicture
                       height="30vh"
@@ -64,7 +66,7 @@
                   >
                   </v-img> -->
                   <div v-if="challenge.samplepicture">
-                    <v-img :src="challenge.samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
+                    <v-img :src="challenge.samplepicture" style="height:210px; width:280px;"></v-img>
                   </div>
               </div>
               <div class="card-title">
@@ -185,7 +187,7 @@ export default {
               .then(res => {
                  this.challengelist = res.data
 
-for (let i = 0; i < res.data.length; i++) {
+                for (let i = 0; i < res.data.length; i++) {
                   if(this.challengelist[i].samplepicture!=null)
                     this.challengelist[i].samplepicture = "data:;base64, " + this.challengelist[i].samplepicture
                 }
