@@ -11,8 +11,8 @@
       <h1><span>{{ user.nickname }}</span>님의 마이페이지</h1>
     </div>
     <div id="wallet">
-      <h2>나의 지갑</h2>
-      <div v-if="!chargeFlag">
+      <h2><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h2>
+      <div id="walletInfo" v-if="!chargeFlag">
         <div v-if="!walletFlag">
           <v-btn @click="createWallet" v-if="passwordFlag == 0">생성하기</v-btn>
           <div id="passwordArea" v-else-if="passwordFlag == 1">
@@ -40,10 +40,15 @@
       </div>
       <div id="loadingArea" v-else>
         <my-page-loading></my-page-loading>
+        <div>
+          <p>충전 중입니다.</p>
+          <p><span>수 초</span> ~ <span>수 분</span>이 걸릴 수 있습니다.</p>
+          <p>잠시만 기다려주세요.</p>
+        </div>
       </div>
     </div>
     <div id="challenge" v-show="!chargeFlag">
-      <h2>나의 챌린지</h2>
+      <h2><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h2>
       <div id="totalSuccessRate">
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
@@ -240,7 +245,7 @@ export default {
 #header, #wallet, #challenge {
   width: 80%;
   height: auto;
-  margin: 0 auto;
+  margin: 0 auto 7%;
   text-align: center;
 }
 
@@ -248,17 +253,19 @@ export default {
   color: red;
 }
 
-#wallet {
-  width: 80%;
-  height: auto;
-  margin-top: 3%;
-  text-align: center;
+#walletInfo {
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 #loadingArea {
   width: 100%;
   height: 35vh;
   margin-bottom: 3%;
+}
+
+#loadingArea span {
+  color: #1e88e5;
 }
 
 #passwordArea {
@@ -288,20 +295,13 @@ export default {
   color: red;
 }
 
-#challenge {
-  width: 80%;
-  height: auto;
-  margin-top: 3%;
-  text-align: center;
-}
-
 #totalSuccessRate {
   width: 50%;
-  height: auto;
   min-width: 212px;
+  height: auto;
   min-height: 212px;
-  margin: 0 auto;
-  margin-bottom: 3%;
+  margin: 0 auto 3%;
+  padding: 0;
 }
 
 #progressBars {
@@ -315,7 +315,6 @@ export default {
   width: 100%;
   height: 5vh;
   margin-top: 1%;
-  margin: 0 auto;
   float: none;
 }
 
@@ -334,7 +333,7 @@ export default {
 }
 
 #loading {
-  margin-top: 3%;
+  margin-top: 5%;
 }
 
 </style>
