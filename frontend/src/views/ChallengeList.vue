@@ -56,13 +56,14 @@
             <div class="card"  >
               <div class="card-image-holder">
                 <!-- <img class="card-image" src="https://source.unsplash.com/280x210/?wave" alt="wave" /> -->
-                <v-img
+                <!-- <v-img
                       :src=challenge.samplepicture
                       height="30vh"
                       style="margin: 2%;"
 
                   >
-                  </v-img>
+                  </v-img> -->
+                  <v-img :src="samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
               </div>
               <div class="card-title">
                 <a @click="ToDetail(challenge.id)" class="toggle-info btn">
@@ -118,6 +119,7 @@ export default {
       challengelist: [],
       limit: 0,
       options:'',
+      samplepicture:'', // 샘플 픽처
 
       white: '#ffffff',
       lightBG: '#dce1df',
