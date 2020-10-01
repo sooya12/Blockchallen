@@ -150,6 +150,10 @@ export default {
             .then(res => {
               console.log(res)
               this.challengelist = res.data
+              
+              if(this.challengelist.samplepicture!=null){
+                this.samplepicture="data:;base64, "+this.challengelist.samplepicture
+              }
 
             })
 
