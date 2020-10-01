@@ -11,7 +11,7 @@
       <h1><span>{{ user.nickname }}</span>님의 마이페이지</h1>
     </div>
     <div id="tabs">
-      <v-tabs fixed centered>
+      <v-tabs fixed centered color="#f39c14">
         <v-tab @click="changeDivs"><h3><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h3></v-tab>
         <v-tab @click="changeDivs"><h3><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h3></v-tab>
       </v-tabs>
@@ -39,8 +39,9 @@
               label="나의 잔고"
               outlined
               readonly
+              suffix="ETH"
           ></v-text-field>
-          <v-btn @click="charge">충전하기</v-btn>
+          <v-btn @click="charge" color="#f39c14">충전하기</v-btn>
         </div>
       </div>
       <div id="loadingArea" v-else>
@@ -59,19 +60,38 @@
       <div v-if="progressBarFlag">
         <div id="progressBars" v-for="(challenge) in user.challenges" :key="challenge.id">
           <div class="progressSet">
-            <v-card class="challengeCard" elevation="5" @click="moveChallenge(challenge.id)">
+            <v-card class="challengeCard" elevation="3" @click="moveChallenge(challenge.id)">
               <div class="challengeName">
                 <span> {{ challenge.name }} </span>
-                <v-chip small v-if="challenge.running" color="#f39c14">진행 중</v-chip>
-                <v-chip small v-else-if="challenge.progressRate < 85" color="#FC766A">실패</v-chip>
-                <v-chip small v-else color="#5C84B1">성공</v-chip>
+                <div class="chips">
+                  <v-chip small v-if="challenge.running" color="#f39c14">진행 중</v-chip>
+                  <v-chip small v-else color="#bbbbbb">마감</v-chip>
+                  <v-chip small v-if="!challenge.running && challenge.progressRate < 85" color="#FC766A">실패</v-chip>
+                  <v-chip small v-else-if="!challenge.running && challenge.progressRate >= 85" color="#5C84B1">성공</v-chip>
+                </div>
               </div>
               <v-progress-linear
+                  v-if="challenge.running"
                   class="challengeProgress"
-                  color="black"
-                  :buffer-value="challenge.progressRate"
-                  stream
-              ></v-progress-linear>
+                  :value="challenge.progressRate"
+                  :color="progressColor[0]"
+                  height="23"
+              >
+                <template :v-slot="challenge.progressRate">
+                  <strong>{{ challenge.progressRate }}%</strong>
+                </template>
+              </v-progress-linear>
+              <v-progress-linear
+                  v-else
+                  class="challengeProgress"
+                  :value="challenge.progressRate"
+                  :color="progressColor[1]"
+                  height="23"
+              >
+                <template :v-slot="challenge.progressRate">
+                  <strong>{{ challenge.progressRate }}%</strong>
+                </template>
+              </v-progress-linear>
             </v-card>
           </div>
         </div>
@@ -80,7 +100,7 @@
         <v-progress-circular
             :size="70"
             :width="7"
-            color="purple"
+            color="#f39c14"
             indeterminate
         ></v-progress-circular>
       </div>
@@ -110,7 +130,6 @@ export default {
     chargeFlag: false,
     walletFlag: false,
     myWallet: {
-      privateKey: "",
       walletAddress: "",
       myEth: 0,
     },
@@ -122,12 +141,13 @@ export default {
     password: "",
     progressBarFlag: false,
     progressColor: [
-      'red lighten-2',
+      // 'red lighten-2',
       'orange darken-1',
-      'yellow darken-2',
-      'green',
-      'cyan',
-      'black darken-5'
+      // 'yellow darken-2',
+      // 'green',
+      // 'cyan',
+      // 'black darken-5',
+      'grey'
     ],
     showDiv: true
   }),
@@ -241,7 +261,6 @@ export default {
 
     axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
         .then(res => {
-          console.log(res)
           this.user.challenges = res.data
           this.progressBarFlag = true
         })
@@ -328,28 +347,33 @@ export default {
 
 #progressBars {
   width: 100%;
-  height: 12vh;
+  height: 14vh;
   padding-top: 3vh;
   margin: 0 auto;
 }
 
 .progressSet {
   width: 100%;
-  height: 12vh;
+  height: 13vh;
   margin-bottom: 3vh;
   float: none;
 }
 
 .challengeCard {
   width: 100%;
-  height: 10vh;
+  height: 12vh;
   padding: 1vw;
 }
 
 .challengeName {
+  width: 100%;
   float: left;
   font-size: medium;
   font-weight: bold;
+}
+
+.challengeName > span {
+  float: left;
 }
 
 .challengeProgress {
@@ -357,6 +381,10 @@ export default {
   float: right;
   margin: 2vh;
   vertical-align: center;
+}
+
+.chips {
+  float: right;
 }
 
 #loading {
