@@ -10,9 +10,14 @@
     <div id="header">
       <h1><span>{{ user.nickname }}</span>님의 마이페이지</h1>
     </div>
-    <div id="wallet">
-      <h2>나의 지갑</h2>
-      <div v-if="!chargeFlag">
+    <div id="tabs">
+      <v-tabs fixed centered>
+        <v-tab @click="changeDivs"><h3><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h3></v-tab>
+        <v-tab @click="changeDivs"><h3><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h3></v-tab>
+      </v-tabs>
+    </div>
+    <div id="wallet" v-show="showDiv">
+      <div id="walletInfo" v-if="!chargeFlag">
         <div v-if="!walletFlag">
           <v-btn @click="createWallet" v-if="passwordFlag == 0">생성하기</v-btn>
           <div id="passwordArea" v-else-if="passwordFlag == 1">
@@ -39,24 +44,35 @@
         </div>
       </div>
       <div id="loadingArea" v-else>
-        <my-page-loading></my-page-loading>
+        <my-wallet-charging></my-wallet-charging>
+        <div>
+          <p>충전 중입니다.</p>
+          <p><span>수 초</span> ~ <span>수 분</span>이 걸릴 수 있습니다.</p>
+          <p>잠시만 기다려주세요.</p>
+        </div>
       </div>
     </div>
-    <div id="challenge" v-show="!chargeFlag">
-      <h2>나의 챌린지</h2>
+    <div id="challenge" v-show="!showDiv">
       <div id="totalSuccessRate">
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
       <div v-if="progressBarFlag">
-        <div id="progressBars" v-for="(challenge, index) in user.challenges" :key="challenge.id">
+        <div id="progressBars" v-for="(challenge) in user.challenges" :key="challenge.id">
           <div class="progressSet">
-            <div class="challengeName"><p @click="moveChallenge(challenge.id)">{{ challenge.name }}</p></div>
-            <v-progress-linear
-                class="challengeProgress"
-                :color="progressColor[index % progressColor.length]"
-                :buffer-value="challenge.progressRate"
-                stream
-            ></v-progress-linear>
+            <v-card class="challengeCard" elevation="5" @click="moveChallenge(challenge.id)">
+              <div class="challengeName">
+                <span> {{ challenge.name }} </span>
+                <v-chip small v-if="challenge.running" color="#f39c14">진행 중</v-chip>
+                <v-chip small v-else-if="challenge.progressRate < 85" color="#FC766A">실패</v-chip>
+                <v-chip small v-else color="#5C84B1">성공</v-chip>
+              </div>
+              <v-progress-linear
+                  class="challengeProgress"
+                  color="black"
+                  :buffer-value="challenge.progressRate"
+                  stream
+              ></v-progress-linear>
+            </v-card>
           </div>
         </div>
       </div>
@@ -75,10 +91,9 @@
 <script>
 import Chart from 'chart.js'
 import axios from 'axios'
-import MyPageLoading from '@/components/MyPageLoading.vue'
+import MyWalletCharging from '@/components/MyWalletCharging.vue'
 
 const Web3 = require('web3')
-// const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io:8545'))
 const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
 
 export default {
@@ -111,11 +126,13 @@ export default {
       'orange darken-1',
       'yellow darken-2',
       'green',
-      'cyan'
-    ]
+      'cyan',
+      'black darken-5'
+    ],
+    showDiv: true
   }),
   components: {
-    MyPageLoading
+    MyWalletCharging
   },
   methods: {
     backHome() {
@@ -171,8 +188,8 @@ export default {
               20
             ],
             backgroundColor: [
-              'rgb(91, 132, 177)',
-              'rgb(252, 118, 106)'
+              '#5C84B1',
+              '#FC766A'
             ],
           }],
           labels: [
@@ -196,6 +213,13 @@ export default {
     },
     moveChallenge(id) {
       this.$router.push("/challenges/" + id)
+    },
+    changeDivs() {
+      if(this.showDiv == true) {
+        this.showDiv = false
+      } else {
+        this.showDiv = true
+      }
     }
   },
   mounted() {
@@ -217,10 +241,8 @@ export default {
 
     axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
         .then(res => {
-          console.log('나의 챌린지 목록')
           console.log(res)
           this.user.challenges = res.data
-          console.log(this.user.challenges)
           this.progressBarFlag = true
         })
         .catch(err => {
@@ -240,7 +262,7 @@ export default {
 #header, #wallet, #challenge {
   width: 80%;
   height: auto;
-  margin: 0 auto;
+  margin: 0 auto 5%;
   text-align: center;
 }
 
@@ -248,17 +270,24 @@ export default {
   color: red;
 }
 
-#wallet {
-  width: 80%;
-  height: auto;
-  margin-top: 3%;
-  text-align: center;
+#tabs {
+  width: 100%;
+  margin-bottom: 7%;
+}
+
+#walletInfo {
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 #loadingArea {
   width: 100%;
   height: 35vh;
   margin-bottom: 3%;
+}
+
+#loadingArea span {
+  color: #1e88e5;
 }
 
 #passwordArea {
@@ -288,35 +317,33 @@ export default {
   color: red;
 }
 
-#challenge {
-  width: 80%;
-  height: auto;
-  margin-top: 3%;
-  text-align: center;
-}
-
 #totalSuccessRate {
   width: 50%;
-  height: auto;
   min-width: 212px;
+  height: auto;
   min-height: 212px;
-  margin: 0 auto;
-  margin-bottom: 3%;
+  margin: 0 auto 3%;
+  padding: 0;
 }
 
 #progressBars {
   width: 100%;
-  height: 10vh;
+  height: 12vh;
   padding-top: 3vh;
   margin: 0 auto;
 }
 
 .progressSet {
   width: 100%;
-  height: 5vh;
-  margin-top: 1%;
-  margin: 0 auto;
+  height: 12vh;
+  margin-bottom: 3vh;
   float: none;
+}
+
+.challengeCard {
+  width: 100%;
+  height: 10vh;
+  padding: 1vw;
 }
 
 .challengeName {
@@ -326,15 +353,14 @@ export default {
 }
 
 .challengeProgress {
-  width: 80%;
+  width: 90%;
   float: right;
-  margin-left: 3vw;
-  margin-top: 1%;
+  margin: 2vh;
   vertical-align: center;
 }
 
 #loading {
-  margin-top: 3%;
+  margin-top: 5%;
 }
 
 </style>
