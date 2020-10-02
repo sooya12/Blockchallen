@@ -60,6 +60,10 @@
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">마감까지 {{ remain }}</p>
           <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
         </div>
+        <div v-if="challengeState=='notStart'">
+          <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">본 챌린지는 참가 신청이 마감되어 곧 시작됩니다.</p>
+          <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
+        </div>
         <div v-if="challengeState=='doing'">
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">본 챌린지는 진행중입니다. </p>
           <p style="font-size:2.5vh; margin-top: 5%;  font-weight: bold;">
@@ -323,7 +327,9 @@ export default {
           }
           if (res.data.expireDate > today) {
             this.challengeState = 'before'
-          } else if (res.data.expireDate <= today && res.data.endDate >= today) {
+          }else if(res.data.expireDate <= today && today<res.data.startDate){
+            this.challengeState = 'notStart'
+          } else if (res.data.startDate <= today && res.data.endDate >= today) {
             this.challengeState = 'doing'
             this.doing()
           } else {
