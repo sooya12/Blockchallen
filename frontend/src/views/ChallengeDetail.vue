@@ -1,5 +1,23 @@
 <template>
   <div>
+
+
+  <div v-if="isLoading">
+    <v-btn
+        color="pink"
+        dark
+        top
+        left
+        style="margin : 2%;"
+        @click="goMain"
+    >
+      <v-icon dark left>arrow_back</v-icon>
+      메인으로
+    </v-btn>
+
+    <loading></loading>
+  </div>
+  <div v-if="!isLoading">
     <v-btn
         color="pink"
         dark
@@ -58,6 +76,10 @@
       <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
         <div v-if="challengeState=='before'">
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">마감까지 {{ remain }}</p>
+          <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
+        </div>
+        <div v-if="challengeState=='notStart'">
+          <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">본 챌린지는 참가 신청이 마감되어 곧 시작됩니다.</p>
           <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
         </div>
         <div v-if="challengeState=='doing'">
@@ -157,6 +179,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -164,11 +187,13 @@ import axios from 'axios'
 import BlockProgress from "@/components/BlockProgress";
 import ChallengeModal from "@/components/ChallengeModal";
 import PictureModal from "@/components/PictureModal";
+import Loading from "@/components/Loading";
 
 export default {
   name: "challengeDetail",
   components: {
-    BlockProgress
+    BlockProgress,
+    Loading
   },
   props: {
     cid: {
@@ -177,6 +202,7 @@ export default {
   },
   data() {
     return {
+      isLoading : true,
       title: '',
       startDate: '',
       endDate: '',
@@ -325,7 +351,9 @@ export default {
           }
           if (res.data.expireDate > today) {
             this.challengeState = 'before'
-          } else if (res.data.expireDate <= today && res.data.endDate >= today) {
+          }else if(res.data.expireDate <= today && today<res.data.startDate){
+            this.challengeState = 'notStart'
+          } else if (res.data.startDate <= today && res.data.endDate >= today) {
             this.challengeState = 'doing'
             this.doing()
           } else {
@@ -377,7 +405,7 @@ export default {
           if(res.data.startDate <= today && res.data.endDate >= today){
             this.ongoing = true
           }
-
+          this.isLoading=false
         })
         .catch(() => {
           /*
@@ -471,7 +499,7 @@ export default {
 
 
           })
-
+      this.isLoading=false
     },
     /**
      * TODO : URL 수정
@@ -488,6 +516,7 @@ export default {
             this.faillist = res.data.faillist
 
           })
+      this.isLoading=false
     },
 
     clickParticipant(participant, total) {
