@@ -1,5 +1,23 @@
 <template>
   <div>
+
+
+  <div v-if="isLoading">
+    <v-btn
+        color="pink"
+        dark
+        top
+        left
+        style="margin : 2%;"
+        @click="goMain"
+    >
+      <v-icon dark left>arrow_back</v-icon>
+      메인으로
+    </v-btn>
+
+    <loading></loading>
+  </div>
+  <div v-if="!isLoading">
     <v-btn
         color="pink"
         dark
@@ -161,6 +179,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -168,11 +187,13 @@ import axios from 'axios'
 import BlockProgress from "@/components/BlockProgress";
 import ChallengeModal from "@/components/ChallengeModal";
 import PictureModal from "@/components/PictureModal";
+import Loading from "@/components/Loading";
 
 export default {
   name: "challengeDetail",
   components: {
-    BlockProgress
+    BlockProgress,
+    Loading
   },
   props: {
     cid: {
@@ -181,6 +202,7 @@ export default {
   },
   data() {
     return {
+      isLoading : true,
       title: '',
       startDate: '',
       endDate: '',
@@ -383,7 +405,7 @@ export default {
           if(res.data.startDate <= today && res.data.endDate >= today){
             this.ongoing = true
           }
-
+          this.isLoading=false
         })
         .catch(() => {
           /*
@@ -477,7 +499,7 @@ export default {
 
 
           })
-
+      this.isLoading=false
     },
     /**
      * TODO : URL 수정
@@ -494,6 +516,7 @@ export default {
             this.faillist = res.data.faillist
 
           })
+      this.isLoading=false
     },
 
     clickParticipant(participant, total) {
