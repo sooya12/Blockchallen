@@ -21,7 +21,7 @@
               style="float:left; margin:2%;"
           ></v-img>
           <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;float:left; ">{{ title }}</p>
-          <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && todaystate && certificationAvailableTime">
+          <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && todaystate && certificationAvailableTime && ongoing">
               인증하기
           </v-btn>
           <br style="clear:both;"/>
@@ -255,8 +255,10 @@ export default {
       certificationAvailableTime : false,
       alreadyParicipate:false,
 
+
       todaystate:false, // 오늘 했는지 안했는지 (하루에 1번)
-      samplepicture: ''
+      samplepicture: '',
+      ongoing:false, // 진행중인 챌린지인지 아닌지
 
 
     }
@@ -376,6 +378,12 @@ export default {
               this.checkCertificationTime()
             }, 1000); // 타이머 1초간격으로 수행
           }
+
+
+          if(res.data.startDate <= today && res.data.endDate >= today){
+            this.ongoing = true
+          }
+
         })
         .catch(() => {
           /*
