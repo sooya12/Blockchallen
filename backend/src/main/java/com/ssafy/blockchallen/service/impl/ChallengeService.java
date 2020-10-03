@@ -60,6 +60,7 @@ public class ChallengeService implements IChallengeService {
 				.samplepicture(challenge.getSamplepicture().getBytes())
 				.certificationStartTime(challenge.getCertificationStartTime())
 				.certificationEndTime(challenge.getCertificationEndTime())
+				.address(challenge.getAddress())
 				.build();
 		newChallenge.addAccount(account.get());
 		challengeRepository.save(newChallenge);
