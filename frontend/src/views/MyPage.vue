@@ -35,7 +35,7 @@
               readonly
           ></v-text-field>
           <v-text-field
-              :value="myWallet.myEth / 1000000000000000000"
+              :value="Math.floor(myWallet.myEth / 1000000000000000000)"
               label="나의 잔고"
               outlined
               readonly
@@ -141,12 +141,7 @@ export default {
     password: "",
     progressBarFlag: false,
     progressColor: [
-      // 'red lighten-2',
       'orange darken-1',
-      // 'yellow darken-2',
-      // 'green',
-      // 'cyan',
-      // 'black darken-5',
       'grey'
     ],
     showDiv: true
@@ -185,10 +180,10 @@ export default {
 
       await web3.eth.sendTransaction({
         from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
-        gasPrice: "10000000000000000",
+        gasPrice: "1000000",
         gas: "4700000",
         to: this.myWallet.walletAddress,
-        value: "1000000000000000000",
+        value: "1000100000000000000",
         data: "",
       }, 'ssafy').then(() => {
         this.chargeFlag = false
