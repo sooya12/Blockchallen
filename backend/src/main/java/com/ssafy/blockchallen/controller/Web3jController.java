@@ -25,20 +25,25 @@ public class Web3jController {
     @PostMapping("/web3j/send")
     public void send() throws IOException, ExecutionException, InterruptedException {
         Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
-        PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount("0x03fb923A157c20565E36D7d518418E1b9b0c2C86", "ssafy").sendAsync().get();
+
+        String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
+        String fromPassword = "ssafy";
+        String toAddress = "0x37b6D2d7358c6eFA21684E713e84b20A3c61AE03";
+
+        PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
 
         BigInteger value = new BigInteger("1000000000000000000");
         BigInteger gasPrice = new BigInteger("10000000000000000");
         BigInteger gasLimit = new BigInteger("4700000");
 
-        EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount("0x03fb923A157c20565E36D7d518418E1b9b0c2C86", DefaultBlockParameterName.LATEST).sendAsync().get();
+        EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
 
         BigInteger nonce = ethGetTransactionCount.getTransactionCount();
 
-        Transaction transaction = Transaction.createEtherTransaction("0x03fb923A157c20565E36D7d518418E1b9b0c2C86", nonce, gasPrice, gasLimit, "0x401591416fb205B556A39CF989FD9Bbb497629aE", value);
+        Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value);
 
         if(personalUnlockAccount.accountUnlocked()) {
-            admin.personalSendTransaction(transaction, "ssafy").sendAsync().get();
+            admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
             System.out.println("1EH 송금");
         }
     }
