@@ -12,8 +12,8 @@
       메인으로
     </v-btn>
     <div style="text-align: center; ">
-      <h1>챌린지 생성하기</h1>
-      <div style="width:50%; margin: 2% auto;">
+      <h1><span style="color: #f39c14;">챌린지</span> 생성하기</h1>
+      <div style="width:80%; margin: 2% auto; max-width: 700px;">
 
         <v-text-field
             v-model="title"
@@ -26,9 +26,9 @@
         ></v-text-field>
 
         <div>
-          <p style="text-align: left;">기간 &nbsp;&nbsp; <span
+          <p style="text-align: left; color: #f39c14;">기간 <span
               style="color:#ff5555; margin-left: 3%;"> &nbsp;&nbsp;{{ periods }} </span></p>
-          <div style="width : 20%; float: left;">
+          <div style="width : 45%; float: left;">
             <v-menu
                 ref="startmenu"
                 v-model="startmenu"
@@ -57,7 +57,7 @@
               </v-date-picker>
             </v-menu>
           </div>
-          <div style="width : 20%; margin-left:10%; float :left;">
+          <div style="width : 45%; margin-left:5%; float :left;">
             <v-menu
                 ref="endmenu"
                 v-model="endmenu"
@@ -89,7 +89,7 @@
         </div>
 
         <div style="width: 50%; text-align: left; margin-top: 8%;">
-          <p>베팅금액</p>
+          <p style="color: #f39c14;">베팅금액</p>
           <v-flex xs12 sm6 d-flex>
             <v-select
                 :items="bets"
@@ -100,7 +100,7 @@
           </v-flex>
         </div>
         <div>
-          <p style="text-align: left;">분배방식</p>
+          <p style="text-align: left; color: #f39c14;">분배방식</p>
           <v-radio-group v-model="isRandom" :mandatory="true" row>
             <v-radio label="랜덤 차등 분배" value="true"></v-radio>
             <v-radio label="균등 분배" value="false"  style="margin-left: 5%;"></v-radio>
@@ -108,7 +108,7 @@
 
         </div>
         <div style="margin-top: 2%;">
-          <p style="text-align: left;">사진 인증 가능 시간</p>
+          <p style="text-align: left; color: #f39c14;">사진 인증 가능 시간</p>
           <v-switch
               v-model="certificationAvailableTime"
               class="mt-0"
@@ -119,7 +119,7 @@
           ></v-switch>
           <v-spacer></v-spacer>
           <div v-if="!certificationAvailableTime">
-            <p style="text-align: left; margin-top:2%; font-weight: bold;">시간 선택</p>
+            <p style="text-align: left; margin-top:2%; font-weight: bold; color: #f39c14;">시간 선택</p>
             <v-range-slider
                 v-model="certificationTime"
                 :value="[certificationStartTime, certificationEndTime]"
@@ -132,7 +132,7 @@
             </v-range-slider>
             <p style="text-align: left; margin-top:2%; font-weight: bold;">{{ Math.floor((certificationStartTime*30)/60) }}:{{ (certificationStartTime*30)%60==0?"00":"30" }} ~ {{ Math.floor((certificationEndTime*30)/60) }}:{{ (certificationEndTime*30)%60==0?"00":"30" }}</p>
           </div>
-          <p style="text-align: left;">사진 인증 조건 (선택)</p>
+          <p style="text-align: left; margin-top: 5%; color: #f39c14;">사진 인증 조건 (선택)</p>
           <v-text-field
               v-model="certificateCondition"
               :rules="rules"
@@ -157,11 +157,11 @@
             >
 
             </v-file-input>
-            <p  style="margin-left:5%;margin-bottom:5%; text-align: left; color:#aaa;">사진 용량은 16MB이하만 가능합니다.</p>
+            <p style="margin-left:5%; margin-bottom:5%; text-align: left; color:#aaa; font-size: small;">사진 용량은 16MB이하만 가능합니다.</p>
           </div>
         </div>
         <div>
-          <p style="text-align: left;">모집 마감 기간</p>
+          <p style="text-align: left; color: #f39c14;">모집 마감 기간</p>
           <v-menu
               ref="expire"
               v-model="expiremenu"
@@ -189,7 +189,7 @@
               <v-btn color="primary" @click="$refs.expire.save(expiredate)">OK</v-btn>
             </v-date-picker>
           </v-menu>
-          <p style="color:#ff5555; text-align: left;">모집 마감 기간까지 최소 00명이 모이지 않을 시 챌린지가 자동으로 <span
+          <p style="color:#ff5555; text-align: left; margin-top: 2%;">모집 마감 기간까지 최소 3명이 모이지 않을 시 챌린지가 자동으로 <span
               style="font-weight: bold;">삭제</span>됩니다.</p>
         </div>
 
@@ -241,7 +241,7 @@ export default {
       startmenu: false,
       enddate: new Date().toISOString().substr(0, 10),
       endmenu: false,
-      bets: [1000, 2000, 3000, 5000, 10000, 20000],
+      bets: [1, 2, 3, 5, 10, 20],
       bet: 0,
       isRandom: true,
       certificateCondition: '',
