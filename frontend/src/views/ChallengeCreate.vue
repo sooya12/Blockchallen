@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%; margin: 0 auto; max-width: 1000px;">
     <v-btn
         color="pink"
         dark
@@ -13,7 +13,7 @@
     </v-btn>
     <div style="text-align: center; ">
       <h1><span style="color: #f39c14;">챌린지</span> 생성하기</h1>
-      <div style="width:80%; margin: 2% auto; max-width: 700px;">
+      <div style="width:80%; margin: 2% auto; max-width: 1000px;">
 
         <v-text-field
             v-model="title"

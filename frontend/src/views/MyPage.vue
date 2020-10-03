@@ -286,12 +286,14 @@ export default {
 <style scoped>
 #app {
   width: 100%;
+  max-width: 1000px;
   height: 1vh;
   margin: 0 auto;
 }
 
 #header, #wallet, #challenge {
   width: 80%;
+  max-width: 1000px;
   height: auto;
   margin: 0 auto 5%;
   text-align: center;
