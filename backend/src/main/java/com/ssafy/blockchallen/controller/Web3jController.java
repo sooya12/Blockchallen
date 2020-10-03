@@ -33,7 +33,7 @@ public class Web3jController {
         PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
 
         BigInteger value = new BigInteger("1000000000000000000");
-        BigInteger gasPrice = new BigInteger("10000000000000000");
+        BigInteger gasPrice = new BigInteger("100");
         BigInteger gasLimit = new BigInteger("4700000");
 
         EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
@@ -43,7 +43,8 @@ public class Web3jController {
         Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value);
 
         if(personalUnlockAccount.accountUnlocked()) {
-            admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
+//            admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
+            admin.ethSendTransaction(transaction).sendAsync().get();
             System.out.println("1EH 송금");
         }
     }
