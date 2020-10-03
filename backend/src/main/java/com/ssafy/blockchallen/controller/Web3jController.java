@@ -26,9 +26,9 @@ public class Web3jController {
     public void send() throws IOException, ExecutionException, InterruptedException {
         Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
 
-        String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
-        String fromPassword = "ssafy";
-        String toAddress = "0x37b6D2d7358c6eFA21684E713e84b20A3c61AE03";
+        String fromAddress = "0x37b6D2d7358c6eFA21684E713e84b20A3c61AE03";
+        String fromPassword = "1234";
+        String toAddress = "0x02C777293721d140EDecca8131D1b5ADD821b066";
 
         PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
 
