@@ -144,7 +144,9 @@ export default {
       'orange darken-1',
       'grey'
     ],
-    showDiv: true
+    showDiv: true,
+    pieSuccess: 0,
+    pieFail: 0
   }),
   components: {
     MyWalletCharging
@@ -199,8 +201,8 @@ export default {
         data: {
           datasets: [{
             data: [
-              80,
-              20
+              (this.pieSuccess / (this.pieSuccess + this.pieFail)) * 100,
+              (this.pieFail / (this.pieSuccess + this.pieFail)) * 100
             ],
             backgroundColor: [
               '#5C84B1',
@@ -238,8 +240,6 @@ export default {
     }
   },
   mounted() {
-    this.createChart()
-
     const user = JSON.parse(sessionStorage.getItem("user"))
     this.user = user
 
@@ -258,6 +258,23 @@ export default {
         .then(res => {
           this.user.challenges = res.data
           this.progressBarFlag = true
+
+          console.log(this.user.challenges)
+
+          for(var i = 0; i < this.user.challenges.length; i++) {
+            console.log(this.user.challenges[i].running)
+            if(!this.user.challenges[i].running) {
+              if(this.user.challenges[i].progressRate >= 85) {
+                this.pieSuccess += 1
+              } else {
+                this.pieFail += 1
+              }
+            }
+          }
+
+          console.log(this.pieSuccess, this.pieFail)
+
+          this.createChart()
         })
         .catch(err => {
           console.log(err)
