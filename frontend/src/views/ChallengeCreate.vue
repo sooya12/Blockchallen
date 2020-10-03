@@ -228,6 +228,8 @@
 <script>
 import axios from 'axios'
 
+const Web3 = require('web3')
+const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
 
 export default {
   name: "challengeCreate",
@@ -322,7 +324,7 @@ export default {
 
   },
   methods: {
-    register: function () {
+    async register() {
       let formData = new FormData
       if(this.certificationAvailableTime){
         this.certificationStartTime=0
@@ -339,6 +341,11 @@ export default {
       formData.append("certificationStartTime",this.certificationStartTime)
       formData.append("certificationEndTime",this.certificationEndTime)
       formData.append("samplepicture",this.picture)
+
+      await web3.eth.personal.newAccount("ssafy")
+      .then(res => {
+        formData.append("address", res)
+      })
 
       axios.post(this.$store.state.server + '/challenge',formData, {
         headers:{
