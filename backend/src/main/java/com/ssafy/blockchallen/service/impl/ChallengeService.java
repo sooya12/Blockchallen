@@ -41,6 +41,7 @@ import com.ssafy.blockchallen.entity.Certification;
 import com.ssafy.blockchallen.entity.Challenge;
 import com.ssafy.blockchallen.repository.AccountRepository;
 import com.ssafy.blockchallen.repository.ChallengeRepository;
+import com.ssafy.blockchallen.repository.WalletRepository;
 import com.ssafy.blockchallen.service.IChallengeService;
 
 @Service
@@ -51,6 +52,9 @@ public class ChallengeService implements IChallengeService {
 	
 	@Autowired
 	ChallengeRepository challengeRepository;
+	
+	@Autowired
+	WalletRepository walletRepository;
 	
 	public boolean createChallenge(createChallengeDTO challenge) throws IOException{
 		Optional<Account> account = accountRepository.findById(challenge.getUid());
@@ -322,48 +326,50 @@ public class ChallengeService implements IChallengeService {
 			return null;
 	}
 
-	@Scheduled(cron = "0 39 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
+	@Scheduled(cron = "0 0 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
 	@Override
-	public void deleteUnderachieving() {
+	public void deleteUnderachieving() throws InterruptedException, ExecutionException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String today = format.format(new Date());
 		
 		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
 		for (Challenge challenge : challenges) {
-			
-			System.out.println(challenge.getId());
-			System.out.println(challenge.getName());
-			
-//			Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
-//
-//	        String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
-//	        String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
+			Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
+
+			//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스 테스트용
+	        String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
+	        String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
 	        
-//	        Set<Account> set = challenge.getAccounts();
-//	        Iterator<Account> iter = set.iterator();
-//	        while(iter.hasNext()) {
-//	        	Account account = iter.next();
-//	        	System.out.println(account.getNickname());
-//	        }
+	        Set<Account> set = challenge.getAccounts();
+	        Iterator<Account> iter = set.iterator();
+	        while(iter.hasNext()) {
+	        	Account account = iter.next();
+	        	System.out.println(challenge.getId() + " " + challenge.getName() + " " + account.getNickname());
+	        	
+	        	
+	        	//String toAddress = "0x02C777293721d140EDecca8131D1b5ADD821b066";
+	        	String toAddress = walletRepository.findByAccount(account).get().getAddress();
+	        	System.out.println("주소 : " + toAddress);
+	        	
+	        	PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
+	        	
+	        	BigInteger value = new BigInteger("1000000000000000000");
+	        	BigInteger gasPrice = new BigInteger("100");
+	        	BigInteger gasLimit = new BigInteger("4700000");
+	        	
+	        	EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+	        	
+	        	BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+	        	
+	        	Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value);
+	        	
+	        	if(personalUnlockAccount.accountUnlocked()) {
+	        		admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
+	        		System.out.println("1EH 송금");
+	        	}
+	        	
+	        }
 	        
-//	        String toAddress = "0x02C777293721d140EDecca8131D1b5ADD821b066";
-//
-//	        PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
-//
-//	        BigInteger value = new BigInteger("1000000000000000000");
-//	        BigInteger gasPrice = new BigInteger("10000000000000000");
-//	        BigInteger gasLimit = new BigInteger("4700000");
-//
-//	        EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
-//
-//	        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-//
-//	        Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value);
-//
-//	        if(personalUnlockAccount.accountUnlocked()) {
-//	            admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
-//	            System.out.println("1EH 송금");
-//	        }
 			challengeRepository.deleteById(challenge.getId());
 			
 		}
