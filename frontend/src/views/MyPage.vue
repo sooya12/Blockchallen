@@ -19,12 +19,12 @@
     <div id="wallet" v-show="showDiv">
       <div id="walletInfo" v-if="!chargeFlag">
         <div v-if="!walletFlag">
-          <v-btn @click="createWallet" v-if="passwordFlag == 0">생성하기</v-btn>
+          <v-btn @click="createWallet" v-if="passwordFlag == 0" color="#f39c14">생성하기</v-btn>
           <div id="passwordArea" v-else-if="passwordFlag == 1">
             <p>비밀번호는 이더 사용/충전에 필요하며, 수정/재발급이 불가합니다. 꼭 기억해주세요!</p>
             <span id="passwordSpan">지갑 비밀번호</span>
             <v-text-field id="passwordInput" :rules="pwRules" v-model="password"></v-text-field>
-            <v-btn id="passwordBtn" @click="submitPw">입력 완료</v-btn>
+            <v-btn id="passwordBtn" @click="submitPw" color="#f39c14">입력 완료</v-btn>
           </div>
         </div>
         <div v-else>
@@ -54,6 +54,10 @@
       </div>
     </div>
     <div id="challenge" v-show="!showDiv">
+      <div id="noticeChallenge" v-show="notice">
+        <p>참여 중인 챌린지가 아직 없어요!</p>
+        <p>챌린지에 참여해주세요!</p>
+      </div>
       <div id="totalSuccessRate">
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
@@ -146,7 +150,9 @@ export default {
     ],
     showDiv: true,
     pieSuccess: 0,
-    pieFail: 0
+    pieFail: 0,
+    pieRunning: 0,
+    notice: false
   }),
   components: {
     MyWalletCharging
@@ -159,7 +165,6 @@ export default {
       this.passwordFlag = 1
     },
     async submitPw() {
-      console.log(this.password)
       await web3.eth.personal.newAccount(this.password)
           .then(res => {
             const address = res
@@ -189,7 +194,10 @@ export default {
         data: "",
       }, 'ssafy').then(() => {
         this.chargeFlag = false
-        this.createChart()
+
+        if (this.user.challenges.length > 0) {
+          this.createChart()
+        }
       })
 
       this.getWalletInfo(this.myWallet.walletAddress)
@@ -201,17 +209,20 @@ export default {
         data: {
           datasets: [{
             data: [
-              (this.pieSuccess / (this.pieSuccess + this.pieFail)) * 100,
-              (this.pieFail / (this.pieSuccess + this.pieFail)) * 100
+              (this.pieSuccess / (this.pieSuccess + this.pieFail + this.pieRunning)) * 100,
+              (this.pieFail / (this.pieSuccess + this.pieFail + this.pieRunning)) * 100,
+              (this.pieRunning / (this.pieSuccess + this.pieFail + this.pieRunning)) * 100,
             ],
             backgroundColor: [
               '#5C84B1',
-              '#FC766A'
+              '#FC766A',
+              '#bbbbbb'
             ],
           }],
           labels: [
             '성공',
-            '실패'
+            '실패',
+            '진행'
           ],
         },
         options: {
@@ -259,22 +270,23 @@ export default {
           this.user.challenges = res.data
           this.progressBarFlag = true
 
-          console.log(this.user.challenges)
-
           for(var i = 0; i < this.user.challenges.length; i++) {
-            console.log(this.user.challenges[i].running)
             if(!this.user.challenges[i].running) {
               if(this.user.challenges[i].progressRate >= 85) {
                 this.pieSuccess += 1
               } else {
                 this.pieFail += 1
               }
+            } else {
+              this.pieRunning += 1
             }
           }
 
-          console.log(this.pieSuccess, this.pieFail)
-
-          this.createChart()
+          if(this.user.challenges.length > 0) {
+            this.createChart()
+          } else {
+            this.notice = true
+          }
         })
         .catch(err => {
           console.log(err)
@@ -300,7 +312,7 @@ export default {
 }
 
 #header h1 span {
-  color: red;
+  color: #f39c14;
 }
 
 #tabs {
