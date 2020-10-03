@@ -1,22 +1,31 @@
 package com.ssafy.blockchallen.service.impl;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.web3j.protocol.admin.Admin;
+import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3j.protocol.http.HttpService;
 
 import com.ssafy.blockchallen.dto.certificationForCLDTO;
 import com.ssafy.blockchallen.dto.certificationListDTO;
@@ -43,7 +52,7 @@ public class ChallengeService implements IChallengeService {
 	@Autowired
 	ChallengeRepository challengeRepository;
 	
-	public boolean createChallenge(createChallengeDTO challenge) throws IOException {
+	public boolean createChallenge(createChallengeDTO challenge) throws IOException{
 		Optional<Account> account = accountRepository.findById(challenge.getUid());
 		if(!account.isPresent()) {
 			return false;
@@ -313,7 +322,7 @@ public class ChallengeService implements IChallengeService {
 			return null;
 	}
 
-	@Scheduled(cron = "0 0 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
+	@Scheduled(cron = "0 39 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
 	@Override
 	public void deleteUnderachieving() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -321,7 +330,42 @@ public class ChallengeService implements IChallengeService {
 		
 		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
 		for (Challenge challenge : challenges) {
+			
+			System.out.println(challenge.getId());
+			System.out.println(challenge.getName());
+			
+//			Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
+//
+//	        String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
+//	        String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
+	        
+//	        Set<Account> set = challenge.getAccounts();
+//	        Iterator<Account> iter = set.iterator();
+//	        while(iter.hasNext()) {
+//	        	Account account = iter.next();
+//	        	System.out.println(account.getNickname());
+//	        }
+	        
+//	        String toAddress = "0x02C777293721d140EDecca8131D1b5ADD821b066";
+//
+//	        PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
+//
+//	        BigInteger value = new BigInteger("1000000000000000000");
+//	        BigInteger gasPrice = new BigInteger("10000000000000000");
+//	        BigInteger gasLimit = new BigInteger("4700000");
+//
+//	        EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+//
+//	        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+//
+//	        Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value);
+//
+//	        if(personalUnlockAccount.accountUnlocked()) {
+//	            admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
+//	            System.out.println("1EH 송금");
+//	        }
 			challengeRepository.deleteById(challenge.getId());
+			
 		}
 	}
 }
