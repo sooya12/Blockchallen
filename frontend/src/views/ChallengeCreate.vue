@@ -151,7 +151,7 @@
                 v-model="picture"
                 accept="image/png, image/jpeg, image/bmp, image/gif"
                 prepend-icon="mdi-camera"
-                label="인증 사진 예시를 올려주면 더 좋아요"
+                label="인증 사진 예시를 올려주세요."
                 :rules="picturelimit"
 
             >
