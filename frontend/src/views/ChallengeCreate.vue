@@ -89,7 +89,8 @@
         </div>
 
         <div style="width: 50%; text-align: left; margin-top: 8%;">
-          <p style="color: #f39c14;">베팅금액</p>
+          <p style="color: #f39c14;">베팅금액 &nbsp;&nbsp; <span style="margin-left : 10%; color:#777;">내 잔고 :  <span style=" margin-left:2%;color: #444   ;">{{balance}} 이더</span></span></p>
+
           <v-flex xs12 sm6 d-flex>
             <v-select
                 :items="bets"
@@ -98,6 +99,7 @@
                 v-model="bet"
             ></v-select>
           </v-flex>
+          <p v-if="balanceAlert"  style="color:#ff5555; margin-top: 0%; margin-bottom: 5%;">{{  balanceAlert  }}</p>
         </div>
         <div>
           <p style="text-align: left; color: #f39c14;">분배방식</p>
@@ -144,7 +146,7 @@
           ></v-text-field>
 
 
-
+          <p style="text-align: left; margin-top: 5%; color: #f39c14;">사진 인증 예시</p>
           <div >
             <v-img :src="imageUrl" v-if="imageUrl" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
             <v-file-input
@@ -193,6 +195,23 @@
               style="font-weight: bold;">삭제</span>됩니다.</p>
         </div>
 
+        <div style="margin-top: 5%;">
+          <p style="text-align: left; color: #f39c14;">지갑 비밀번호</p>
+          <v-text-field
+              v-model="password"
+              :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
+              :rules="[passwordRules.required, passwordRules.min]"
+              :type="passwordShow ? 'text' : 'password'"
+              name="input-10-2"
+              label="비밀번호"
+              hint="입력"
+              :value="password"
+              class="input-group--focused"
+              @click:append="passwordShow = !passwordShow"
+
+              style="width:50%; "
+          ></v-text-field>
+        </div>
       </div>
       <v-snackbar
           v-model="snackbar"
@@ -215,13 +234,26 @@
       </v-snackbar>
 
 
-      <v-btn class="ma-2" color="primary" :disabled="!(checktitle&&(bet>0)&&checkdate)"
+
+      <v-btn class="ma-2" color="primary" :disabled="!(checktitle&&(bet>0)&&checkdate&&!balanceAlert&&imageUrl&&(password.length==4))"
              @click="register"
       >
         챌린지 만들기
         <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
       </v-btn>
+
+
     </div>
+    <v-overlay :value="overlay" style="text-align: center;">
+      <p v-if="overlayProgress==1"> 내 계좌 전송 준비중...</p>
+      <p v-if="overlayProgress==2"> 챌린지 계좌 생성중...</p>
+      <p v-if="overlayProgress==3"> 내 계좌에서 챌린지 계좌로 송금중...</p>
+      <p v-if="overlayProgress==4"> 서버로 결과 전송중...</p>
+      <v-progress-circular
+          indeterminate
+          size="64"
+      ></v-progress-circular>
+    </v-overlay>
   </div>
 </template>
 
@@ -230,18 +262,20 @@ import axios from 'axios'
 
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
-
+let offset = new Date().getTimezoneOffset() * 60000;
 export default {
   name: "challengeCreate",
+
   data() {
     return {
+      user : {},
       title: '',
       description: '챌린지명을 입력해주세요',
       rules: [v => v.length <= 25 || 'Max 25 characters'],
       periods: '',
-      startdate: new Date().toISOString().substr(0, 10),
+      startdate: new Date(Date.now()-offset).toISOString().substr(0, 10),
       startmenu: false,
-      enddate: new Date().toISOString().substr(0, 10),
+      enddate: new Date(Date.now()-offset).toISOString().substr(0, 10),
       endmenu: false,
       bets: [1, 2, 3, 5, 10, 20],
       bet: 0,
@@ -316,15 +350,43 @@ export default {
       picturelimit:[
           value => !value || value.size < 16000000 || '이미지가 선택되지 않았거나 이미지 크기는 16MB 이하여야 합니다.!',
       ],
+      walletAddress : '',
+      balance : 0,
+      balanceAlert: '',
+      passwordShow: false,
+      password: '',
+      passwordRules: {
+        required: password => !!password || '입력해주세요.',
+        min: v => v.length == 4 || '비밀번호는 4글자 입니다.',
 
-
+      },
+      overlay: false,
+      overlayProgress : 0,
     }
   },
   mounted() {
 
+    this.startdate =new Date(Date.now()-(offset-24*60*60*1000)).toISOString().substr(0, 10)
+    this.user=JSON.parse(sessionStorage.getItem('user'))
+    axios.get(this.$store.state.server + '/wallet/' + this.user.id)
+            .then(res => {
+              const address = res.data.address
+
+              if (address != null && address != ' ' && address != '') {
+                this.walletAddress = address
+                this.getBalance()
+              }
+            })
+
+
+
+
+
   },
   methods: {
+
     async register() {
+      this.overlay=true
       let formData = new FormData
       if(this.certificationAvailableTime){
         this.certificationStartTime=0
@@ -341,24 +403,58 @@ export default {
       formData.append("certificationStartTime",this.certificationStartTime)
       formData.append("certificationEndTime",this.certificationEndTime)
       formData.append("samplepicture",this.picture)
-
-      await web3.eth.personal.newAccount("ssafy")
+      let price = 1000000000000000000*this.bet
+      this.overlayProgress=1
+      await web3.eth.personal.unlockAccount(this.walletAddress, this.password, 600).then(() => {
+        this.overlayProgress=2
+      web3.eth.personal.newAccount("ssafy")
       .then(res => {
         formData.append("address", res)
-      })
+        this.overlayProgress=3
+          web3.eth.sendTransaction({
+            from: this.walletAddress,
+            gasPrice: "200000000",
+            gas: "1000000",
+            to: res,
+            value: String(price),
+            data: ""
+          }, this.password).then(() => {
+            this.overlayProgress=4
+            axios.post(this.$store.state.server + '/challenge', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            })
+                .then(() => {
+                  this.overlay=false
+                  this.$router.push('/challenges') //상세페이지로 이동하자
+                })
+                .catch(() => {
+                  this.overlay=false
+                })
+          })
 
-      axios.post(this.$store.state.server + '/challenge',formData, {
-        headers:{
-          'Content-Type' : 'multipart/form-data'
-        }
+        })
+
       })
-          .then(() => {
-            this.$router.push('/challenges') //상세페이지로 이동하자
+          .catch(()=> {
+            this.snackbarmsg = '비밀번호를 틀렸습니다. 다시 확인해주세요.'
+            this.snackbartimeout=10000
+            this.snackbar = true;
+            this.overlay=false
           })
-          .catch((err)=>{
-            console.log(err)
-          })
+
+
+
+
     },
+    async getBalance(){
+      await web3.eth.getBalance(this.walletAddress).then((b)=>this.balance=Math.floor(b/1000000000000000000))
+    },
+
+
+
+
 
     goMain(){
       this.$router.push('/challenges')
@@ -367,7 +463,7 @@ export default {
       this.picture = this.$refs.picture
       this.checkflag=false
       this.imageUrl = URL.createObjectURL(this.picture);
-      console.log('hi')
+
     },
   },
   watch: {
@@ -380,12 +476,12 @@ export default {
     },
     startdate: function (newVal) {
 
-      let curDate = new Date().toISOString().substr(0, 10)
-
+      let curDate = new Date(Date.now()-offset).toISOString().substr(0, 10)
       if (curDate >= newVal) {
         this.snackbarmsg = '시작 일은 현재 날짜 보다 최소 1일 이후 여야 합니다.'
+        this.snackbartimeout=3000
         this.snackbar = true;
-        this.startdate = curDate
+        this.startdate = new Date(Date.now()-(offset-24*60*60*1000)).toISOString().substr(0,10)
         this.checkdate = false;
         return;
       } else {
@@ -404,6 +500,7 @@ export default {
       if (this.startdate >= newVal) {
 
         this.snackbarmsg = '종료 날짜는 시작 날짜 이후여야 합니다.'
+        this.snackbartimeout=3000
         this.snackbar = true;
         let tempDate = new Date(this.startdate)
         tempDate.setDate(tempDate.getDate() + 1)
@@ -414,6 +511,7 @@ export default {
         let from = new Date(this.startdate)
         let to = new Date(this.enddate)
         let differ = (to - from) / (24 * 60 * 60 * 1000)
+        differ+=1
         if (differ >= 7) {
           if ((differ % 7) == 0) {
             differ = Math.floor((differ / 7)) + '주'
@@ -430,12 +528,18 @@ export default {
     expiredate: function (newVal) {
       if (newVal >= this.startdate) {
         this.snackbarmsg = '마감일은 시작일보다 최소 하루 전이여야 합니다.'
+        this.snackbartimeout=3000
         this.snackbar = true;
         let tempDate = new Date(this.startdate)
         tempDate.setDate(tempDate.getDate() - 1)
         this.expiredate = tempDate.toISOString().substr(0, 10)
       }
-
+      else if(newVal<new Date(Date.now()-(offset)).toISOString().substr(0,10)){
+        this.snackbarmsg = '마감일은 최소 오늘 이후여야 합니다.'
+        this.snackbartimeout=3000
+        this.snackbar = true;
+        this.expiredate=new Date(Date.now()-offset).toISOString().substr(0,10)
+      }
     },
 
     certificationTime :function (newVal){
@@ -452,6 +556,13 @@ export default {
       this.imageUrl = URL.createObjectURL(newVal);
 
     },
+    bet : function (newVal){
+      this.balanceAlert=''
+      if(newVal>this.balance){
+        this.balanceAlert='현재 가진 잔액이 부족합니다.'
+
+      }
+    }
 
 
 
