@@ -114,7 +114,7 @@ public class ChallengeController {
 
 
 	@ApiOperation(value = "참여자 미달 챌린지 삭제")
-	public Object deleteUnderachieving() throws InterruptedException, ExecutionException {
+	public Object deleteUnderachieving() throws InterruptedException, ExecutionException, ParseException {
 		challengeService.deleteUnderachieving();
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
