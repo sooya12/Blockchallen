@@ -3,6 +3,7 @@ package com.ssafy.blockchallen.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class ChallengeController {
 	
 	@ApiOperation(value = "챌린지 생성")
 	@RequestMapping(path = "/challenge", method = RequestMethod.POST)	
-	public Object createChallenge(@ModelAttribute createChallengeDTO challenge) throws IOException {
+	public Object createChallenge(@ModelAttribute createChallengeDTO challenge) throws IOException, InterruptedException, ExecutionException {
 		if(challengeService.createChallenge(challenge)) {
 			return new ResponseEntity<>("챌린지 생성 성공", HttpStatus.OK);
 		}
@@ -113,7 +114,7 @@ public class ChallengeController {
 
 
 	@ApiOperation(value = "참여자 미달 챌린지 삭제")
-	public Object deleteUnderachieving() {
+	public Object deleteUnderachieving() throws InterruptedException, ExecutionException {
 		challengeService.deleteUnderachieving();
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

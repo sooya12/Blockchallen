@@ -1,22 +1,31 @@
 package com.ssafy.blockchallen.service.impl;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.web3j.protocol.admin.Admin;
+import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3j.protocol.http.HttpService;
 
 import com.ssafy.blockchallen.dto.certificationForCLDTO;
 import com.ssafy.blockchallen.dto.certificationListDTO;
@@ -32,6 +41,7 @@ import com.ssafy.blockchallen.entity.Certification;
 import com.ssafy.blockchallen.entity.Challenge;
 import com.ssafy.blockchallen.repository.AccountRepository;
 import com.ssafy.blockchallen.repository.ChallengeRepository;
+import com.ssafy.blockchallen.repository.WalletRepository;
 import com.ssafy.blockchallen.service.IChallengeService;
 
 @Service
@@ -43,7 +53,10 @@ public class ChallengeService implements IChallengeService {
 	@Autowired
 	ChallengeRepository challengeRepository;
 	
-	public boolean createChallenge(createChallengeDTO challenge) throws IOException {
+	@Autowired
+	WalletRepository walletRepository;
+	
+	public boolean createChallenge(createChallengeDTO challenge) throws IOException, InterruptedException, ExecutionException{
 		Optional<Account> account = accountRepository.findById(challenge.getUid());
 		if(!account.isPresent()) {
 			return false;
@@ -64,6 +77,30 @@ public class ChallengeService implements IChallengeService {
 				.build();
 		newChallenge.addAccount(account.get());
 		challengeRepository.save(newChallenge);
+		
+		Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
+
+        String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
+        String fromPassword = "ssafy";
+        String toAddress = challenge.getAddress();
+
+        PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
+        
+        BigInteger value = new BigInteger("100000000000000000");
+        BigInteger gasPrice = new BigInteger("100");
+        BigInteger gasLimit = new BigInteger("4700000");
+        
+        EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+
+        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+
+        Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value);
+
+        if(personalUnlockAccount.accountUnlocked()) {
+//            admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
+            admin.ethSendTransaction(transaction).sendAsync().get();
+            System.out.println("1EH 송금");
+        }
 		
 		return true;
 	}
@@ -315,13 +352,48 @@ public class ChallengeService implements IChallengeService {
 
 	@Scheduled(cron = "0 0 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
 	@Override
-	public void deleteUnderachieving() {
+	public void deleteUnderachieving() throws InterruptedException, ExecutionException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String today = format.format(new Date());
 		
 		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
 		for (Challenge challenge : challenges) {
-			challengeRepository.deleteById(challenge.getId());
+			Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
+
+			//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스 테스트용
+	        String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
+	        String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
+	        
+	        Set<Account> set = challenge.getAccounts(); // 챌린지 참여 계정
+	        Iterator<Account> iter = set.iterator();
+	        
+	        while(iter.hasNext()) {
+	        	Account account = iter.next();
+	        	//System.out.println(challenge.getId() + " " + challenge.getName() + " " + account.getNickname());
+	        		        	
+	        	//String toAddress = "0x02C777293721d140EDecca8131D1b5ADD821b066";
+	        	String toAddress = walletRepository.findByAccount(account).get().getAddress(); // 챌린지 참여 유저의 지갑 주소
+	        	//System.out.println("주소 : " + toAddress);
+	        	
+	        	PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
+	        	
+	        	BigInteger value = new BigInteger(challenge.getFee().toString()); // 챌린지에 참여 비용
+	        	BigInteger gasPrice = new BigInteger("100");
+	        	BigInteger gasLimit = new BigInteger("4700000");
+	        	
+	        	EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+	        	
+	        	BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+	        	Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value); // 환불 처리
+	        	
+	        	if(personalUnlockAccount.accountUnlocked()) {
+	        		admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
+	        		System.out.println("1EH 송금");
+	        	}
+	        }
+	        
+			challengeRepository.deleteById(challenge.getId()); // db에서 챌린지 삭제
+			
 		}
 	}
 }

@@ -71,12 +71,12 @@ public class Challenge {
     @ApiModelProperty(required = true, value="챌린지 지갑 주소")
 	private String address;
     
-    @OneToMany(mappedBy = "challenge", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "challenge")
     @JsonBackReference
     @ApiModelProperty(value = "인증 set")
     private Set<Certification> certifications;
     
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JsonManagedReference
     @ApiModelProperty(value = "참여한 회원 계정 set")
 	private Set<Account> accounts;
