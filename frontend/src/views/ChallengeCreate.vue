@@ -433,6 +433,9 @@ export default {
                   this.overlay=false
                 })
           })
+        .catch(()=>{
+          this.overlay=false
+        })
 
         })
 

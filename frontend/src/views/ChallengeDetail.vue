@@ -422,7 +422,7 @@ export default {
       }
     }) 
         .then((res) => {
-
+          console.log(res)
           this.challengeAddress = res.data.address
           this.title = res.data.name
           this.startDate = res.data.startDate.substr(2, 8)
@@ -449,10 +449,14 @@ export default {
           } else {
             this.divide = '균등 분배'
           }
-          if (res.data.expireDate > today) {
+          let exp = new Date(this.expire)
+          exp.setDate(exp.getDate()+1)
+          exp=exp.toISOString().substr(0,10)
+
+          if (exp > today) {
             this.challengeState = 'before'
             this.before()
-          }else if(res.data.expireDate <= today && today<res.data.startDate){
+          }else if(exp <= today && today<res.data.startDate){
             this.challengeState = 'notStart'
           } else if (res.data.startDate <= today && res.data.endDate >= today) {
             this.challengeState = 'doing'
@@ -525,6 +529,8 @@ export default {
     remainTime() {
       let now = new Date(Date.now()-offset)
       let exp = new Date(this.expire)
+      exp.setDate(exp.getDate()+1)
+      exp.setSeconds(exp.getSeconds()-1)
       if (now > exp) {
         return;
       } else {
@@ -721,7 +727,11 @@ export default {
                     .catch(() => {
                       this.overlay=false
                     })
-              })
+              }).catch(()=>{
+            this.participateSnackbarText='전송에 오류가 있습니다.'
+            this.participateSnackbar=true
+            this.overlay=false
+          })
 
       })
           .catch(()=> {
