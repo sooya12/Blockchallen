@@ -10,7 +10,7 @@ export default new Vuex.Store({
         createPersistedState()
     ],
     state:{
-        //  server: 'http://localhost:8080/blockchallen',
+         // server: 'http://localhost:8080/blockchallen',
         server: 'https://j3a102.p.ssafy.io/blockchallen',
     },
     getters: {
