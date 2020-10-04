@@ -340,37 +340,35 @@ public class ChallengeService implements IChallengeService {
 	        String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
 	        String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
 	        
-	        Set<Account> set = challenge.getAccounts();
+	        Set<Account> set = challenge.getAccounts(); // 챌린지 참여 계정
 	        Iterator<Account> iter = set.iterator();
+	        
 	        while(iter.hasNext()) {
 	        	Account account = iter.next();
-	        	System.out.println(challenge.getId() + " " + challenge.getName() + " " + account.getNickname());
-	        	
-	        	
+	        	//System.out.println(challenge.getId() + " " + challenge.getName() + " " + account.getNickname());
+	        		        	
 	        	//String toAddress = "0x02C777293721d140EDecca8131D1b5ADD821b066";
-	        	String toAddress = walletRepository.findByAccount(account).get().getAddress();
-	        	System.out.println("주소 : " + toAddress);
+	        	String toAddress = walletRepository.findByAccount(account).get().getAddress(); // 챌린지 참여 유저의 지갑 주소
+	        	//System.out.println("주소 : " + toAddress);
 	        	
 	        	PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
 	        	
-	        	BigInteger value = new BigInteger("1000000000000000000");
+	        	BigInteger value = new BigInteger(challenge.getFee().toString()); // 챌린지에 참여 비용
 	        	BigInteger gasPrice = new BigInteger("100");
 	        	BigInteger gasLimit = new BigInteger("4700000");
 	        	
 	        	EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
 	        	
 	        	BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-	        	
-	        	Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value);
+	        	Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value); // 환불 처리
 	        	
 	        	if(personalUnlockAccount.accountUnlocked()) {
 	        		admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
 	        		System.out.println("1EH 송금");
 	        	}
-	        	
 	        }
 	        
-			challengeRepository.deleteById(challenge.getId());
+			challengeRepository.deleteById(challenge.getId()); // db에서 챌린지 삭제
 			
 		}
 	}
