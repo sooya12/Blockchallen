@@ -113,7 +113,6 @@ public class CertificationService implements ICertificationService {
 
 					EthTransaction et = admin.ethGetTransactionByHash(transactionHash).sendAsync().get();
 					System.out.println(et.getResult().getInput()); // transactionHash값으로 가져온 블록체인에 저장된 정보(sha256. 0x로 시작됨)
-
 				}
 
 			} catch (Exception e) {
