@@ -73,7 +73,7 @@
 
                 <h2>
                     {{challenge.name}}
-                    <small>{{ challenge.fee }}</small>
+                    <small>{{ challenge.fee }} ETH</small>
                 </h2>
                 <div class="chips">
                   <v-chip small v-if="challenge.startDate <= today && today < challenge.endDate" color="#f39c14">진행중</v-chip>
