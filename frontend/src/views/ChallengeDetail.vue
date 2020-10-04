@@ -172,13 +172,96 @@
         </div>
       </v-card>
       <div style="width:70%; padding: 1% 2%; margin-top: 3%; text-align: center;" v-if="challengeState=='before'">
-        <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;" v-if="!alreadyParicipate" @click="participate">
+        <v-dialog
+            v-model="passwordDialog"
+            persistent
+            max-width="600px"
+        >
+
+          <v-card>
+            <v-card-title>
+              <span >비밀번호 입력</span>
+            </v-card-title>
+            <v-card-text>
+              <v-card-text>
+                챌린지 인원 미 충족시, 챌린지가 취소 될 수 있습니다.<br>
+                위의 경우를 제외하고는 어떠한 경우에도 참가 신청을 철회 할 수 없습니다.
+              </v-card-text>
+              <v-checkbox
+                  v-model="participateAgree"
+                  label="위 사실에 동의합니다."
+              ></v-checkbox>
+              <div v-if="participateAgree">
+              <v-container>
+                <v-snackbar
+                    v-model="participateSnackbar"
+                    :timeout="3000"
+                    :value="participateSnackbar"
+                    absolute
+                    centered
+                    color="red darken-2"
+                    elevation="36"
+                    style="z-index: 3;"
+                >
+                  {{ participateSnackbarText }}
+                </v-snackbar>
+                <v-text-field
+                    v-model="password"
+                    :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
+                    :rules="[passwordRules.required, passwordRules.min]"
+                    :type="passwordShow ? 'text' : 'password'"
+                    name="input-10-2"
+                    label="비밀번호"
+                    hint="입력"
+                    :value="password"
+                    class="input-group--focused"
+                    @click:append="passwordShow = !passwordShow"
+
+                    style="width:50%; "
+                ></v-text-field>
+              </v-container>
+              <small>지갑 비밀번호를 입력해주세요.</small>
+              </div>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="passwordDialog = false"
+              >
+                취소
+              </v-btn>
+              <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="participate"
+                  v-if="participateAgree"
+              >
+                참가하기
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+          <v-overlay :value="overlay" style="text-align: center;">
+            <p v-if="overlayProgress==1"> 내 계좌 전송 준비중...</p>
+            <p v-if="overlayProgress==2"> 내 계좌에서 챌린지 계좌로 송금중...</p>
+            <p v-if="overlayProgress==3"> 서버로 결과 전송중...</p>
+            <v-progress-circular
+                indeterminate
+                size="64"
+            ></v-progress-circular>
+          </v-overlay>
+        </v-dialog>
+        <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;" v-if="!alreadyParicipate" @click="passwordDialog=true">
           참여하기
         </v-btn>
 
       </div>
+
+
     </div>
   </div>
+
   </div>
 </template>
 
@@ -284,7 +367,19 @@ export default {
       challengeAddress : '',
       walletAddress : '',
       balance : 0,
+      passwordShow: false,
+      password: '',
+      passwordRules: {
+        required: password => !!password || '입력해주세요.',
+        min: v => v.length == 4 || '비밀번호는 4글자 입니다.',
 
+      },
+      passwordDialog : false,
+      participateAgree:false,
+      participateSnackbar:false,
+      participateSnackbarText:'',
+      overlay: false,
+      overlayProgress : 0,
 
     }
   },
@@ -488,6 +583,10 @@ export default {
 
             }
           })
+          .catch(()=>{
+            this.participateSnackbarText='지갑을 먼저 생성해주세요.'
+            this.participateSnackbar=true
+          })
 
     },
     /**
@@ -587,19 +686,53 @@ export default {
       await web3.eth.getBalance(this.walletAddress).then((b)=>this.balance=Math.floor(b/1000000000000000000))
     },
 
-    participate(){
-      if(this.balance<this.fee){
-
+    async participate(){
+      if(this.password.length!=4){
+        this.participateSnackbarText='비밀번호는 4글자여야합니다.'
+        this.participateSnackbar=true
         return
       }
-      axios.post(this.$store.state.server + '/participate', {
-          cid: Number(this.cid),
-          uid: JSON.parse(sessionStorage.getItem("user")).id
+      if(this.balance<this.fee){
+        this.participateSnackbarText='잔액이 부족합니다. 잔액을 확인해주세요.'
+        this.participateSnackbar=true
+        return
+      }
+      this.overlay=true
+      this.overlayProgress=1
+      let price = 1000000000000000000*this.fee
+      await web3.eth.personal.unlockAccount(this.walletAddress, this.password, 600).then(() => {
+        this.overlayProgress=2
+        web3.eth.sendTransaction({
+                from: this.walletAddress,
+                gasPrice: "200000000",
+                gas: "1000000",
+                to: this.challengeAddress,
+                value: String(price),
+                data: ""
+              }, this.password).then(() => {
+                this.overlayProgress=3
+                axios.post(this.$store.state.server + '/participate', {
+                  cid: Number(this.cid),
+                  uid: JSON.parse(sessionStorage.getItem("user")).id
+                })
+                    .then(()=>{
+                      this.$router.go()
+                    })
+                    .catch(() => {
+                      this.overlay=false
+                    })
+              })
+
       })
-      .then(()=>{
-        this.$router.go()
-      })
+          .catch(()=> {
+            this.participateSnackbarText='비밀번호를 틀렸습니다. 다시 확인해주세요.'
+            this.participateSnackbar=true
+            this.overlay=false
+          })
+
     },
+
+
 
 
 
