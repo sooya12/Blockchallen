@@ -33,8 +33,15 @@
         ></v-text-field>
       </v-card>
       <div style="position: absolute; left:0; bottom :5%; width: 100%;">
-
         <div style="position: relative; margin: 0 auto; text-align: center; float:left;  width: 100%;">
+          <p> {{checkmessage}} </p>
+          <v-btn 
+            @click="checkPicture()"
+            style="margin-right: 2%;">
+            
+             <p style="color:white; font-size:2vh;  font-weight: bold;">위변조 검사하기</p>
+          </v-btn>
+
           <v-btn
               color="#ff5555"
 
@@ -50,7 +57,7 @@
               color="#ff5555"
 
               @click="cancel"
-              style="margin-left: 2%;"
+              style=""
           >
             <p style="color:white; font-size:2vh;  font-weight: bold;">취소</p>
 
@@ -77,6 +84,7 @@ export default {
       description: '위 내용을 그대로 입력해주세요. (붙여넣기 사용 불가)',
       textOriginal: '위 내용을 숙지하였으며 동의합니다.',
       activateReport: false,
+      checkmessage:'',
 
     }
   },
@@ -84,6 +92,21 @@ export default {
 
   },
   methods: {
+
+    checkPicture(){
+      axios.get(this.$store.state.server + '/certification/block/' + this.participant.certification.id)
+        .then((res)=>{
+          if(res.data){
+            alert("사진 위변조 true")
+            //  checkmessage = "사진이 위변조되지 않았습니다. 그래도 신고하시겠습니까?"
+          }else{
+            alert("사진 위변조 false")
+            //  checkmessage = "사진이 위변조되었습니다."
+          }
+
+      })
+    },
+
     clickReport(participant) {
       axios.get(this.$store.state.server +'/certification/report', {
         params : {
@@ -95,7 +118,6 @@ export default {
             this.$emit('close')
             window.location.reload()
           })
-
 
     },
 
