@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -146,7 +147,6 @@ public class ChallengeService implements IChallengeService {
 				Date date = new Date(endDate.getTime() + (24*60*60*1000));
 				boolean running = date.compareTo(new Date()) > 0 ? true:false;
 				double rate = (double)account.get().getCertifications().stream().filter(el->el.getChallenge().getId()==challenge.getId() && !el.getIsReported()).count()/challengeDays;
-//										챌린지												    getaccount             account.getid
 //				int count=0;
 //				int idx = 0;
 //				for (Certification c : account.get().getCertifications()) {
@@ -351,15 +351,17 @@ public class ChallengeService implements IChallengeService {
 			return null;
 	}
 
-	@Scheduled(cron = "30 37 18 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
+	@Transactional
+	@Scheduled(cron = "15 4 20 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
 	@Override
 	public void deleteUnderachieving() throws InterruptedException, ExecutionException, ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String today = format.format(new Date());
 		
+		Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
+		
 //		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
 //		for (Challenge challenge : challenges) {
-//			Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
 //
 //			//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스 테스트용
 //	        String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
@@ -379,13 +381,14 @@ public class ChallengeService implements IChallengeService {
 //	        	PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
 //	        	
 //	        	BigInteger value = new BigInteger(challenge.getFee().toString()); // 챌린지에 참여 비용
+//	        	BigInteger eth = new BigInteger("1000000000000000000"); // 기준 단위 1이더
 //	        	BigInteger gasPrice = new BigInteger("100");
 //	        	BigInteger gasLimit = new BigInteger("4700000");
 //	        	
 //	        	EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
 //	        	
 //	        	BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-//	        	Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value); // 환불 처리
+//	        	Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value.multiply(eth)); // 환불 처리
 //	        	
 //	        	if(personalUnlockAccount.accountUnlocked()) {
 //	        		admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
@@ -406,9 +409,12 @@ public class ChallengeService implements IChallengeService {
 		List<Challenge> endChallenges = (List<Challenge>) challengeRepository.findAllByEndDate(yesterday); // 종료된 모든 챌린지
 		for (Challenge challenge : endChallenges) {
 			Set<Account> accounts = challenge.getAccounts(); // 종료된 챌린지에 참여했던 계정
+			int total = accounts.size(); // 챌린지 총 잠여자 수
+			int complete = 0; // 챌린지 성공한 사람의 수
+			List<String> winners = new ArrayList<String>(); // 성공한 사람들의 지갑 주소 저장
 			System.out.println("챌린지 이름 : " + challenge.getName());
+			
 			for (Account account : accounts) {
-				System.out.println("챌린지 참여 인원 : " + account.getNickname());
 				SimpleDateFormat formats = new SimpleDateFormat("yyyy-MM-dd");
 				
 				// 파싱해서 날짜 얻기
@@ -418,15 +424,53 @@ public class ChallengeService implements IChallengeService {
 				long calDate = endDate.getTime() - startDate.getTime();
 				long challengeDays = calDate / (24*60*60*1000) + 1; // 날짜로 계산(시작일 포함)
 				
-				System.out.println(challenge.getCertifications());
-				System.out.println("1");
-				System.out.println(account.getCertifications());
-				System.out.println("2");
-				//double rate = (double)account.getCertifications().stream().filter(el->el.getChallenge().getId()==challenge.getId() && !el.getIsReported()).count()/challengeDays;
-			
-				//double progressRate = ((double)Math.round(rate*1000)/10);
-				//System.out.println("챌린지 참여 인원 : " + account.getNickname() + ", 달성률 : " + progressRate);
+				double rate = (double)account.getCertifications().stream().filter(el->el.getChallenge().getId()==challenge.getId() && !el.getIsReported()).count()/challengeDays;
+				
+				double progressRate = ((double)Math.round(rate*1000)/10);
+				System.out.println("챌린지 참여 인원 : " + account.getNickname() + ", 달성률 : " + progressRate);
+				
+				if(progressRate >= 85.0) { // 챌린지에 성공했다면
+					String address = walletRepository.findByAccount(account).get().getAddress(); // 성공한 참여자의 지갑 주소
+					winners.add(address);
+					complete++;
+				}
 			}
+			System.out.println("챌린지 참여자 수 : " +total +", 성공자 수 : " + complete);
+			
+			for (String winner : winners) {
+				String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
+				//String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
+		        String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
+		        
+		        String toAddress = winner; // 챌린지 참여 유저의 지갑 주소
+	        	System.out.println("주소 : " + toAddress);
+	        	
+	        	PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
+	        	
+	        	BigInteger value = new BigInteger(challenge.getFee().toString()); // 챌린지에 참여 비용
+	        	BigInteger eth = new BigInteger("1000000000000000000"); // 기준 단위 1이더
+	        	BigInteger all = new BigInteger(String.valueOf(total)); // 전체 인원
+	        	BigInteger totalReward = new BigInteger("1").multiply(eth).multiply(value).multiply(all); // 총 상금
+	        	BigInteger success = new BigInteger(String.valueOf(complete)); // 성공인원
+	        	BigInteger reward = totalReward.divide(success); // 인별 상금
+	        	
+	        	System.out.println("총 상금 " + totalReward);
+	        	System.out.println("인별 상금 " + reward);
+	        	
+	        	BigInteger gasPrice = new BigInteger("100");
+	        	BigInteger gasLimit = new BigInteger("4700000");
+	        	
+	        	EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+	        	
+	        	BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+	        	Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, reward); // 환불 처리
+	        	
+	        	if(personalUnlockAccount.accountUnlocked()) {
+	        		admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
+	        		System.out.println("1EH 송금");
+	        	}
+			}
+			
 		}
 	}
 }
