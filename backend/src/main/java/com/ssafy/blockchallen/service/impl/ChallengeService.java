@@ -351,7 +351,7 @@ public class ChallengeService implements IChallengeService {
 			return null;
 	}
 
-	@Scheduled(cron = "50 28 18 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
+	@Scheduled(cron = "30 37 18 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
 	@Override
 	public void deleteUnderachieving() throws InterruptedException, ExecutionException, ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -406,6 +406,7 @@ public class ChallengeService implements IChallengeService {
 		List<Challenge> endChallenges = (List<Challenge>) challengeRepository.findAllByEndDate(yesterday); // 종료된 모든 챌린지
 		for (Challenge challenge : endChallenges) {
 			Set<Account> accounts = challenge.getAccounts(); // 종료된 챌린지에 참여했던 계정
+			System.out.println("챌린지 이름 : " + challenge.getName());
 			for (Account account : accounts) {
 				System.out.println("챌린지 참여 인원 : " + account.getNickname());
 				SimpleDateFormat formats = new SimpleDateFormat("yyyy-MM-dd");
@@ -417,7 +418,10 @@ public class ChallengeService implements IChallengeService {
 				long calDate = endDate.getTime() - startDate.getTime();
 				long challengeDays = calDate / (24*60*60*1000) + 1; // 날짜로 계산(시작일 포함)
 				
-				System.out.println(account.getCertifications().stream().filter(el->el.getId()==challenge.getId() && !el.getIsReported()).count());
+				System.out.println(challenge.getCertifications());
+				System.out.println("1");
+				System.out.println(account.getCertifications());
+				System.out.println("2");
 				//double rate = (double)account.getCertifications().stream().filter(el->el.getChallenge().getId()==challenge.getId() && !el.getIsReported()).count()/challengeDays;
 			
 				//double progressRate = ((double)Math.round(rate*1000)/10);

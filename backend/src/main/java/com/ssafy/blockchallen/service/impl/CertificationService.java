@@ -69,10 +69,49 @@ public class CertificationService implements ICertificationService {
 		}
 		
 		if(date.compareTo(regDate) == 0) { // 캘린더의 오늘 날짜와 사진의 오늘날짜 비교해서 같으면
-			
 			Certification certification = new Certification();
 			Optional<Account> account = accountRepository.findById(userId);
 			Optional<Challenge> challenge = challengeRepository.findById(challengeId);
+			
+			String encryptPicture;
+			
+			try {
+				encryptPicture = sha256(picture);
+				
+				Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
+				
+				String fromAddress = challenge.get().getAddress();
+				String fromPassword = "ssafy";
+				String toAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
+				
+				PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
+				
+				BigInteger value = new BigInteger("0");
+				BigInteger gasPrice = new BigInteger("100");
+				BigInteger gasLimit = new BigInteger("4700000");
+				
+				EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+				BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+				
+				Transaction transaction = Transaction.createFunctionCallTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, encryptPicture);
+				
+				if(personalUnlockAccount.accountUnlocked()) {
+					EthSendTransaction est = admin.personalSendTransaction(transaction, "ssafy").sendAsync().get();
+					String transactionHash = est.getTransactionHash();
+					certification.setTransactionHash(transactionHash); // 트랜잭션해쉬 저장
+					long id = est.getId();
+					System.out.println("TransactionHash : " + transactionHash);
+					System.out.println("사진 인증 정보 저장");
+					
+					EthTransaction et = admin.ethGetTransactionByHash(transactionHash).sendAsync().get();
+					System.out.println(et.getResult().getInput()); // transactionHash값으로 가져온 블록체인에 저장된 정보(sha256. 0x로 시작됨)
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			
 			certification.setAccount(account.get());
 			certification.setChallenge(challenge.get());
 			certification.setPicture(picture);
@@ -81,43 +120,6 @@ public class CertificationService implements ICertificationService {
 			account.get().addCertification(certification); // 추가한
 			challenge.get().addCertification(certification); // 부분이에요
 			certificationRepository.save(certification);
-
-			String encryptPicture;
-
-			try {
-				encryptPicture = sha256(picture);
-
-				Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
-
-				String fromAddress = challenge.get().getAddress();
-				String fromPassword = "ssafy";
-				String toAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
-
-				PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
-
-				BigInteger value = new BigInteger("0");
-				BigInteger gasPrice = new BigInteger("100");
-				BigInteger gasLimit = new BigInteger("4700000");
-
-				EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
-				BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-
-				Transaction transaction = Transaction.createFunctionCallTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, encryptPicture);
-
-				if(personalUnlockAccount.accountUnlocked()) {
-					EthSendTransaction est = admin.personalSendTransaction(transaction, "ssafy").sendAsync().get();
-					String transactionHash = est.getTransactionHash();
-					long id = est.getId();
-					System.out.println("TransactionHash : " + transactionHash);
-					System.out.println("사진 인증 정보 저장");
-
-					EthTransaction et = admin.ethGetTransactionByHash(transactionHash).sendAsync().get();
-					System.out.println(et.getResult().getInput()); // transactionHash값으로 가져온 블록체인에 저장된 정보(sha256. 0x로 시작됨)
-				}
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 
 			return true;
 			

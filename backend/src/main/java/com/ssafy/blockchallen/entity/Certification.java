@@ -52,6 +52,10 @@ public class Certification {
 	@ApiModelProperty(required = true, value = "신고여부")
 	private Boolean isReported;
 	
+	@Column(name = "transaction_hash")
+	@ApiModelProperty(required = true, value = "트랜잭션해쉬")
+	private String transactionHash;
+	
 	@OneToOne
 	@ApiModelProperty(value = "신고자")
 	private Account reporter;
@@ -63,6 +67,7 @@ public class Certification {
 		private String regDate;
 		private Boolean isReported = false;
 		private Account reporter;
+		private String transactionHash;
 		
 		public Builder() {
 			
@@ -91,6 +96,10 @@ public class Certification {
 			this.reporter = reporter;
 			return this;
 		}
+		public Builder transactionHash(String transactionHash) {
+			this.transactionHash = transactionHash;
+			return this;
+		}
 		public Certification build() {
 			return new Certification(this);
 		}
@@ -102,6 +111,7 @@ public class Certification {
 		regDate = builder.regDate;
 		isReported = builder.isReported;
 		reporter = builder.reporter;
+		transactionHash = builder.transactionHash;
 	}
 	
 }
