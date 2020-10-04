@@ -1,9 +1,12 @@
 package com.ssafy.blockchallen.service.impl;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,16 @@ import com.ssafy.blockchallen.repository.AccountRepository;
 import com.ssafy.blockchallen.repository.CertificationRepository;
 import com.ssafy.blockchallen.repository.ChallengeRepository;
 import com.ssafy.blockchallen.service.ICertificationService;
+import org.web3j.protocol.admin.Admin;
+import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
+import org.web3j.protocol.admin.methods.response.TxPoolContent;
+import org.web3j.protocol.core.DefaultBlockParameterName;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
+import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthSendTransaction;
+import org.web3j.protocol.core.methods.response.EthTransaction;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.http.HttpService;
 
 @Service
 public class CertificationService implements ICertificationService {
@@ -68,6 +81,44 @@ public class CertificationService implements ICertificationService {
 			account.get().addCertification(certification); // 추가한
 			challenge.get().addCertification(certification); // 부분이에요
 			certificationRepository.save(certification);
+
+			String encryptPicture;
+
+			try {
+				encryptPicture = sha256(picture);
+
+				Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
+
+				String fromAddress = challenge.get().getAddress();
+				String fromPassword = "ssafy";
+				String toAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
+
+				PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
+
+				BigInteger value = new BigInteger("0");
+				BigInteger gasPrice = new BigInteger("100");
+				BigInteger gasLimit = new BigInteger("4700000");
+
+				EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+				BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+
+				Transaction transaction = Transaction.createFunctionCallTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, encryptPicture);
+
+				if(personalUnlockAccount.accountUnlocked()) {
+					EthSendTransaction est = admin.personalSendTransaction(transaction, "ssafy").sendAsync().get();
+					String transactionHash = est.getTransactionHash();
+					long id = est.getId();
+					System.out.println("TransactionHash : " + transactionHash);
+					System.out.println("사진 인증 정보 저장");
+
+					EthTransaction et = admin.ethGetTransactionByHash(transactionHash).sendAsync().get();
+					System.out.println(et.getResult().getInput()); // transactionHash값으로 가져온 블록체인에 저장된 정보(sha256. 0x로 시작됨)
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			return true;
 			
 		}else { // 저장 안됨
@@ -138,5 +189,19 @@ public class CertificationService implements ICertificationService {
 		} else {
 			return false; // 인증할 수 없다.
 		}
+	}
+
+	/* SHA256 암호화 함수 */
+	public static String sha256(byte[] value) throws Exception {
+		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+		messageDigest.update(value);
+
+		StringBuilder sb = new StringBuilder();
+
+		for(byte md : messageDigest.digest()) {
+			sb.append(String.format("%02x", md));
+		}
+
+		return sb.toString();
 	}
 }
