@@ -65,7 +65,7 @@
                   </div>
               </div>
               <div class="card-title">
-                <a @click="ToDetail(challenge.id)" class="toggle-info btn">
+                <a class="toggle-info btn">
                 
                   <span class="toggle-left"></span>
                   <span class="toggle-right"></span>
