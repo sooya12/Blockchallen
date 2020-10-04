@@ -17,7 +17,7 @@ import com.ssafy.blockchallen.entity.Challenge;
 
 public interface IChallengeService {
 	
-	boolean createChallenge(createChallengeDTO challenge) throws IOException;
+	boolean createChallenge(createChallengeDTO challenge) throws IOException, InterruptedException, ExecutionException;
 	detailChallengeDTO detailChallenge(long id);
 	List<myChallengeDTO> MyChallenges(long id) throws ParseException;
 	Collection<Challenge> getChallenges(String option);

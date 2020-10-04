@@ -56,7 +56,7 @@ public class ChallengeService implements IChallengeService {
 	@Autowired
 	WalletRepository walletRepository;
 	
-	public boolean createChallenge(createChallengeDTO challenge) throws IOException{
+	public boolean createChallenge(createChallengeDTO challenge) throws IOException, InterruptedException, ExecutionException{
 		Optional<Account> account = accountRepository.findById(challenge.getUid());
 		if(!account.isPresent()) {
 			return false;
@@ -77,6 +77,30 @@ public class ChallengeService implements IChallengeService {
 				.build();
 		newChallenge.addAccount(account.get());
 		challengeRepository.save(newChallenge);
+		
+		Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
+
+        String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
+        String fromPassword = "ssafy";
+        String toAddress = challenge.getAddress();
+
+        PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
+        
+        BigInteger value = new BigInteger("100000000000000000");
+        BigInteger gasPrice = new BigInteger("100");
+        BigInteger gasLimit = new BigInteger("4700000");
+        
+        EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+
+        BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+
+        Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value);
+
+        if(personalUnlockAccount.accountUnlocked()) {
+//            admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
+            admin.ethSendTransaction(transaction).sendAsync().get();
+            System.out.println("1EH 송금");
+        }
 		
 		return true;
 	}
