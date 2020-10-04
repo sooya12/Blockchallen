@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -126,6 +127,32 @@ public class CertificationService implements ICertificationService {
 		}else { // 저장 안됨
 			return false;
 		}
+	}
+
+	@Override
+	public Boolean checkBlock(long pid) {
+		Boolean result = false;
+
+		Optional<Certification> certification = certificationRepository.findById(pid);
+
+		Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
+
+		try {
+			EthTransaction ethTransaction = admin.ethGetTransactionByHash(certification.get().getTransactionHash()).sendAsync().get();
+
+			if(ethTransaction.getTransaction().isPresent()) {
+				String blockData = ethTransaction.getResult().getInput();
+				String dbData = "0x" + sha256(certification.get().getPicture());
+
+				if(blockData.equals(dbData)) {
+					result = true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result;
 	}
 
 	@Override
