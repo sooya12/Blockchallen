@@ -188,7 +188,6 @@ import BlockProgress from "@/components/BlockProgress";
 import ChallengeModal from "@/components/ChallengeModal";
 import PictureModal from "@/components/PictureModal";
 import Loading from "@/components/Loading";
-
 export default {
   name: "challengeDetail",
   components: {
@@ -276,8 +275,6 @@ export default {
       certificationEndTime : '',
       certificationAvailableTime : false,
       alreadyParicipate:false,
-
-
       todaystate:false, // 오늘 했는지 안했는지 (하루에 1번)
       samplepicture: '',
       ongoing:false, // 진행중인 챌린지인지 아닌지
@@ -374,6 +371,7 @@ export default {
           let from = new Date(res.data.startDate)
           let to = new Date(res.data.endDate)
           let differ = (to - from) / (24 * 60 * 60 * 1000)
+          differ+=1
           this.total = differ
           if (differ >= 7) {
             if ((differ % 7) == 0) {

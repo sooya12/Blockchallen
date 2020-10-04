@@ -64,7 +64,7 @@
       <div v-if="progressBarFlag">
         <div id="progressBars" v-for="(challenge) in user.challenges" :key="challenge.id">
           <div class="progressSet">
-            <v-card class="challengeCard" elevation="3" @click="moveChallenge(challenge.id)">
+            <v-card class="c hallengeCard" elevation="3" @click="moveChallenge(challenge.id)">
               <div class="challengeName">
                 <span> {{ challenge.name }} </span>
                 <div class="chips">
