@@ -188,6 +188,9 @@ import BlockProgress from "@/components/BlockProgress";
 import ChallengeModal from "@/components/ChallengeModal";
 import PictureModal from "@/components/PictureModal";
 import Loading from "@/components/Loading";
+const Web3 = require('web3')
+const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
+let offset = new Date().getTimezoneOffset() * 60000;
 export default {
   name: "challengeDetail",
   components: {
@@ -278,6 +281,9 @@ export default {
       todaystate:false, // 오늘 했는지 안했는지 (하루에 1번)
       samplepicture: '',
       ongoing:false, // 진행중인 챌린지인지 아닌지
+      challengeAddress : '',
+      walletAddress : '',
+      balance : 0,
 
 
     }
@@ -321,6 +327,8 @@ export default {
       }
     }) 
         .then((res) => {
+
+          this.challengeAddress = res.data.address
           this.title = res.data.name
           this.startDate = res.data.startDate.substr(2, 8)
           this.endDate = res.data.endDate.substr(2, 8)
@@ -340,7 +348,7 @@ export default {
             this.samplepicture="data:;base64, "+res.data.samplepicture
           }
 
-          let today = new Date().toISOString().substr(0, 10)
+          let today = new Date(Date.now()-offset).toISOString().substr(0, 10)
           if (this.isRandom) {
             this.divide = '랜덤 차등 분배'
           } else {
@@ -348,6 +356,7 @@ export default {
           }
           if (res.data.expireDate > today) {
             this.challengeState = 'before'
+            this.before()
           }else if(res.data.expireDate <= today && today<res.data.startDate){
             this.challengeState = 'notStart'
           } else if (res.data.startDate <= today && res.data.endDate >= today) {
@@ -403,13 +412,15 @@ export default {
           if(res.data.startDate <= today && res.data.endDate >= today){
             this.ongoing = true
           }
-          this.isLoading=false
+          if (this.challengeState != 'before'){
+            this.isLoading=false
+          }
         })
         .catch(() => {
           /*
           TODO : 에러 페이지로 이동
           */
-          this.$router.push()
+          this.$router.push('/404')
         })
 
 
@@ -417,7 +428,7 @@ export default {
   },
   methods: {
     remainTime() {
-      let now = new Date()
+      let now = new Date(Date.now()-offset)
       let exp = new Date(this.expire)
       if (now > exp) {
         return;
@@ -451,7 +462,7 @@ export default {
           this.remain += '남았습니다.'
         }
 
-
+        this.isLoading=false
       }
     },
     checkCertificationTime(){
@@ -465,6 +476,19 @@ export default {
       else{
         this.certificationAvailableTime=false
       }
+    },
+    before(){
+      axios.get(this.$store.state.server + '/wallet/' + JSON.parse(sessionStorage.getItem("user")).id)
+          .then(res => {
+            const address = res.data.address
+
+            if (address != null && address != ' ' && address != '') {
+              this.walletAddress = address
+              this.getBalance()
+
+            }
+          })
+
     },
     /**
      * TODO : URL 수정
@@ -559,7 +583,15 @@ export default {
       this.$router.push('/challenges')
     },
 
+    async getBalance(){
+      await web3.eth.getBalance(this.walletAddress).then((b)=>this.balance=Math.floor(b/1000000000000000000))
+    },
+
     participate(){
+      if(this.balance<this.fee){
+
+        return
+      }
       axios.post(this.$store.state.server + '/participate', {
           cid: Number(this.cid),
           uid: JSON.parse(sessionStorage.getItem("user")).id
