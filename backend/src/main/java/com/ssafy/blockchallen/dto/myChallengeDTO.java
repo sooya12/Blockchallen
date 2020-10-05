@@ -9,18 +9,18 @@ public class myChallengeDTO {
 	private long id;
 	private String name;
 	private int fee;
+	private boolean isStart;
 	private boolean isRunning;
 	private double progressRate;
-	private String startDate;
 	private String endDate;
 	
 	public static class Builder {
 		private long id;
 		private String name;
 		private int fee;
+		private boolean isStart;
 		private boolean isRunning;
 		private double progressRate;
-		private String startDate;
 		private String endDate;
 		
 		public Builder() {
@@ -38,16 +38,16 @@ public class myChallengeDTO {
 			this.fee = fee;
 			return this;
 		}
+		public Builder isStart(boolean isStart) {
+			this.isStart = isStart;
+			return this;
+		}
 		public Builder isRunning(boolean isRunning) {
 			this.isRunning = isRunning;
 			return this;
 		}
 		public Builder progressRate(double progressRate) {
 			this.progressRate = progressRate;
-			return this;
-		}
-		public Builder startDate(String startDate) {
-			this.startDate = startDate;
 			return this;
 		}
 		public Builder endDate(String endDate) {
@@ -62,9 +62,9 @@ public class myChallengeDTO {
 		id = builder.id;
 		name = builder.name;
 		fee = builder.fee;
+		isStart = builder.isStart;
 		isRunning = builder.isRunning;
 		progressRate = builder.progressRate;
-		startDate = builder.startDate;
 		endDate = builder.endDate;
 	} 
 }

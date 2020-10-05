@@ -151,6 +151,8 @@ public class ChallengeService implements IChallengeService {
 
 				Date date = new Date(endDate.getTime() + (24*60*60*1000));
 				boolean running = date.compareTo(new Date()) > 0 ? true:false;
+				date = new Date(startDate.getTime());
+				boolean start = date.compareTo(new Date()) <= 0 ? true:false;
 				double rate = (double)account.get().getCertifications().stream().filter(el->el.getChallenge().getId()==challenge.getId() && !el.getIsReported()).count()/challengeDays;
 				
 				challenges.add(new myChallengeDTO.Builder()
@@ -159,13 +161,10 @@ public class ChallengeService implements IChallengeService {
 						.fee(challenge.getFee())
 						.isRunning(running)
 						.progressRate((double)Math.round(rate*1000)/10)
-						.startDate(challenge.getStartDate())
+						.isStart(start)
 						.endDate(challenge.getEndDate())
 						.build());
 			}
-			
-//			if(challenges.size()==0)
-//				return challenges;
 			
 			return challenges.stream().sorted(new Comparator<myChallengeDTO>() {
 				public int compare(myChallengeDTO o1, myChallengeDTO o2) {
@@ -452,8 +451,8 @@ public class ChallengeService implements IChallengeService {
 			if(!challenge.getIsRandom()) { // 균등
 
 				for (Account winner : winners) {
-					String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
-					//String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
+					//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스
+					String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
 					String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
 					
 					String toAddress = winner.getWallet().getAddress(); // 챌린지 참여 유저의 지갑 주소
@@ -497,7 +496,7 @@ public class ChallengeService implements IChallengeService {
 				Random rand = new Random();
 				
 				for (Account winner : winners) {
-					String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
+					String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스
 					//String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
 					String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
 					
@@ -548,7 +547,7 @@ public class ChallengeService implements IChallengeService {
 				}
 			}
 			
-			
+	
 			
 		}
 	}
