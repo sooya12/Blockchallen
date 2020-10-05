@@ -150,6 +150,8 @@ public class ChallengeService implements IChallengeService {
 
 				Date date = new Date(endDate.getTime() + (24*60*60*1000));
 				boolean running = date.compareTo(new Date()) > 0 ? true:false;
+				date = new Date(startDate.getTime());
+				boolean start = date.compareTo(new Date()) <= 0 ? true:false;
 				double rate = (double)account.get().getCertifications().stream().filter(el->el.getChallenge().getId()==challenge.getId() && !el.getIsReported()).count()/challengeDays;
 				
 				challenges.add(new myChallengeDTO.Builder()
@@ -158,13 +160,10 @@ public class ChallengeService implements IChallengeService {
 						.fee(challenge.getFee())
 						.isRunning(running)
 						.progressRate((double)Math.round(rate*1000)/10)
-						.startDate(challenge.getStartDate())
+						.isStart(start)
 						.endDate(challenge.getEndDate())
 						.build());
 			}
-			
-//			if(challenges.size()==0)
-//				return challenges;
 			
 			return challenges.stream().sorted(new Comparator<myChallengeDTO>() {
 				public int compare(myChallengeDTO o1, myChallengeDTO o2) {
