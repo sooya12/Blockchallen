@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Collection;
 import java.util.List;
@@ -153,22 +152,14 @@ public class ChallengeService implements IChallengeService {
 				Date date = new Date(endDate.getTime() + (24*60*60*1000));
 				boolean running = date.compareTo(new Date()) > 0 ? true:false;
 				double rate = (double)account.get().getCertifications().stream().filter(el->el.getChallenge().getId()==challenge.getId() && !el.getIsReported()).count()/challengeDays;
-//				int count=0;
-//				int idx = 0;
-//				for (Certification c : account.get().getCertifications()) {
-////					System.out.println(idx++);
-//					boolean a = c.getChallenge().getId()==challenge.getId();
-//					boolean b = !c.getIsReported();
-//					if(c.getChallenge().getId()==challenge.getId() && !c.getIsReported()) {
-//						count++;
-//					}
-//				}
+				
 				challenges.add(new myChallengeDTO.Builder()
 						.id(challenge.getId())
 						.name(challenge.getName())
 						.fee(challenge.getFee())
 						.isRunning(running)
 						.progressRate((double)Math.round(rate*1000)/10)
+						.startDate(challenge.getStartDate())
 						.endDate(challenge.getEndDate())
 						.build());
 			}

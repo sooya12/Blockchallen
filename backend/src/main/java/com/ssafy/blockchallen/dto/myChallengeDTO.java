@@ -11,6 +11,7 @@ public class myChallengeDTO {
 	private int fee;
 	private boolean isRunning;
 	private double progressRate;
+	private String startDate;
 	private String endDate;
 	
 	public static class Builder {
@@ -19,6 +20,7 @@ public class myChallengeDTO {
 		private int fee;
 		private boolean isRunning;
 		private double progressRate;
+		private String startDate;
 		private String endDate;
 		
 		public Builder() {
@@ -44,6 +46,10 @@ public class myChallengeDTO {
 			this.progressRate = progressRate;
 			return this;
 		}
+		public Builder startDate(String startDate) {
+			this.startDate = startDate;
+			return this;
+		}
 		public Builder endDate(String endDate) {
 			this.endDate = endDate;
 			return this;
@@ -58,6 +64,7 @@ public class myChallengeDTO {
 		fee = builder.fee;
 		isRunning = builder.isRunning;
 		progressRate = builder.progressRate;
+		startDate = builder.startDate;
 		endDate = builder.endDate;
 	} 
 }
