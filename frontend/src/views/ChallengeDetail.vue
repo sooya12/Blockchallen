@@ -468,7 +468,7 @@ export default {
           this.expireDate = res.data.expireDate.substr(2, 8)
           this.expire = res.data.expireDate.substr(0, 10);
           this.fee = res.data.fee
-          this.isRandom = res.data.isRandom
+          this.isRandom = res.data.random
           this.users = res.data.users
           this.certificationCondition = res.data.certificationCondition
           this.startDate = this.startDate.replace(/-/g, '/')
