@@ -31,6 +31,7 @@ public class ChallengeController {
 	@ApiOperation(value = "챌린지 생성")
 	@RequestMapping(path = "/challenge", method = RequestMethod.POST)	
 	public Object createChallenge(@ModelAttribute createChallengeDTO challenge) throws IOException, InterruptedException, ExecutionException {
+		System.out.println(challenge.toString());
 		if(challengeService.createChallenge(challenge)) {
 			return new ResponseEntity<>("챌린지 생성 성공", HttpStatus.OK);
 		}
