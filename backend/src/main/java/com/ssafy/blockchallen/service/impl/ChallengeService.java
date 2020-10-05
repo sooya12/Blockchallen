@@ -372,44 +372,44 @@ public class ChallengeService implements IChallengeService {
 		
 		Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
 		
-//		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
-//		for (Challenge challenge : challenges) {
-//
-//			//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스 테스트용
-//	        String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
-//	        String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
-//	        
-//	        Set<Account> accounts = challenge.getAccounts(); // 챌린지 참여 계정
-//	        Iterator<Account> iter = accounts.iterator();
-//	        
-//	        while(iter.hasNext()) {
-//	        	Account account = iter.next();
-//	        	System.out.println(challenge.getId() + " " + challenge.getName() + " " + account.getNickname());
-//	        		        	
-//	        	//String toAddress = "0x02C777293721d140EDecca8131D1b5ADD821b066";
-//	        	String toAddress = walletRepository.findByAccount(account).get().getAddress(); // 챌린지 참여 유저의 지갑 주소
-//	        	System.out.println("주소 : " + toAddress);
-//	        	
-//	        	PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
-//	        	
-//	        	BigInteger value = new BigInteger(challenge.getFee().toString()); // 챌린지에 참여 비용
-//	        	BigInteger eth = new BigInteger("1000000000000000000"); // 기준 단위 1이더
-//	        	BigInteger gasPrice = new BigInteger("100");
-//	        	BigInteger gasLimit = new BigInteger("4700000");
-//	        	
-//	        	EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
-//	        	
-//	        	BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-//	        	Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value.multiply(eth)); // 환불 처리
-//	        	
-//	        	if(personalUnlockAccount.accountUnlocked()) {
-//	        		admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
-//	        		System.out.println("1EH 송금");
-//	        	}
-//	        }
-//			challengeRepository.deleteById(challenge.getId()); // db에서 챌린지 삭제
-//			
-//		}
+		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
+		for (Challenge challenge : challenges) {
+
+			//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스 테스트용
+	        String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
+	        String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
+	        
+	        Set<Account> accounts = challenge.getAccounts(); // 챌린지 참여 계정
+	        Iterator<Account> iter = accounts.iterator();
+	        
+	        while(iter.hasNext()) {
+	        	Account account = iter.next();
+	        	System.out.println(challenge.getId() + " " + challenge.getName() + " " + account.getNickname());
+	        		        	
+	        	//String toAddress = "0x02C777293721d140EDecca8131D1b5ADD821b066";
+	        	String toAddress = walletRepository.findByAccount(account).get().getAddress(); // 챌린지 참여 유저의 지갑 주소
+	        	System.out.println("주소 : " + toAddress);
+	        	
+	        	PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
+	        	
+	        	BigInteger value = new BigInteger(challenge.getFee().toString()); // 챌린지에 참여 비용
+	        	BigInteger eth = new BigInteger("1000000000000000000"); // 기준 단위 1이더
+	        	BigInteger gasPrice = new BigInteger("100");
+	        	BigInteger gasLimit = new BigInteger("4700000");
+	        	
+	        	EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+	        	
+	        	BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+	        	Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, value.multiply(eth)); // 환불 처리
+	        	
+	        	if(personalUnlockAccount.accountUnlocked()) {
+	        		admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
+	        		System.out.println("1EH 송금");
+	        	}
+	        }
+			challengeRepository.deleteById(challenge.getId()); // db에서 챌린지 삭제
+			
+		}
 		
 		// 어제 날짜
 		Date dDate = new Date();
@@ -448,57 +448,57 @@ public class ChallengeService implements IChallengeService {
 			}
 			System.out.println("챌린지 참여자 수 : " +total +", 성공자 수 : " + complete);
 			
-//			if(!challenge.getIsRandom()) { // 균등
-//
-//				for (Account winner : winners) {
-//					//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스
-//					String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
-//					String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
-//					
-//					String toAddress = winner.getWallet().getAddress(); // 챌린지 참여 유저의 지갑 주소
-//					System.out.println("주소 : " + toAddress);
-//					
-//					PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
-//					
-//					BigInteger value = new BigInteger(challenge.getFee().toString()); // 챌린지에 참여 비용
-//					BigInteger eth = new BigInteger("1000000000000000000"); // 기준 단위 1이더
-//					BigInteger all = new BigInteger(String.valueOf(total)); // 전체 인원
-//					BigInteger totalReward = new BigInteger("1").multiply(eth).multiply(value).multiply(all); // 총 상금
-//					BigInteger success = new BigInteger(String.valueOf(complete)); // 성공인원
-//					BigInteger reward = totalReward.divide(success); // 인별 상금
-//					
-//					System.out.println("총 상금 " + totalReward);
-//					System.out.println("인별 상금 " + reward);
-//					
-//					BigInteger gasPrice = new BigInteger("100");
-//					BigInteger gasLimit = new BigInteger("4700000");
-//					
-//					EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
-//					
-//					BigInteger nonce = ethGetTransactionCount.getTransactionCount();
-//					Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, reward); // 환불 처리
-//					
-//					if(personalUnlockAccount.accountUnlocked()) {
-//						admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
-//						System.out.println("1EH 송금");
-//					}
-//					
-//					Reward newReward = new Reward.Builder()
-//							.account(winner)
-//							.challenge(challenge)
-//							.prize(total*challenge.getFee())
-//							.build();
-//					rewardRepository.save(newReward);
-//				}
-//				
-//			} 
-			if(challenge.getIsRandom()) { // 랜덤
+			if(!challenge.getIsRandom()) { // 균등
+
+				for (Account winner : winners) {
+					//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스
+					String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
+					String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
+					
+					String toAddress = winner.getWallet().getAddress(); // 챌린지 참여 유저의 지갑 주소
+					System.out.println("주소 : " + toAddress);
+					
+					PersonalUnlockAccount personalUnlockAccount = admin.personalUnlockAccount(fromAddress, fromPassword).sendAsync().get();
+					
+					BigInteger value = new BigInteger(challenge.getFee().toString()); // 챌린지에 참여 비용
+					BigInteger eth = new BigInteger("1000000000000000000"); // 기준 단위 1이더
+					BigInteger all = new BigInteger(String.valueOf(total)); // 전체 인원
+					BigInteger totalReward = new BigInteger("1").multiply(eth).multiply(value).multiply(all); // 총 상금
+					BigInteger success = new BigInteger(String.valueOf(complete)); // 성공인원
+					BigInteger reward = totalReward.divide(success); // 인별 상금
+					
+					System.out.println("총 상금 " + totalReward);
+					System.out.println("인별 상금 " + reward);
+					
+					BigInteger gasPrice = new BigInteger("100");
+					BigInteger gasLimit = new BigInteger("4700000");
+					
+					EthGetTransactionCount ethGetTransactionCount = admin.ethGetTransactionCount(fromAddress, DefaultBlockParameterName.LATEST).sendAsync().get();
+					
+					BigInteger nonce = ethGetTransactionCount.getTransactionCount();
+					Transaction transaction = Transaction.createEtherTransaction(fromAddress, nonce, gasPrice, gasLimit, toAddress, reward); // 환불 처리
+					
+					if(personalUnlockAccount.accountUnlocked()) {
+						admin.personalSendTransaction(transaction, fromPassword).sendAsync().get();
+						System.out.println("1EH 송금");
+					}
+					
+					Reward newReward = new Reward.Builder()
+							.account(winner)
+							.challenge(challenge)
+							.prize(total*challenge.getFee())
+							.build();
+					rewardRepository.save(newReward);
+				}
+				
+			} 
+			else { // 랜덤
 				boolean[] use = new boolean[complete];
 				Random rand = new Random();
 				
 				for (Account winner : winners) {
-					String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스
-					//String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
+					//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스
+					String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
 					String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
 					
 					String toAddress = winner.getWallet().getAddress(); // 챌린지 참여 유저의 지갑 주소
