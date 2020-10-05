@@ -691,7 +691,7 @@ export default {
         modal: this.$modal
       }, {
         name: 'dynamic-modal',
-        width: '80%',
+        width: '90%',
         height: '50%',
         draggable: false,
       })
