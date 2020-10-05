@@ -331,7 +331,6 @@ export default {
     axios.get(this.$store.state.server + '/wallet/' + this.user.id)
         .then(res => {
           const address = res.data.address
-          console.log(address)
 
           if (address != null && address != ' ' && address != '') {
             this.myWallet.walletAddress = address
@@ -350,7 +349,6 @@ export default {
 
     axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
         .then(res => {
-          console.log(res.data)
           this.user.challenges = res.data
           this.progressBarFlag = true
 
