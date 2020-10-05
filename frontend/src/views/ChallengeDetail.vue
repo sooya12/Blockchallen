@@ -727,14 +727,16 @@ export default {
                     .catch(() => {
                       this.overlay=false
                     })
-              }).catch(()=>{
+              }).catch((err)=>{
+                console.log(err)
             this.participateSnackbarText='전송에 오류가 있습니다.'
             this.participateSnackbar=true
             this.overlay=false
           })
 
       })
-          .catch(()=> {
+          .catch((err)=> {
+            console.log(err)
             this.participateSnackbarText='비밀번호를 틀렸습니다. 다시 확인해주세요.'
             this.participateSnackbar=true
             this.overlay=false
