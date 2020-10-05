@@ -12,12 +12,13 @@
     </div>
     <div id="tabs">
       <v-tabs fixed centered color="#f39c14">
-        <v-tab @click="changeDivs"><h3><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h3></v-tab>
-        <v-tab @click="changeDivs"><h3><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h3></v-tab>
+        <v-tab @click="changeTabWallet"><h3><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h3></v-tab>
+        <v-tab @click="changeTabChallenge"><h3><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h3></v-tab>
       </v-tabs>
     </div>
-    <div id="wallet" v-show="showDiv">
-      <div v-if="firstLoading">
+    <div id="wallet" v-show="selectTab">
+      <div v-if="walletInfoLoading">
+        <p>지갑 정보 불러오는 중...</p>
         <v-progress-circular
             :size="70"
             :width="7"
@@ -25,19 +26,19 @@
             indeterminate
         ></v-progress-circular>
       </div>
-      <div id="walletInfo" v-if="!firstLoading && !chargeFlag">
+      <div id="walletInfo" v-if="!walletInfoLoading && !chargeFlag">
         <div v-if="!walletFlag">
           <v-btn @click="createWallet" v-if="passwordFlag == 0" color="#f39c14">생성하기</v-btn>
           <div id="passwordArea" v-else-if="passwordFlag == 1">
-            <p>비밀번호는 이더 사용/충전에 필요하며, 수정/재발급이 불가합니다. 꼭 기억해주세요!</p>
-            <span id="passwordSpan">지갑 비밀번호</span>
+            <p>비밀번호는 이더 사용/충전에 필요하며, 수정/재발급이 불가합니다. <br/>꼭 기억해주세요!</p>
+            <span id="passwordSpan">비밀번호</span>
             <v-text-field id="passwordInput" :rules="pwRules" v-model="password"></v-text-field>
-            <v-btn id="passwordBtn" @click="submitPw" color="#f39c14">입력 완료</v-btn>
+            <v-btn id="passwordBtn" @click="submitPw" color="#f39c14" :disabled="password.length != 4">입력 완료</v-btn>
           </div>
         </div>
         <div v-else>
           <div v-if="walletLoading">
-            <p>지갑 생성 중입니다.</p>
+            <p>지갑 생성 중...</p>
             <v-progress-circular
                 :size="70"
                 :width="7"
@@ -81,21 +82,21 @@
           </div>
         </div>
       </div>
-      <div id="loadingArea" v-else-if="!firstLoading">
+      <div id="loadingArea" v-else-if="!walletInfoLoading">
         <my-wallet-charging></my-wallet-charging>
         <div>
-          <p>충전 중입니다.</p>
+          <p>충전 중...</p>
           <p><span>수 초</span> ~ <span>수 분</span>이 걸릴 수 있습니다.</p>
           <p>잠시만 기다려주세요.</p>
         </div>
       </div>
     </div>
-    <div id="challenge" v-show="!showDiv">
-      <div id="noticeChallenge" v-if="chartFlag == 0">
+    <div id="challenge" v-show="!selectTab">
+      <div id="noticeChallenge" v-if="chartFlag == 1">
         <p>참여 중인 챌린지가 아직 없어요!</p>
         <p>챌린지에 참여해주세요!</p>
       </div>
-      <div id="totalSuccessRate" v-else-if="chartFlag == 2">
+      <div id="totalSuccessRate" v-show="chartFlag == 2">
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
       <div v-if="progressBarFlag">
@@ -138,6 +139,7 @@
         </div>
       </div>
       <div id="loading" v-else>
+        <p>나의 정보 불러오는 중...</p>
         <v-progress-circular
             :size="70"
             :width="7"
@@ -170,29 +172,29 @@ export default {
       access_token: "",
       walletAddress: "",
     },
-    chargeFlag: false,
-    walletFlag: false,
+    chargeFlag: false, // 충전 유무
+    walletFlag: false, // 지갑 유무
     myWallet: {
       walletAddress: "",
       myEth: 0,
     },
-    passwordFlag: 0,
+    passwordFlag: 0, // 0:지갑생성하기 1:비밀번호입력 2:지갑생성완료
     pwRules: [
       value => !!value || '지갑의 비밀번호를 입력해주세요',
-      value => !(value.length < 4) || '최소 4자 이상'
+      value => (value.length == 4) || '비밀번호는 4글자입니다'
     ],
     password: "",
-    progressBarFlag: false,
+    progressBarFlag: false, // true:대시보드 false:로딩바
     progressColor: [
-      'orange darken-1',
-      'grey'
+      'orange darken-1',  // 진행
+      'grey'              // 마감
     ],
-    showDiv: true,
-    pieSuccess: 0,
-    pieFail: 0,
-    pieRunning: 0,
-    chartFlag: 0,
-    firstLoading: true,
+    selectTab: true, // true:나의지갑 false:나의챌린지
+    pieSuccess: 0,  // 성공한 챌린지 개수
+    pieFail: 0,     // 실패한 챌린지 개수
+    pieRunning: 0,  // 진행 중인 챌린지 개수
+    chartFlag: 0, // 0:로딩바 1:챌린지없음 2:pieChart
+    walletInfoLoading: true, // true:지갑정보받는중 false:지갑정보있음
     walletLoading: false,
     kakaourl: '',
     kakaopay : false,
@@ -291,46 +293,41 @@ export default {
     moveChallenge(id) {
       this.$router.push("/challenges/" + id)
     },
-    changeDivs() {
-      if(this.showDiv == true) {
-        this.showDiv = false
-      } else {
-        this.showDiv = true
-      }
-    },
-    test(ether){
-      alert('hi'+ether)
-      console.log('hi')
-    },
 
 
-    kakaoPay(){
+
+    kakaoPay() {
       let filter = "win16|win32|win64|mac|macintel";
       let url = ""
-      axios.get(this.$store.state.server+"/kakaopay/ready",{
-          params :{
+      axios.get(this.$store.state.server + "/kakaopay/ready", {
+        params: {
 
-            "ether" : Number(this.kakaoEther)
-          }
+          "ether": Number(this.kakaoEther)
+        }
 
 
-      }).then((res)=>{
-        if ( navigator.platform ) {
+      }).then((res) => {
+        if (navigator.platform) {
           if (filter.indexOf(navigator.platform.toLowerCase()) < 0) {
             //mobile
-            url=res.data.next_redirect_mobile_url
+            url = res.data.next_redirect_mobile_url
 
           } else {
             //pc
-            url=res.data.next_redirect_pc_url
+            url = res.data.next_redirect_pc_url
           }
         }
-        this.kakaourl=url
-
-
+        this.kakaourl = url
 
 
       })
+    },
+
+    changeTabWallet() {
+      this.selectTab = true
+    },
+    changeTabChallenge() {
+      this.selectTab = false
     }
   },
   created() {
@@ -365,6 +362,10 @@ export default {
           this.user.challenges = res.data
           this.progressBarFlag = true
 
+          if(this.user.challenges.length <= 0) { // 챌린지 없는 경우
+            this.chartFlag = 1
+          }
+
           for(var i = 0; i < this.user.challenges.length; i++) {
             if(!this.user.challenges[i].running) {
               if(this.user.challenges[i].progressRate >= 85) {
@@ -377,14 +378,9 @@ export default {
             }
           }
 
-          if(this.user.challenges.length > 0) {
-            if(this.pieSuccess > 0 && this.pieFail > 0) {
-              this.createChart()
-            } else {
-              this.chartFlag = 1
-            }
-          } else {
+          if(this.user.challenges.length > 0 && (this.pieSuccess > 0 || this.pieFail > 0)) {
             this.chartFlag = 2
+            this.createChart()
           }
         })
         .catch(err => {

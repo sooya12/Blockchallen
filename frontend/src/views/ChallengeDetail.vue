@@ -8,13 +8,30 @@
         dark
         top
         left
-        style="margin : 2%;"
+        style="margin: 2%;"
         @click="goMain"
     >
       <v-icon dark left>arrow_back</v-icon>
       메인으로
     </v-btn>
-
+    <v-btn
+        color="#000000"
+        top
+        style="margin: 2%; float: right; color : #ffffff;"
+        @click="logout"
+    >
+      로그아웃
+    </v-btn>
+    <v-btn
+        color="#ffffff"
+        top
+        right
+        elevation="0"
+        style="margin: 2%; float: right;"
+        @click="goMypage"
+    >
+      {{ user.nickname }} 님
+    </v-btn>
     <loading></loading>
   </div>
   <div v-if="!isLoading">
@@ -23,13 +40,31 @@
         dark
         top
         left
-        style="margin : 2%;"
+        style="margin: 2%;"
         @click="goMain"
     >
       <v-icon dark left>arrow_back</v-icon>
       메인으로
     </v-btn>
-
+    <v-btn
+        color="#000000"
+        top
+        right
+        style="margin: 2%; float: right; color : #ffffff;"
+        @click="logout"
+    >
+      로그아웃
+    </v-btn>
+    <v-btn
+        color="#ffffff"
+        top
+        right
+        elevation="0"
+        style="margin: 2%; float: right;"
+        @click="goMypage"
+    >
+      {{ user.nickname }} 님
+    </v-btn>
     <div style="margin-left: 20%; margin-top: 3%;">
       <v-card style="width: 80%; max-width: 1000px;">
           <v-img
@@ -380,10 +415,13 @@ export default {
       participateSnackbarText:'',
       overlay: false,
       overlayProgress : 0,
-
+      user: [],
     }
   },
   mounted() {
+    const user = JSON.parse(sessionStorage.getItem("user"))
+    this.user = user
+
     axios.get(this.$store.state.server + '/participate', {
       params: {
         cid: Number(this.cid),
@@ -654,7 +692,7 @@ export default {
       }, {
         name: 'dynamic-modal',
         width: '50%',
-        height: '40%',
+        height: '50%',
         draggable: false,
       })
     },
@@ -686,6 +724,17 @@ export default {
 
     goMain(){
       this.$router.push('/challenges')
+    },
+
+    goMypage() {
+      this.$router.push('/mypage')
+    },
+
+    logout() {
+      let win = window.open('https://accounts.kakao.com/logout?continue=https://accounts.kakao.com/weblogin/account')
+      win.close()
+      sessionStorage.removeItem("user")
+      this.$router.push("/")
     },
 
     async getBalance(){

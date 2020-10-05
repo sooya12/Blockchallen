@@ -48,7 +48,15 @@
           >
         </select>
       <br style="clear:both;"/>
-      <div class="cards">
+      <div v-if="Loading">
+        <v-progress-circular
+            :size="70"
+            :width="7"
+            color="#f39c14"
+            indeterminate
+        ></v-progress-circular>
+      </div>
+      <div class="cards" v-if="!Loading">
 
       <v-slide-item
           v-for="challenge in challengelist
@@ -132,6 +140,8 @@ export default {
       terminate:false, // 마감
       gathering:false, // 모집중
 
+      Loading:true,
+
     // 날짜
       today:new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().substr(0, 10),
 
@@ -171,6 +181,8 @@ export default {
                   this.challengelist[i].samplepicture = "data:;base64, " + this.challengelist[i].samplepicture
 
               }
+
+              this.Loading=false
             })
 
 
