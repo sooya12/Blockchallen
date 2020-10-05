@@ -105,7 +105,8 @@
               <div class="challengeName">
                 <span> {{ challenge.name }} </span>
                 <div class="chips">
-                  <v-chip small v-if="challenge.running" color="#f39c14">진행 중</v-chip>
+                  <v-chip small v-if="challenge.running && !challenge.start" color="#388e3c">대기 중</v-chip>
+                  <v-chip small v-else-if="challenge.running && challenge.start" color="#f39c14">진행 중</v-chip>
                   <v-chip small v-else color="#bbbbbb">마감</v-chip>
                   <v-chip small v-if="!challenge.running && challenge.progressRate < 85" color="#FC766A">실패</v-chip>
                   <v-chip small v-else-if="!challenge.running && challenge.progressRate >= 85" color="#5C84B1">성공</v-chip>
@@ -321,7 +322,6 @@ export default {
     EventBus.$on('charge',this.test)
   },
   mounted() {
-
     const user = JSON.parse(sessionStorage.getItem("user"))
     this.user = user
 
