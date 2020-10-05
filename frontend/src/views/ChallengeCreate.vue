@@ -441,9 +441,9 @@ export default {
             data: ""
           }, this.password).then(() => {
             this.overlayProgress=4
-            axios.post(this.$store.state.server + '/challenge', {
+            axios.post(this.$store.state.server + '/challenge', 
               formData,
-            }, {
+            {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }
