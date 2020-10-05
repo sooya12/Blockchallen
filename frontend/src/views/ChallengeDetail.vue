@@ -654,7 +654,7 @@ export default {
       }, {
         name: 'dynamic-modal',
         width: '50%',
-        height: '40%',
+        height: '50%',
         draggable: false,
       })
     },
