@@ -460,8 +460,8 @@ public class ChallengeService implements IChallengeService {
 			if(!challenge.getIsRandom()) { // 균등
 
 				for (Account winner : winners) {
-					String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
-					//String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
+					//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스
+					String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
 					String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
 					
 					String toAddress = winner.getWallet().getAddress(); // 챌린지 참여 유저의 지갑 주소
@@ -505,7 +505,7 @@ public class ChallengeService implements IChallengeService {
 				Random rand = new Random();
 				
 				for (Account winner : winners) {
-					String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86";
+					String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스
 					//String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
 					String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
 					
@@ -556,7 +556,7 @@ public class ChallengeService implements IChallengeService {
 				}
 			}
 			
-			
+	
 			
 		}
 	}
