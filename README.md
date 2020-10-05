@@ -6,15 +6,15 @@
 
 
 
-##### :raising_hand_woman: 최현수 (프론트 / 팀장)
+##### :woman: 최현수 (프론트 / 팀장)
 
-##### :frowning_man: 박형민 (프론트)
+##### :man: 박형민 (프론트)
 
-##### :ok_woman: 이채영 (프론트)
+##### :woman: 이채영 (프론트)
 
-##### :sassy_woman: 이유진 (백)
+##### :woman: 이유진 (백)
 
-##### :man_facepalming: 임진섭 (백)
+##### :man: 임진섭 (백)
 
 
 -------
@@ -33,7 +33,7 @@
 
 ### :hammer_and_wrench: 사용 기술
 
-![batge](https://img.shields.io/badge/Ubuntu-18.04.1%20LTS-blue)![batge](https://img.shields.io/badge/Docker-19.03.12-blue)![batge](https://img.shields.io/badge/MySQL-8.0.20-blue)![batge](https://img.shields.io/badge/Vue.js-2.6.11-blue)![batge](https://img.shields.io/badge/Vagrant-2.2.10-blue) ![batge](https://img.shields.io/badge/Geth-1.9.20-blue)![batge](https://img.shields.io/badge/OpenJDK-1.8-blue) ![batge](https://img.shields.io/badge/Node.js-12.18.2-blue) 
+![batge](https://img.shields.io/badge/Ubuntu-18.04.1%20LTS-blue)![batge](https://img.shields.io/badge/Docker-19.03.12-blue)![batge](https://img.shields.io/badge/MySQL-8.0.20-blue)![batge](https://img.shields.io/badge/Vue.js-2.6.11-blue)![batge](https://img.shields.io/badge/Vagrant-2.2.10-blue) ![batge](https://img.shields.io/badge/Geth-1.9.20-blue)![batge](https://img.shields.io/badge/OpenJDK-1.8-blue) ![batge](https://img.shields.io/badge/Node.js-12.18.2-blue) ![batge](https://img.shields.io/badge/JPA----blue) ![batge](https://img.shields.io/badge/Web3j-4.6.3-blue) ![batge](https://img.shields.io/badge/Web3-1.2.11-blue)
 
 ![batge](https://img.shields.io/badge/STS-3.9.12-lightgrey) ![batge](https://img.shields.io/badge/Intellij-2020.2.1-lightgrey) ![batge](https://img.shields.io/badge/VSCode-1.49.0-lightgrey) ![batge](https://img.shields.io/badge/Gitlab-11.6.2-yellow) ![batge](https://img.shields.io/badge/Jira-8.2-yellow) ![batge](https://img.shields.io/badge/Notion----yellow)
 
