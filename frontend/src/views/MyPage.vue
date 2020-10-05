@@ -12,53 +12,90 @@
     </div>
     <div id="tabs">
       <v-tabs fixed centered color="#f39c14">
-        <v-tab @click="changeDivs"><h3><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h3></v-tab>
-        <v-tab @click="changeDivs"><h3><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h3></v-tab>
+        <v-tab @click="changeTabWallet"><h3><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h3></v-tab>
+        <v-tab @click="changeTabChallenge"><h3><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h3></v-tab>
       </v-tabs>
     </div>
-    <div id="wallet" v-show="showDiv">
-      <div id="walletInfo" v-if="!chargeFlag">
+    <div id="wallet" v-show="selectTab">
+      <div v-if="walletInfoLoading">
+        <p>지갑 정보 불러오는 중...</p>
+        <v-progress-circular
+            :size="70"
+            :width="7"
+            color="#f39c14"
+            indeterminate
+        ></v-progress-circular>
+      </div>
+      <div id="walletInfo" v-if="!walletInfoLoading && !chargeFlag">
         <div v-if="!walletFlag">
           <v-btn @click="createWallet" v-if="passwordFlag == 0" color="#f39c14">생성하기</v-btn>
           <div id="passwordArea" v-else-if="passwordFlag == 1">
-            <p>비밀번호는 이더 사용/충전에 필요하며, 수정/재발급이 불가합니다. 꼭 기억해주세요!</p>
-            <span id="passwordSpan">지갑 비밀번호</span>
+            <p>비밀번호는 이더 사용/충전에 필요하며, 수정/재발급이 불가합니다. <br/>꼭 기억해주세요!</p>
+            <span id="passwordSpan">비밀번호</span>
             <v-text-field id="passwordInput" :rules="pwRules" v-model="password"></v-text-field>
-            <v-btn id="passwordBtn" @click="submitPw" color="#f39c14">입력 완료</v-btn>
+            <v-btn id="passwordBtn" @click="submitPw" color="#f39c14" :disabled="password.length != 4">입력 완료</v-btn>
           </div>
         </div>
         <div v-else>
-          <v-text-field
-              :value="myWallet.walletAddress"
-              label="나의 계정 주소"
-              outlined
-              readonly
-          ></v-text-field>
-          <v-text-field
-              :value="Math.floor(myWallet.myEth / 1000000000000000000)"
-              label="나의 잔고"
-              outlined
-              readonly
-              suffix="ETH"
-          ></v-text-field>
-          <v-btn @click="charge" color="#f39c14">충전하기</v-btn>
+          <div v-if="walletLoading">
+            <p>지갑 생성 중...</p>
+            <v-progress-circular
+                :size="70"
+                :width="7"
+                color="#f39c14"
+                indeterminate
+            ></v-progress-circular>
+          </div>
+          <div v-else>
+            <v-text-field
+                :value="myWallet.walletAddress"
+                label="나의 계정 주소"
+                outlined
+                readonly
+            ></v-text-field>
+            <v-text-field
+                :value="Math.floor(myWallet.myEth / 1000000000000000000)"
+                label="나의 잔고"
+                outlined
+                readonly
+                suffix="ETH"
+            ></v-text-field>
+            <v-card v-if="kakaopay" style="padding: 3%; ">
+              <h2 style="text-align: left; font-size: 2vh;">카카오 페이로 이더 충전하기</h2>
+              <br><br>
+              <v-slider
+                  v-model="kakaoEther"
+                  :label="kakaoCoin.label"
+                  :thumb-color="kakaoCoin.color"
+                  max="15"
+                  min="1"
+                  thumb-label="always"
+              ></v-slider>
+              <h3>{{kakaoEther}} 이더</h3>
+              <br><br>
+            <kakao-pay :url="kakaourl" v-if="kakaourl" style="height: 50vh; overflow: hidden;" scrolling="no" frameBorder="0"></kakao-pay>
+              <v-btn @click="kakaoPay" color="#f39c14">충전하기</v-btn>
+              <v-btn @click="kakaopay=false" color="#f39c14" style="margin-left: 8%;">취소</v-btn>
+            </v-card>
+            <v-btn @click="kakaopay=true" color="#f39c14" v-if="!kakaopay">카카오페이로 충전하기</v-btn>
+          </div>
         </div>
       </div>
-      <div id="loadingArea" v-else>
+      <div id="loadingArea" v-else-if="!walletInfoLoading">
         <my-wallet-charging></my-wallet-charging>
         <div>
-          <p>충전 중입니다.</p>
+          <p>충전 중...</p>
           <p><span>수 초</span> ~ <span>수 분</span>이 걸릴 수 있습니다.</p>
           <p>잠시만 기다려주세요.</p>
         </div>
       </div>
     </div>
-    <div id="challenge" v-show="!showDiv">
-      <div id="noticeChallenge" v-show="notice">
+    <div id="challenge" v-show="!selectTab">
+      <div id="noticeChallenge" v-if="chartFlag == 1">
         <p>참여 중인 챌린지가 아직 없어요!</p>
         <p>챌린지에 참여해주세요!</p>
       </div>
-      <div id="totalSuccessRate">
+      <div id="totalSuccessRate" v-show="chartFlag == 2">
         <canvas id="myChart" width="100" height="100"></canvas>
       </div>
       <div v-if="progressBarFlag">
@@ -101,6 +138,7 @@
         </div>
       </div>
       <div id="loading" v-else>
+        <p>나의 정보 불러오는 중...</p>
         <v-progress-circular
             :size="70"
             :width="7"
@@ -116,6 +154,8 @@
 import Chart from 'chart.js'
 import axios from 'axios'
 import MyWalletCharging from '@/components/MyWalletCharging.vue'
+import KakaoPay from "@/components/KakaoPay";
+import EventBus from "@/EventBus";
 
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
@@ -131,31 +171,38 @@ export default {
       access_token: "",
       walletAddress: "",
     },
-    chargeFlag: false,
-    walletFlag: false,
+    chargeFlag: false, // 충전 유무
+    walletFlag: false, // 지갑 유무
     myWallet: {
       walletAddress: "",
       myEth: 0,
     },
-    passwordFlag: 0,
+    passwordFlag: 0, // 0:지갑생성하기 1:비밀번호입력 2:지갑생성완료
     pwRules: [
       value => !!value || '지갑의 비밀번호를 입력해주세요',
-      value => !(value.length < 4) || '최소 4자 이상'
+      value => (value.length == 4) || '비밀번호는 4글자입니다'
     ],
     password: "",
-    progressBarFlag: false,
+    progressBarFlag: false, // true:대시보드 false:로딩바
     progressColor: [
-      'orange darken-1',
-      'grey'
+      'orange darken-1',  // 진행
+      'grey'              // 마감
     ],
-    showDiv: true,
-    pieSuccess: 0,
-    pieFail: 0,
-    pieRunning: 0,
-    notice: false
+    selectTab: true, // true:나의지갑 false:나의챌린지
+    pieSuccess: 0,  // 성공한 챌린지 개수
+    pieFail: 0,     // 실패한 챌린지 개수
+    pieRunning: 0,  // 진행 중인 챌린지 개수
+    chartFlag: 0, // 0:로딩바 1:챌린지없음 2:pieChart
+    walletInfoLoading: true, // true:지갑정보받는중 false:지갑정보있음
+    walletLoading: false,
+    kakaourl: '',
+    kakaopay : false,
+    kakaoCoin: { label: '충전 금액', val: 15, color: 'red' },
+    kakaoEther : 1,
   }),
   components: {
-    MyWalletCharging
+    MyWalletCharging,
+    KakaoPay
   },
   methods: {
     backHome() {
@@ -165,6 +212,8 @@ export default {
       this.passwordFlag = 1
     },
     async submitPw() {
+      this.walletFlag = true
+      this.walletLoading = true
       await web3.eth.personal.newAccount(this.password)
           .then(res => {
             const address = res
@@ -174,28 +223,29 @@ export default {
                   console.log(res)
                   this.passwordFlag = 2
                   this.myWallet.walletAddress = address
-                  this.walletFlag = true
+                  this.walletLoading = false
                 })
                 .catch(err => {
                   console.log(err)
                 })
           })
     },
-    async charge() {
-      alert("충전")
+    async charge(chargeEther) {
       this.chargeFlag = true
+
+      let price=1001000000000000000*chargeEther+""
 
       await web3.eth.sendTransaction({
         from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
         gasPrice: "1000000",
         gas: "4700000",
         to: this.myWallet.walletAddress,
-        value: "1000100000000000000",
+        value: price,
         data: "",
       }, 'ssafy').then(() => {
         this.chargeFlag = false
 
-        if (this.user.challenges.length > 0) {
+        if (this.user.challenges.length > 0 && this.chartFlag == 2) {
           this.createChart()
         }
       })
@@ -209,20 +259,17 @@ export default {
         data: {
           datasets: [{
             data: [
-              (this.pieSuccess / (this.pieSuccess + this.pieFail + this.pieRunning)) * 100,
-              (this.pieFail / (this.pieSuccess + this.pieFail + this.pieRunning)) * 100,
-              (this.pieRunning / (this.pieSuccess + this.pieFail + this.pieRunning)) * 100,
+              (this.pieSuccess / (this.pieSuccess + this.pieFail)) * 100,
+              (this.pieFail / (this.pieSuccess + this.pieFail)) * 100,
             ],
             backgroundColor: [
               '#5C84B1',
               '#FC766A',
-              '#bbbbbb'
             ],
           }],
           labels: [
             '성공',
             '실패',
-            '진행'
           ],
         },
         options: {
@@ -242,33 +289,71 @@ export default {
     moveChallenge(id) {
       this.$router.push("/challenges/" + id)
     },
-    changeDivs() {
-      if(this.showDiv == true) {
-        this.showDiv = false
-      } else {
-        this.showDiv = true
-      }
+    kakaoPay() {
+      let filter = "win16|win32|win64|mac|macintel";
+      let url = ""
+      axios.get(this.$store.state.server + "/kakaopay/ready", {
+        params: {
+          "ether": Number(this.kakaoEther)
+        }
+      }).then((res) => {
+        if (navigator.platform) {
+          if (filter.indexOf(navigator.platform.toLowerCase()) < 0) {
+            //mobile
+            url = res.data.next_redirect_mobile_url
+
+          } else {
+            //pc
+            url = res.data.next_redirect_pc_url
+          }
+        }
+        this.kakaourl = url
+      })
+    },
+    changeTabWallet() {
+      this.selectTab = true
+    },
+    changeTabChallenge() {
+      this.selectTab = false
     }
   },
+  created() {
+    EventBus.$on('charge',this.test)
+  },
   mounted() {
+
     const user = JSON.parse(sessionStorage.getItem("user"))
     this.user = user
 
     axios.get(this.$store.state.server + '/wallet/' + this.user.id)
         .then(res => {
           const address = res.data.address
+          console.log(address)
 
           if (address != null && address != ' ' && address != '') {
             this.myWallet.walletAddress = address
             this.getWalletInfo(this.myWallet.walletAddress)
             this.walletFlag = true
           }
+
+          this.walletInfoLoading = false
+
+          if(sessionStorage.getItem('chargeEther')!=null){
+            let chargeEther =sessionStorage.getItem('chargeEther')
+            sessionStorage.removeItem('chargeEther')
+            this.charge(chargeEther)
+          }
         })
 
     axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
         .then(res => {
+          console.log(res.data)
           this.user.challenges = res.data
           this.progressBarFlag = true
+
+          if(this.user.challenges.length <= 0) { // 챌린지 없는 경우
+            this.chartFlag = 1
+          }
 
           for(var i = 0; i < this.user.challenges.length; i++) {
             if(!this.user.challenges[i].running) {
@@ -282,10 +367,9 @@ export default {
             }
           }
 
-          if(this.user.challenges.length > 0) {
+          if(this.user.challenges.length > 0 && (this.pieSuccess > 0 || this.pieFail > 0)) {
+            this.chartFlag = 2
             this.createChart()
-          } else {
-            this.notice = true
           }
         })
         .catch(err => {

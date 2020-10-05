@@ -8,8 +8,8 @@
         <strong>{{ user.nickname }}님</strong>
       </div>
       <div class="topbutton">
-        <v-btn @click="ToMyPage">마이페이지</v-btn>
-        <v-btn @click="logout">로그아웃</v-btn>
+        <v-btn @click="ToMyPage" style="background-color:#f39c14; margin-right:3px;">마이페이지</v-btn>
+        <v-btn dark @click="logout">로그아웃</v-btn>
       </div>
     </div>
     <br style="clear:both;"/>
@@ -22,7 +22,7 @@
           outlined
           v-model="searchText"
           class="col-12 px-3"
-          color="#5858FA"
+          color="#bbbbbb"
           style="padding:10px;"
           append-icon="mdi-magnify"
       >
@@ -35,7 +35,9 @@
                 float: left; 
                 width: 35%; 
                 line-height: 40px; 
-                margin: 20px" 
+                margin: 20px;
+                background-color:#f39c14;
+                color:white "
             @click="ccreate" class="">챌린지 만들기</v-btn>
         <select v-model="options" class="selectbox" @change="sortfunction($event)">
           <option value="" selected disabled hidden>정렬 기준</option>
@@ -46,31 +48,32 @@
           >
         </select>
       <br style="clear:both;"/>
-      <div class="cards">
+      <div v-if="Loading">
+        <v-progress-circular
+            :size="70"
+            :width="7"
+            color="#f39c14"
+            indeterminate
+        ></v-progress-circular>
+      </div>
+      <div class="cards" v-if="!Loading">
 
       <v-slide-item
           v-for="challenge in challengelist
                         .filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)"
           :key="challenge.id"
       >
-            <div class="card"  >
+            <div class="card"  @click="ToDetail(challenge.id)">
               <div class="card-image-holder">
                 <div v-if="!challenge.samplepicture">
                    <img class="card-image" src="https://source.unsplash.com/280x210/?wave" alt="wave" />
                 </div>
-                <!-- <v-img
-                      :src=challenge.samplepicture
-                      height="30vh"
-                      style="margin: 2%;"
-
-                  >
-                  </v-img> -->
                   <div v-if="challenge.samplepicture">
                     <v-img :src="challenge.samplepicture" style="height:210px; width:280px;"></v-img>
                   </div>
               </div>
               <div class="card-title">
-                <a @click="ToDetail(challenge.id)" class="toggle-info btn">
+                <a class="toggle-info btn">
                 
                   <span class="toggle-left"></span>
                   <span class="toggle-right"></span>
@@ -78,8 +81,14 @@
 
                 <h2>
                     {{challenge.name}}
-                    <small>{{ challenge.fee }}</small>
+                    <small>{{ challenge.fee }} ETH</small>
                 </h2>
+                <div class="chips">
+                  <v-chip small v-if="challenge.startDate <= today && today < challenge.endDate" color="#f39c14">진행중</v-chip>
+                  <v-chip small v-if="challenge.endDate <= today" color="#bbbbbb">마감</v-chip>
+                  <v-chip small v-if="today < challenge.expireDate+1" color="#FC766A">모집중</v-chip>
+                  <v-chip small v-if="challenge.expireDate+1 <= today && today < challenge.startDate" color="#5C84B1">대기중</v-chip>
+                </div>
               </div>
             </div>
         <!-- <v-btn @click="ToDetail(challenge.id)"
@@ -125,6 +134,18 @@ export default {
       options:'',
       samplepicture:'', // 샘플 픽처
 
+      // 상태변수
+      waiting:false, // 대기중
+      ongoing:false, // 진행중
+      terminate:false, // 마감
+      gathering:false, // 모집중
+
+      Loading:true,
+
+    // 날짜
+      today:new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().substr(0, 10),
+
+      // 색 변수
       white: '#ffffff',
       lightBG: '#dce1df',
       salmon: '#ff6666',
@@ -138,7 +159,7 @@ export default {
   mounted() {
       const user = JSON.parse(sessionStorage.getItem("user"))
       this.user = user
-      
+
   },
   components: {
     // InfiniteLoading
@@ -158,9 +179,14 @@ export default {
               for (let i = 0; i < res.data.length; i++) {
                 if(this.challengelist[i].samplepicture!=null)
                   this.challengelist[i].samplepicture = "data:;base64, " + this.challengelist[i].samplepicture
+
               }
 
+              this.Loading=false
             })
+
+
+        
 
   },
   methods: {
@@ -260,6 +286,10 @@ export default {
   z-index: 1;
   margin: 20px
 
+}
+
+.chips {
+  float: right;
 }
 
 /* -------------------------------- */
