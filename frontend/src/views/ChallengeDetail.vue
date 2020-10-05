@@ -1,26 +1,79 @@
 <template>
-  <div>
+  <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+
+  <div v-if="isLoading">
     <v-btn
         color="pink"
         dark
         top
         left
-        style="margin : 2%;"
+        style="margin: 2%;"
         @click="goMain"
     >
       <v-icon dark left>arrow_back</v-icon>
       메인으로
     </v-btn>
-
-    <div style="margin-left: 20%; margin-top: 3%;">
-      <v-card style="width:70%;">
+    <v-btn
+        color="#000000"
+        top
+        style="margin: 2%; float: right; color : #ffffff;"
+        @click="logout"
+    >
+      로그아웃
+    </v-btn>
+    <v-btn
+        color="#ffffff"
+        top
+        right
+        elevation="0"
+        style="margin: 2%; float: right;"
+        @click="goMypage"
+    >
+      {{ user.nickname }} 님
+    </v-btn>
+    <loading></loading>
+  </div>
+  <div v-if="!isLoading">
+    <v-btn
+        color="pink"
+        dark
+        top
+        left
+        style="margin: 2%;"
+        @click="goMain"
+    >
+      <v-icon dark left>arrow_back</v-icon>
+      메인으로
+    </v-btn>
+    <v-btn
+        color="#000000"
+        top
+        right
+        style="margin: 2%; float: right; color : #ffffff;"
+        @click="logout"
+    >
+      로그아웃
+    </v-btn>
+    <v-btn
+        color="#ffffff"
+        top
+        right
+        elevation="0"
+        style="margin: 2%; float: right;"
+        @click="goMypage"
+    >
+      {{ user.nickname }} 님
+    </v-btn>
+    <div style="margin-left: 5%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px;">
           <v-img
               src="/lego.ico"
               height="4vh"
               width="4vh"
               style="float:left; margin:2%;"
           ></v-img>
-          <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;float:left; ">{{ title }}</p>
+          <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%; float:left; color: #f39c14;">{{ title }}</p>
           <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && todaystate && certificationAvailableTime && ongoing">
               인증하기
           </v-btn>
@@ -31,10 +84,10 @@
             style="color:#ff5555; margin-left: 1%;">({{ periods }})</span>
         </div>
       </v-card>
-      <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
         <p style="font-size:2.5vh; margin-top: 2%;">배팅 금액 : <span style="font-size:3vh; font-weight: bold"> {{
             fee
-          }}원</span></p>
+          }} ETH</span></p>
         <p style="font-size:2.5vh; margin-top: 2%;">분배 방식 : <span style="font-size:3vh; font-weight: bold"> {{
             divide
           }}</span></p>
@@ -47,17 +100,21 @@
           <v-img :src="samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
         </div>
       </v-card>
-      <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;">현재 참여 인원 : {{ users.length }}명</p>
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold; " v-if="challengeState=='before'">현재 까지
-          {{ gather }}원이 모였습니다.</p>
+          {{ gather }} ETH가 모였습니다.</p>
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold; " v-if="challengeState!='before'">도전 금액 :
-          {{ gather }}원</p>
+          {{ gather }} ETH</p>
 
       </v-card>
-      <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
         <div v-if="challengeState=='before'">
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">마감까지 {{ remain }}</p>
+          <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
+        </div>
+        <div v-if="challengeState=='notStart'">
+          <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">본 챌린지는 참가 신청이 마감되어 곧 시작됩니다.</p>
           <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
         </div>
         <div v-if="challengeState=='doing'">
@@ -150,12 +207,96 @@
         </div>
       </v-card>
       <div style="width:70%; padding: 1% 2%; margin-top: 3%; text-align: center;" v-if="challengeState=='before'">
-        <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;" v-if="!alreadyParicipate" @click="participate">
+        <v-dialog
+            v-model="passwordDialog"
+            persistent
+            max-width="600px"
+        >
+
+          <v-card>
+            <v-card-title>
+              <span >비밀번호 입력</span>
+            </v-card-title>
+            <v-card-text>
+              <v-card-text>
+                챌린지 인원 미 충족시, 챌린지가 취소 될 수 있습니다.<br>
+                위의 경우를 제외하고는 어떠한 경우에도 참가 신청을 철회 할 수 없습니다.
+              </v-card-text>
+              <v-checkbox
+                  v-model="participateAgree"
+                  label="위 사실에 동의합니다."
+              ></v-checkbox>
+              <div v-if="participateAgree">
+              <v-container>
+                <v-snackbar
+                    v-model="participateSnackbar"
+                    :timeout="3000"
+                    :value="participateSnackbar"
+                    absolute
+                    centered
+                    color="red darken-2"
+                    elevation="36"
+                    style="z-index: 3;"
+                >
+                  {{ participateSnackbarText }}
+                </v-snackbar>
+                <v-text-field
+                    v-model="password"
+                    :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
+                    :rules="[passwordRules.required, passwordRules.min]"
+                    :type="passwordShow ? 'text' : 'password'"
+                    name="input-10-2"
+                    label="비밀번호"
+                    hint="입력"
+                    :value="password"
+                    class="input-group--focused"
+                    @click:append="passwordShow = !passwordShow"
+
+                    style="width:50%; "
+                ></v-text-field>
+              </v-container>
+              <small>지갑 비밀번호를 입력해주세요.</small>
+              </div>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="passwordDialog = false"
+              >
+                취소
+              </v-btn>
+              <v-btn
+                  color="blue darken-1"
+                  text
+                  @click="participate"
+                  v-if="participateAgree"
+              >
+                참가하기
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+          <v-overlay :value="overlay" style="text-align: center;">
+            <p v-if="overlayProgress==1"> 내 계좌 전송 준비중...</p>
+            <p v-if="overlayProgress==2"> 내 계좌에서 챌린지 계좌로 송금중...</p>
+            <p v-if="overlayProgress==3"> 서버로 결과 전송중...</p>
+            <v-progress-circular
+                indeterminate
+                size="64"
+            ></v-progress-circular>
+          </v-overlay>
+        </v-dialog>
+        <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;" v-if="!alreadyParicipate" @click="passwordDialog=true">
           참여하기
         </v-btn>
 
       </div>
+
+
     </div>
+  </div>
+
   </div>
 </template>
 
@@ -164,11 +305,15 @@ import axios from 'axios'
 import BlockProgress from "@/components/BlockProgress";
 import ChallengeModal from "@/components/ChallengeModal";
 import PictureModal from "@/components/PictureModal";
-
+import Loading from "@/components/Loading";
+const Web3 = require('web3')
+const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
+let offset = new Date().getTimezoneOffset() * 60000;
 export default {
   name: "challengeDetail",
   components: {
-    BlockProgress
+    BlockProgress,
+    Loading
   },
   props: {
     cid: {
@@ -177,6 +322,7 @@ export default {
   },
   data() {
     return {
+      isLoading : true,
       title: '',
       startDate: '',
       endDate: '',
@@ -250,16 +396,32 @@ export default {
       certificationEndTime : '',
       certificationAvailableTime : false,
       alreadyParicipate:false,
-
-
       todaystate:false, // 오늘 했는지 안했는지 (하루에 1번)
       samplepicture: '',
       ongoing:false, // 진행중인 챌린지인지 아닌지
+      challengeAddress : '',
+      walletAddress : '',
+      balance : 0,
+      passwordShow: false,
+      password: '',
+      passwordRules: {
+        required: password => !!password || '입력해주세요.',
+        min: v => v.length == 4 || '비밀번호는 4글자 입니다.',
 
-
+      },
+      passwordDialog : false,
+      participateAgree:false,
+      participateSnackbar:false,
+      participateSnackbarText:'',
+      overlay: false,
+      overlayProgress : 0,
+      user: [],
     }
   },
   mounted() {
+    const user = JSON.parse(sessionStorage.getItem("user"))
+    this.user = user
+
     axios.get(this.$store.state.server + '/participate', {
       params: {
         cid: Number(this.cid),
@@ -298,6 +460,8 @@ export default {
       }
     }) 
         .then((res) => {
+          console.log(res)
+          this.challengeAddress = res.data.address
           this.title = res.data.name
           this.startDate = res.data.startDate.substr(2, 8)
           this.endDate = res.data.endDate.substr(2, 8)
@@ -317,15 +481,22 @@ export default {
             this.samplepicture="data:;base64, "+res.data.samplepicture
           }
 
-          let today = new Date().toISOString().substr(0, 10)
+          let today = new Date(Date.now()-offset).toISOString().substr(0, 10)
           if (this.isRandom) {
             this.divide = '랜덤 차등 분배'
           } else {
             this.divide = '균등 분배'
           }
-          if (res.data.expireDate > today) {
+          let exp = new Date(this.expire)
+          exp.setDate(exp.getDate()+1)
+          exp=exp.toISOString().substr(0,10)
+
+          if (exp > today) {
             this.challengeState = 'before'
-          } else if (res.data.expireDate <= today && res.data.endDate >= today) {
+            this.before()
+          }else if(exp <= today && today<res.data.startDate){
+            this.challengeState = 'notStart'
+          } else if (res.data.startDate <= today && res.data.endDate >= today) {
             this.challengeState = 'doing'
             this.doing()
           } else {
@@ -346,6 +517,7 @@ export default {
           let from = new Date(res.data.startDate)
           let to = new Date(res.data.endDate)
           let differ = (to - from) / (24 * 60 * 60 * 1000)
+          differ+=1
           this.total = differ
           if (differ >= 7) {
             if ((differ % 7) == 0) {
@@ -377,13 +549,15 @@ export default {
           if(res.data.startDate <= today && res.data.endDate >= today){
             this.ongoing = true
           }
-
+          if (this.challengeState != 'before'){
+            this.isLoading=false
+          }
         })
         .catch(() => {
           /*
           TODO : 에러 페이지로 이동
           */
-          this.$router.push()
+          this.$router.push('/404')
         })
 
 
@@ -391,8 +565,10 @@ export default {
   },
   methods: {
     remainTime() {
-      let now = new Date()
+      let now = new Date(Date.now()-offset)
       let exp = new Date(this.expire)
+      exp.setDate(exp.getDate()+1)
+      exp.setSeconds(exp.getSeconds()-1)
       if (now > exp) {
         return;
       } else {
@@ -425,7 +601,7 @@ export default {
           this.remain += '남았습니다.'
         }
 
-
+        this.isLoading=false
       }
     },
     checkCertificationTime(){
@@ -439,6 +615,23 @@ export default {
       else{
         this.certificationAvailableTime=false
       }
+    },
+    before(){
+      axios.get(this.$store.state.server + '/wallet/' + JSON.parse(sessionStorage.getItem("user")).id)
+          .then(res => {
+            const address = res.data.address
+
+            if (address != null && address != ' ' && address != '') {
+              this.walletAddress = address
+              this.getBalance()
+
+            }
+          })
+          .catch(()=>{
+            this.participateSnackbarText='지갑을 먼저 생성해주세요.'
+            this.participateSnackbar=true
+          })
+
     },
     /**
      * TODO : URL 수정
@@ -471,7 +664,7 @@ export default {
 
 
           })
-
+      this.isLoading=false
     },
     /**
      * TODO : URL 수정
@@ -488,6 +681,7 @@ export default {
             this.faillist = res.data.faillist
 
           })
+      this.isLoading=false
     },
 
     clickParticipant(participant, total) {
@@ -498,7 +692,7 @@ export default {
       }, {
         name: 'dynamic-modal',
         width: '50%',
-        height: '40%',
+        height: '50%',
         draggable: false,
       })
     },
@@ -532,15 +726,74 @@ export default {
       this.$router.push('/challenges')
     },
 
-    participate(){
-      axios.post(this.$store.state.server + '/participate', {
-          cid: Number(this.cid),
-          uid: JSON.parse(sessionStorage.getItem("user")).id
-      })
-      .then(()=>{
-        this.$router.go()
-      })
+    goMypage() {
+      this.$router.push('/mypage')
     },
+
+    logout() {
+      let win = window.open('https://accounts.kakao.com/logout?continue=https://accounts.kakao.com/weblogin/account')
+      win.close()
+      sessionStorage.removeItem("user")
+      this.$router.push("/")
+    },
+
+    async getBalance(){
+      await web3.eth.getBalance(this.walletAddress).then((b)=>this.balance=Math.floor(b/1000000000000000000))
+    },
+
+    async participate(){
+      if(this.password.length!=4){
+        this.participateSnackbarText='비밀번호는 4글자여야합니다.'
+        this.participateSnackbar=true
+        return
+      }
+      if(this.balance<this.fee){
+        this.participateSnackbarText='잔액이 부족합니다. 잔액을 확인해주세요.'
+        this.participateSnackbar=true
+        return
+      }
+      this.overlay=true
+      this.overlayProgress=1
+      let price = 1000000000000000000*this.fee
+      await web3.eth.personal.unlockAccount(this.walletAddress, this.password, 600).then(() => {
+        this.overlayProgress=2
+        web3.eth.sendTransaction({
+                from: this.walletAddress,
+                gasPrice: "200000000",
+                gas: "1000000",
+                to: this.challengeAddress,
+                value: String(price),
+                data: ""
+              }, this.password).then(() => {
+                this.overlayProgress=3
+                axios.post(this.$store.state.server + '/participate', {
+                  cid: Number(this.cid),
+                  uid: JSON.parse(sessionStorage.getItem("user")).id
+                })
+                    .then(()=>{
+                      this.$router.go()
+                    })
+                    .catch(() => {
+                      this.overlay=false
+                    })
+              }).catch((err)=>{
+                console.log(err)
+            this.participateSnackbarText='전송에 오류가 있습니다.'
+            this.participateSnackbar=true
+            this.overlay=false
+          })
+
+      })
+          .catch((err)=> {
+            console.log(err)
+            this.participateSnackbarText='비밀번호를 틀렸습니다. 다시 확인해주세요.'
+            this.participateSnackbar=true
+            this.overlay=false
+          })
+
+    },
+
+
 
 
 

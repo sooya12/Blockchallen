@@ -15,10 +15,10 @@
     <div id="nicknameForm">
       <p><font-awesome-icon icon="user-check"/> 닉네임 입력 후, 중복확인을 해주세요.</p>
       <div id="nickname">
-        <v-text-field v-model="nickname" label="닉네임" :rules="nicknameRules" hide-details="auto"></v-text-field>
+        <v-text-field v-model="nickname" label="닉네임 (1 ~ 7 글자)" :rules="nicknameRules" hide-details="auto"></v-text-field>
       </div>
       <div id="nicknameCheck">
-        <v-btn medium color="primary" @click="duplicationCheck">중복확인</v-btn>
+        <v-btn medium color="primary" @click="duplicationCheck" :disabled="nickname.length < 1 || nickname.length > 7">중복확인</v-btn>
       </div>
     </div>
     <div id="signUp">
@@ -38,7 +38,8 @@ export default {
     nickname: "",
     nicknameRules: [
       value => !!value || '필수 사항. 한 글자 이상 입력해주세요',
-      value => (value && value.length >= 1) || '한 글자 이상 입력해주세요'
+      value => (value && value.length >= 1) || '한 글자 이상 입력해주세요',
+      value => (value.length < 8) || '최대 일곱 글자입니다'
     ],
     flag: false
   }),

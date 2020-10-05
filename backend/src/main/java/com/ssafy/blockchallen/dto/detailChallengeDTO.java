@@ -22,6 +22,7 @@ public class detailChallengeDTO {
 	private int certificationStartTime;
 	private int certificationEndTime;
 	private Set<Account> users;
+	private String address;
 	
 	public static class Builder {
 		private long id = -1;
@@ -36,6 +37,7 @@ public class detailChallengeDTO {
 		private int certificationStartTime;
 		private int certificationEndTime;
 		private Set<Account> users;
+		private String address="";
 		
 		public Builder() {
 			
@@ -88,6 +90,11 @@ public class detailChallengeDTO {
 			this.users = users;
 			return this;
 		}
+
+		public Builder address(String address) {
+			this.address = address;
+			return this;
+		}
 		public detailChallengeDTO build() {
 			return new detailChallengeDTO(this);
 		}
@@ -106,5 +113,6 @@ public class detailChallengeDTO {
 		certificationStartTime = builder.certificationStartTime;
 		certificationEndTime = builder.certificationEndTime;
 		users = builder.users;
+		address=builder.address;
 	}
 }
