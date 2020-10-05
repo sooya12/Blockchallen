@@ -78,7 +78,6 @@
               <v-btn @click="kakaopay=false" color="#f39c14" style="margin-left: 8%;">취소</v-btn>
             </v-card>
             <v-btn @click="kakaopay=true" color="#f39c14" v-if="!kakaopay">카카오페이로 충전하기</v-btn>
-
           </div>
         </div>
       </div>
@@ -233,7 +232,9 @@ export default {
     },
     async charge(chargeEther) {
       this.chargeFlag = true
+
       let price=1001000000000000000*chargeEther+""
+
       await web3.eth.sendTransaction({
         from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
         gasPrice: "1000000",
@@ -260,20 +261,15 @@ export default {
             data: [
               (this.pieSuccess / (this.pieSuccess + this.pieFail)) * 100,
               (this.pieFail / (this.pieSuccess + this.pieFail)) * 100,
-              /*(this.pieSuccess / (this.pieSuccess + this.pieFail + this.pieRunning)) * 100,
-              (this.pieFail / (this.pieSuccess + this.pieFail + this.pieRunning)) * 100,
-              (this.pieRunning / (this.pieSuccess + this.pieFail + this.pieRunning)) * 100,*/
             ],
             backgroundColor: [
               '#5C84B1',
               '#FC766A',
-              /*'#ffd696'*/
             ],
           }],
           labels: [
             '성공',
             '실패',
-            /*'진행'*/
           ],
         },
         options: {
@@ -293,19 +289,13 @@ export default {
     moveChallenge(id) {
       this.$router.push("/challenges/" + id)
     },
-
-
-
     kakaoPay() {
       let filter = "win16|win32|win64|mac|macintel";
       let url = ""
       axios.get(this.$store.state.server + "/kakaopay/ready", {
         params: {
-
           "ether": Number(this.kakaoEther)
         }
-
-
       }).then((res) => {
         if (navigator.platform) {
           if (filter.indexOf(navigator.platform.toLowerCase()) < 0) {
@@ -318,11 +308,8 @@ export default {
           }
         }
         this.kakaourl = url
-
-
       })
     },
-
     changeTabWallet() {
       this.selectTab = true
     },
@@ -341,6 +328,7 @@ export default {
     axios.get(this.$store.state.server + '/wallet/' + this.user.id)
         .then(res => {
           const address = res.data.address
+          console.log(address)
 
           if (address != null && address != ' ' && address != '') {
             this.myWallet.walletAddress = address
@@ -348,11 +336,12 @@ export default {
             this.walletFlag = true
           }
 
-          this.firstLoading = false
+          this.walletInfoLoading = false
+
           if(sessionStorage.getItem('chargeEther')!=null){
-            let chareEther =sessionStorage.getItem('chargeEther')
+            let chargeEther =sessionStorage.getItem('chargeEther')
             sessionStorage.removeItem('chargeEther')
-            this.charge(chareEther)
+            this.charge(chargeEther)
           }
         })
 
