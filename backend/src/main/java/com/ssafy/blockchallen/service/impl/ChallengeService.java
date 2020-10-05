@@ -68,7 +68,7 @@ public class ChallengeService implements IChallengeService {
 				.startDate(challenge.getStartDate())
 				.endDate(challenge.getEndDate())
 				.fee(challenge.getFee())
-				.isRandom(challenge.isRandom())
+				.isRandom(challenge.isIsRandom())
 				.certificationCondition(challenge.getCertification())
 				.samplepicture(challenge.getSamplepicture().getBytes())
 				.certificationStartTime(challenge.getCertificationStartTime())

@@ -21,6 +21,12 @@ public class createChallengeDTO {
 	private int certificationEndTime;
 	private String address;
 
+	public boolean isIsRandom(){
+		return this.isRandom;
+	}
+	public void setIsRandom(boolean isRandom){
+		this.isRandom=isRandom;
+	}
 	@Override
 	public String toString() {
 		return "createChallengeDTO{" +
