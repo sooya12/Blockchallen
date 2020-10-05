@@ -121,6 +121,7 @@ public class ChallengeService implements IChallengeService {
 					.certificationStartTime(challenge.get().getCertificationStartTime())
 					.certificationEndTime(challenge.get().getCertificationEndTime())
 					.users(challenge.get().getAccounts())
+					.address(challenge.get().getAddress())
 					.build();
 			
 			return retChallenge;
