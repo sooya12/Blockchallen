@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <div style="float:left; width:40%; height : 20vh;">
+    <div style="float:left; width:40%; height : 20vh; margin-top:8%;">
       <v-img
           :src=participant.certification.picture
           height="30vh"
@@ -11,7 +11,7 @@
       </v-img>
     </div>
 
-    <div style="float:left; padding-left : 5%; width:60%;">
+    <div style="float:left; padding-left : 5%; width:60%; margin-top:8%; ">
       <v-img
           src="/certification.jpg"
           height="15vh"
@@ -51,8 +51,10 @@
             <p style="color:white; font-size:2vh;  font-weight: bold;" >신고하기</p>
             <v-icon dark right style="color:white;">mdi-cancel</v-icon>
           </v-btn>
+          
         </template>
 
+        
         <p style="font-size: 1.8vh; font-weight: bold;">신고하기는 이럴때!</p>
         <p style="font-size: 1.6vh; margin-top: 0.5vh; margin-bottom: 0;">인증샷이 본 챌린지와 상관이 없다면 신고 버튼을 눌러주세요.</p>
         <p style="font-size: 1.6vh; margin-top: 0.2vh; margin-bottom: 0;">인증샷이 의심스럽다면 신고 버튼을 눌러주세요.</p>
@@ -105,8 +107,8 @@ export default {
         modal: this.$modal
       }, {
         name: 'dynamic-modal',
-        width: '50%',
-        height: '70%',
+        width: '60%',
+        height: '85%',
         draggable: false,
 
       })

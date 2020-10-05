@@ -11,6 +11,25 @@
       <v-icon dark left>arrow_back</v-icon>
       메인으로
     </v-btn>
+    <v-btn
+        color="#000000"
+        top
+        right
+        style="margin: 2%; float: right; color : #ffffff;"
+        @click="logout"
+    >
+      로그아웃
+    </v-btn>
+    <v-btn
+        color="#ffffff"
+        top
+        right
+        elevation="0"
+        style="margin: 2%; float: right;"
+        @click="goMypage"
+    >
+      {{ user.nickname }} 님
+    </v-btn>
     <div style="text-align: center; ">
       <h1><span style="color: #f39c14;">챌린지</span> 생성하기</h1>
       <div style="width:80%; margin: 2% auto; max-width: 1000px;">
@@ -403,6 +422,8 @@ export default {
       formData.append("certificationStartTime",this.certificationStartTime)
       formData.append("certificationEndTime",this.certificationEndTime)
       formData.append("samplepicture",this.picture)
+
+
       let price = 1000000000000000000*this.bet
       this.overlayProgress=1
       await web3.eth.personal.unlockAccount(this.walletAddress, this.password, 600).then(() => {
@@ -420,7 +441,9 @@ export default {
             data: ""
           }, this.password).then(() => {
             this.overlayProgress=4
-            axios.post(this.$store.state.server + '/challenge', formData, {
+            axios.post(this.$store.state.server + '/challenge', {
+              formData,
+            }, {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }
@@ -462,6 +485,18 @@ export default {
     goMain(){
       this.$router.push('/challenges')
     },
+
+    goMypage() {
+      this.$router.push('/mypage')
+    },
+
+    logout() {
+      let win = window.open('https://accounts.kakao.com/logout?continue=https://accounts.kakao.com/weblogin/account')
+      win.close()
+      sessionStorage.removeItem("user")
+      this.$router.push("/")
+    },
+
     piccer(){
       this.picture = this.$refs.picture
       this.checkflag=false

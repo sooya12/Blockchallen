@@ -9,6 +9,8 @@ import SignUp from '@/views/SignUp.vue'
 import SocialLogin from "@/views/SocialLogin"
 import PageNotFound from "@/views/PageNotFound";
 import Loading from "@/components/Loading";
+import KakaoPaySuccess from "@/components/KakaoPaySuccess";
+import KakaoPayCancel from "@/components/KakaoPayCancel";
 
 Vue.use(VueRouter)
 
@@ -55,6 +57,18 @@ const routes = [
         path: '/loading',
         name : Loading,
         component : Loading
+
+    },
+    {
+        path: '/kakaoPaySuccess',
+        name : KakaoPaySuccess,
+        component : KakaoPaySuccess
+
+    },
+    {
+        path: '/kakaoPayCancel',
+        name : KakaoPayCancel,
+        component : KakaoPayCancel
 
     },
     {

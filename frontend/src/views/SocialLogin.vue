@@ -11,7 +11,7 @@ export default {
   name: "SocialLogin",
   props: {
     id: {
-      type: Number
+      type: String
     }
   },
   data: () => ({
@@ -38,7 +38,6 @@ export default {
           } else {
             this.user.id = this.id
             this.user.email = res.data.email
-            this.user.access_token = res.data.access_token
             this.user.access_token = res.data.access_token
 
             sessionStorage.setItem("user", JSON.stringify(this.user))

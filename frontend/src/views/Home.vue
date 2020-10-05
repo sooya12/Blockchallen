@@ -7,6 +7,7 @@
         <p>
           <b>BlockChallen</b>
         </p>
+        <p style="font-size: 2vw">돈은 새로운 나를 만든다</p>
       </div>
       <div id="kakaoLogin">
         <img :src="require('@/assets/kakao_login_large_narrow.png')" @click=kakaoLogin>
