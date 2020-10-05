@@ -65,7 +65,7 @@
     >
       {{ user.nickname }} 님
     </v-btn>
-    <div style="margin-left: 20%; margin-top: 3%;">
+    <div style="margin-left: 5%; margin-top: 3%;">
       <v-card style="width: 90%; max-width: 1000px;">
           <v-img
               src="/lego.ico"
@@ -468,7 +468,7 @@ export default {
           this.expireDate = res.data.expireDate.substr(2, 8)
           this.expire = res.data.expireDate.substr(0, 10);
           this.fee = res.data.fee
-          this.isRandom = res.data.isRandom
+          this.isRandom = res.data.random
           this.users = res.data.users
           this.certificationCondition = res.data.certificationCondition
           this.startDate = this.startDate.replace(/-/g, '/')
@@ -691,7 +691,7 @@ export default {
         modal: this.$modal
       }, {
         name: 'dynamic-modal',
-        width: '50%',
+        width: '80%',
         height: '50%',
         draggable: false,
       })
