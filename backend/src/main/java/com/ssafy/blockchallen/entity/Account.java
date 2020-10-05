@@ -42,17 +42,17 @@ public class Account {
 	@ApiModelProperty(required = true, value = "토큰")
 	private String access_token;
 	
-	@OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "account")
 	@JsonBackReference
 	@ApiModelProperty(value = "지갑 ID")
 	private Wallet wallet;
 	
-	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "account")
 	@JsonBackReference
 	@ApiModelProperty(value = "인증 set")
 	private Set<Certification> certifications;
 	
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "accounts", cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "accounts")
 	@JsonBackReference
 	@ApiModelProperty(value = "참여한 챌린지 set")
 	private Set<Challenge> challenges;

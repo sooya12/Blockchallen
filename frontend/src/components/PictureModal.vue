@@ -16,8 +16,24 @@
         <!-- <v-img :src="imageUrl" v-if="imageUrl" style="width:100%; "></v-img> -->
         <!-- <p>{{picture.lastModifiedDate}}</p> -->
         <br style="clear:both;"/>
-        <v-btn @click="submit">사진 올리기</v-btn>
+        <v-btn @click="submit" :disabled="!picture&&!isClick" v-if="!isClick">사진 올리기</v-btn>
+        <div v-if="isClick">
+          <div class="loader loader--style3" title="2">
+            <svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                 width="40px" height="40px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                  <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+                    <animateTransform attributeType="xml"
+                                      attributeName="transform"
+                                      type="rotate"
+                                      from="0 25 25"
+                                      to="360 25 25"
+                                      dur="0.6s"
+                                      repeatCount="indefinite"/>
+                  </path>
+            </svg>
+          </div>
 
+        </div>
     </div>
 
 </template>
@@ -36,6 +52,7 @@ export default {
     },
     data(){
         return{
+            isClick:false,
             picture:'', // 사진 정보
             imageUrl:'', // 사진 url
             picturelimit:[
@@ -55,6 +72,7 @@ export default {
 
         },
         submit(){
+            this.isClick=true
             const formData = new FormData()
             const offset = new Date().getTimezoneOffset()*60000
             const rdate = new Date(this.picture.lastModifiedDate - offset)
@@ -66,6 +84,10 @@ export default {
 
             console.log(this.picture.lastModifiedDate.toISOString().substr(0, 10))
             console.log(rdate.toISOString().substr(0, 10)) // 변경된 시간
+
+            console.log(this.picture.lastModifiedDate)
+            console.log(this.picture.lastModifiedDate.toISOString())
+            console.log(this.picture.lastModifiedDate.toISOString().substr(0, 10))
 
 
             // axios로 multipart/form data Post 요청 보내기
@@ -81,17 +103,19 @@ export default {
                 if(res.data){
                     alert("사진 등록이 완료되었습니다.")
                 }else{
+                    this.isClick=false
                     alert("올바른 날짜의 사진이 아닙니다. 재업로드 해주세요.")
                 }
             }).catch((err)=>{
                 console.log(err)
+                this.isClick=false
             })
 
 
         },
         //////////////////// 스마트 컨트랙트 ///////////////////////////
         sendCertification(){
-            let hashingDatabefore = sha256.hex(this.picture.name) // 이름말고
+            let hashingDatabefore = sha256.hex(this.picture.name) // 이름말고 바이트배열
             let hashingData='0x'+hashingDatabefore
 
             web3.eth.personal.unlockAccount("0x51ec5dfdf9a50762ba34d3ac08abb43cdb54d597", "pass5", 600).then(()=>{
@@ -141,5 +165,16 @@ export default {
   margin: 0px auto;
   padding: 100px;
   
+}
+
+.loader{
+  margin: 0 0 2em;
+  height: 100px;
+  width: 20%;
+  text-align: center;
+  padding: 1em;
+  margin: 0 auto 1em;
+  display: inline-block;
+  vertical-align: top;
 }
 </style>

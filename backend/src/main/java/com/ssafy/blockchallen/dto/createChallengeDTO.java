@@ -19,6 +19,7 @@ public class createChallengeDTO {
 	private long uid;
 	private int certificationStartTime;
 	private int certificationEndTime;
+	private String address;
 
 	@Override
 	public String toString() {
@@ -34,6 +35,7 @@ public class createChallengeDTO {
 				", uid=" + uid +
 				", certificationStartTime=" + certificationStartTime +
 				", certificationEndTime=" + certificationEndTime +
+				", address=" + address+
 				'}';
 	}
 }

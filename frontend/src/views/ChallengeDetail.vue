@@ -1,5 +1,23 @@
 <template>
-  <div>
+  <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+
+  <div v-if="isLoading">
+    <v-btn
+        color="pink"
+        dark
+        top
+        left
+        style="margin : 2%;"
+        @click="goMain"
+    >
+      <v-icon dark left>arrow_back</v-icon>
+      메인으로
+    </v-btn>
+
+    <loading></loading>
+  </div>
+  <div v-if="!isLoading">
     <v-btn
         color="pink"
         dark
@@ -13,15 +31,15 @@
     </v-btn>
 
     <div style="margin-left: 20%; margin-top: 3%;">
-      <v-card style="width:70%;">
+      <v-card style="width: 80%; max-width: 1000px;">
           <v-img
               src="/lego.ico"
               height="4vh"
               width="4vh"
               style="float:left; margin:2%;"
           ></v-img>
-          <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%;float:left; ">{{ title }}</p>
-          <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && todaystate && certificationAvailableTime">
+          <p style="font-size:4vh; font-weight: bold; margin-left:3%; padding-top:1%; float:left; color: #f39c14;">{{ title }}</p>
+          <v-btn style="float:right; margin:2%; " @click="certification(cid)" v-if="alreadyParicipate && todaystate && certificationAvailableTime && ongoing">
               인증하기
           </v-btn>
           <br style="clear:both;"/>
@@ -31,10 +49,10 @@
             style="color:#ff5555; margin-left: 1%;">({{ periods }})</span>
         </div>
       </v-card>
-      <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 80%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
         <p style="font-size:2.5vh; margin-top: 2%;">배팅 금액 : <span style="font-size:3vh; font-weight: bold"> {{
             fee
-          }}원</span></p>
+          }} ETH</span></p>
         <p style="font-size:2.5vh; margin-top: 2%;">분배 방식 : <span style="font-size:3vh; font-weight: bold"> {{
             divide
           }}</span></p>
@@ -47,17 +65,21 @@
           <v-img :src="samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
         </div>
       </v-card>
-      <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 80%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;">현재 참여 인원 : {{ users.length }}명</p>
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold; " v-if="challengeState=='before'">현재 까지
-          {{ gather }}원이 모였습니다.</p>
+          {{ gather }} ETH가 모였습니다.</p>
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold; " v-if="challengeState!='before'">도전 금액 :
-          {{ gather }}원</p>
+          {{ gather }} ETH</p>
 
       </v-card>
-      <v-card style="width:70%; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 80%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
         <div v-if="challengeState=='before'">
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">마감까지 {{ remain }}</p>
+          <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
+        </div>
+        <div v-if="challengeState=='notStart'">
+          <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">본 챌린지는 참가 신청이 마감되어 곧 시작됩니다.</p>
           <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
         </div>
         <div v-if="challengeState=='doing'">
@@ -157,6 +179,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -164,11 +187,13 @@ import axios from 'axios'
 import BlockProgress from "@/components/BlockProgress";
 import ChallengeModal from "@/components/ChallengeModal";
 import PictureModal from "@/components/PictureModal";
+import Loading from "@/components/Loading";
 
 export default {
   name: "challengeDetail",
   components: {
-    BlockProgress
+    BlockProgress,
+    Loading
   },
   props: {
     cid: {
@@ -177,6 +202,7 @@ export default {
   },
   data() {
     return {
+      isLoading : true,
       title: '',
       startDate: '',
       endDate: '',
@@ -251,8 +277,10 @@ export default {
       certificationAvailableTime : false,
       alreadyParicipate:false,
 
+
       todaystate:false, // 오늘 했는지 안했는지 (하루에 1번)
-      samplepicture: ''
+      samplepicture: '',
+      ongoing:false, // 진행중인 챌린지인지 아닌지
 
 
     }
@@ -323,7 +351,9 @@ export default {
           }
           if (res.data.expireDate > today) {
             this.challengeState = 'before'
-          } else if (res.data.expireDate <= today && res.data.endDate >= today) {
+          }else if(res.data.expireDate <= today && today<res.data.startDate){
+            this.challengeState = 'notStart'
+          } else if (res.data.startDate <= today && res.data.endDate >= today) {
             this.challengeState = 'doing'
             this.doing()
           } else {
@@ -370,6 +400,12 @@ export default {
               this.checkCertificationTime()
             }, 1000); // 타이머 1초간격으로 수행
           }
+
+
+          if(res.data.startDate <= today && res.data.endDate >= today){
+            this.ongoing = true
+          }
+          this.isLoading=false
         })
         .catch(() => {
           /*
@@ -463,7 +499,7 @@ export default {
 
 
           })
-
+      this.isLoading=false
     },
     /**
      * TODO : URL 수정
@@ -480,6 +516,7 @@ export default {
             this.faillist = res.data.faillist
 
           })
+      this.isLoading=false
     },
 
     clickParticipant(participant, total) {
