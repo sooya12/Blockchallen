@@ -516,8 +516,14 @@ public class ChallengeService implements IChallengeService {
 					} else {
 						divnum = (complete-1)*(complete/2) + complete/2;
 					}
-					int bonus = -1;
-					while(!use[bonus = rand.nextInt(complete)]) use[bonus] = true;
+					int bonus = rand.nextInt(complete);
+					while(true) {
+						if(!use[bonus]) {
+							use[bonus] = true;
+							break;
+						}
+						bonus = rand.nextInt(complete);
+					}
 					int prize = challenge.getFee() + (challenge.getFee()*(challenge.getAccounts().size()-complete)*(bonus/divnum));
 					
 					BigInteger reward = new BigInteger("1").multiply(eth).multiply(new BigInteger(String.valueOf(prize))); // 인별 상금
@@ -546,9 +552,6 @@ public class ChallengeService implements IChallengeService {
 					rewardRepository.save(newReward);
 				}
 			}
-			
-	
-			
 		}
 	}
 }
