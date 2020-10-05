@@ -59,7 +59,25 @@
                 readonly
                 suffix="ETH"
             ></v-text-field>
-            <v-btn @click="charge" color="#f39c14">충전하기</v-btn>
+            <v-card v-if="kakaopay" style="padding: 3%; ">
+              <h2 style="text-align: left; font-size: 2vh;">카카오 페이로 이더 충전하기</h2>
+              <br><br>
+              <v-slider
+                  v-model="kakaoEther"
+                  :label="kakaoCoin.label"
+                  :thumb-color="kakaoCoin.color"
+                  max="15"
+                  min="1"
+                  thumb-label="always"
+              ></v-slider>
+              <h3>{{kakaoEther}} 이더</h3>
+              <br><br>
+            <kakao-pay :url="kakaourl" v-if="kakaourl" style="height: 50vh; overflow: hidden;" scrolling="no" frameBorder="0"></kakao-pay>
+              <v-btn @click="kakaoPay" color="#f39c14">충전하기</v-btn>
+              <v-btn @click="kakaopay=false" color="#f39c14" style="margin-left: 8%;">취소</v-btn>
+            </v-card>
+            <v-btn @click="kakaopay=true" color="#f39c14" v-if="!kakaopay">카카오페이로 충전하기</v-btn>
+
           </div>
         </div>
       </div>
@@ -135,6 +153,8 @@
 import Chart from 'chart.js'
 import axios from 'axios'
 import MyWalletCharging from '@/components/MyWalletCharging.vue'
+import KakaoPay from "@/components/KakaoPay";
+import EventBus from "@/EventBus";
 
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
@@ -174,9 +194,14 @@ export default {
     chartFlag: 0,
     firstLoading: true,
     walletLoading: false,
+    kakaourl: '',
+    kakaopay : false,
+    kakaoCoin: { label: '충전 금액', val: 15, color: 'red' },
+    kakaoEther : 1,
   }),
   components: {
-    MyWalletCharging
+    MyWalletCharging,
+    KakaoPay
   },
   methods: {
     backHome() {
@@ -204,15 +229,15 @@ export default {
                 })
           })
     },
-    async charge() {
+    async charge(chargeEther) {
       this.chargeFlag = true
-
+      let price=1001000000000000000*chargeEther+""
       await web3.eth.sendTransaction({
         from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
         gasPrice: "1000000",
         gas: "4700000",
         to: this.myWallet.walletAddress,
-        value: "1001000000000000000",
+        value: price,
         data: "",
       }, 'ssafy').then(() => {
         this.chargeFlag = false
@@ -272,9 +297,47 @@ export default {
       } else {
         this.showDiv = true
       }
+    },
+    test(ether){
+      alert('hi'+ether)
+      console.log('hi')
+    },
+
+
+    kakaoPay(){
+      let filter = "win16|win32|win64|mac|macintel";
+      let url = ""
+      axios.get(this.$store.state.server+"/kakaopay/ready",{
+          params :{
+
+            "ether" : Number(this.kakaoEther)
+          }
+
+
+      }).then((res)=>{
+        if ( navigator.platform ) {
+          if (filter.indexOf(navigator.platform.toLowerCase()) < 0) {
+            //mobile
+            url=res.data.next_redirect_mobile_url
+
+          } else {
+            //pc
+            url=res.data.next_redirect_pc_url
+          }
+        }
+        this.kakaourl=url
+
+
+
+
+      })
     }
   },
+  created() {
+    EventBus.$on('charge',this.test)
+  },
   mounted() {
+
     const user = JSON.parse(sessionStorage.getItem("user"))
     this.user = user
 
@@ -289,6 +352,11 @@ export default {
           }
 
           this.firstLoading = false
+          if(sessionStorage.getItem('chargeEther')!=null){
+            let chareEther =sessionStorage.getItem('chargeEther')
+            sessionStorage.removeItem('chargeEther')
+            this.charge(chareEther)
+          }
         })
 
     axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
