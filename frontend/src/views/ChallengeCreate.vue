@@ -422,6 +422,8 @@ export default {
       formData.append("certificationStartTime",this.certificationStartTime)
       formData.append("certificationEndTime",this.certificationEndTime)
       formData.append("samplepicture",this.picture)
+
+
       let price = 1000000000000000000*this.bet
       this.overlayProgress=1
       await web3.eth.personal.unlockAccount(this.walletAddress, this.password, 600).then(() => {
@@ -439,7 +441,9 @@ export default {
             data: ""
           }, this.password).then(() => {
             this.overlayProgress=4
-            axios.post(this.$store.state.server + '/challenge', formData, {
+            axios.post(this.$store.state.server + '/challenge', {
+              formData,
+            }, {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }
