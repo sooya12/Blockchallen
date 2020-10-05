@@ -70,6 +70,7 @@
                   max="15"
                   min="1"
                   thumb-label="always"
+                  :disabled="true"
               ></v-slider>
               <h3>{{kakaoEther}} 이더</h3>
               <br><br>
