@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="reportPage">
     <div>
-      <v-card style="width: 80%; margin-left: 2%; padding : 2%; margin-top:1%;">
+      <v-card style="width: 80%;   margin-left: auto; margin-right: auto; padding : 2%; margin-top:5%;">
         <p style="font-size: 2.5vh; font-weight: bold; margin: 2%; margin-left:0%;">신고하기</p>
         <p style="font-size: 1.5vh; font-weight: bold;">
           본 신고 기능은 우선 신고 처리 후, 담당자가 직접 검토합니다. <br>
@@ -12,13 +12,13 @@
       </v-card>
 
 
-      <v-card style="width: 80%; margin: 2%; padding: 1%; margin-top:3%;  padding-bottom: 0;">
-        <p style="font-size: 1.5vh; font-weight: bold;">
+      <v-card style="width: 80%; margin: 2%; margin-left: auto; margin-right: auto;padding: 1%; margin-top:3%;  padding-bottom: 0;">
+        <p style="font-size: 1.5vh; font-weight: bold; text-align:center;">
           아래 내용을 입력창에 입력하시면 신고 버튼이 활성화 됩니다.
           <br>
           <br>
         </p>
-        <p style="color:red; font-size: 1.8vh; font-weight: bold; ">
+        <p style="color:red; font-size: 1.8vh; font-weight: bold; text-align:center;">
           {{ textOriginal }}
         </p>
         <v-text-field
@@ -27,19 +27,24 @@
             :placeholder="description"
 
             outlined
-            style="width: 90%; margin-top:5%;"
+            style="width: 90%; margin-top:3%; margin-left: auto; margin-right: auto;"
+            
             onpaste="return false;"
             oncopy="return false;"
         ></v-text-field>
+        <p style="font-size: 1.8vh; color:#4775d1; font-weight: bold; text-align:center;">
+          {{checkmessage}}
+        </p>
       </v-card>
-      <div style="position: absolute; left:0; bottom :5%; width: 100%;">
+      <div style="position: absolute; left:0; bottom :5%; width: 100%;margin-left: auto; margin-right: auto;">
         <div style="position: relative; margin: 0 auto; text-align: center; float:left;  width: 100%;">
-          <p> {{checkmessage}} </p>
+          
           <v-btn 
             @click="checkPicture()"
-            style="margin-right: 2%;">
+            :disabled="!checkflag"
+            style="margin-right: 2%; background-color:#f39c14">
             
-             <p style="color:white; font-size:2vh;  font-weight: bold;">위변조 검사하기</p>
+             <p style="color:white; font-size:2vh;  font-weight: bold; ">위변조 검사하기</p>
           </v-btn>
 
           <v-btn
@@ -55,7 +60,6 @@
 
           <v-btn
               color="#ff5555"
-
               @click="cancel"
               style=""
           >
@@ -85,6 +89,7 @@ export default {
       textOriginal: '위 내용을 숙지하였으며 동의합니다.',
       activateReport: false,
       checkmessage:'',
+      checkflag:true,
 
     }
   },
@@ -97,11 +102,11 @@ export default {
       axios.get(this.$store.state.server + '/certification/block/' + this.participant.certification.id)
         .then((res)=>{
           if(res.data){
-            alert("사진 위변조 true")
-            //  checkmessage = "사진이 위변조되지 않았습니다. 그래도 신고하시겠습니까?"
+            this.checkmessage = "사진이 위변조되지 않았습니다. 그래도 신고하시겠습니까?"
+            this.checkflag = false
           }else{
-            alert("사진 위변조 false")
-            //  checkmessage = "사진이 위변조되었습니다."
+            this.checkmessage = "사진이 위변조되었습니다."
+            this.checkflag = false
           }
 
       })
@@ -151,5 +156,9 @@ export default {
 </script>
 
 <style scoped>
+.reportPage{
+  width: 100%;
+  
+}
 
 </style>
