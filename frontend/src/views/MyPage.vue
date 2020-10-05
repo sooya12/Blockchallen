@@ -70,13 +70,13 @@
                   max="15"
                   min="1"
                   thumb-label="always"
-                  :disabled="true"
+                  :disabled="stopChangeEther"
               ></v-slider>
               <h3>{{kakaoEther}} 이더</h3>
               <br><br>
             <kakao-pay :url="kakaourl" v-if="kakaourl" style="height: 50vh; overflow: hidden;" scrolling="no" frameBorder="0"></kakao-pay>
               <v-btn @click="kakaoPay" color="#f39c14">충전하기</v-btn>
-              <v-btn @click="kakaopay=false" color="#f39c14" style="margin-left: 8%;">취소</v-btn>
+              <v-btn @click="kakaopay=false,stopChangeEther=false,kakaourl=''" color="#f39c14" style="margin-left: 8%;">취소</v-btn>
             </v-card>
             <v-btn @click="kakaopay=true" color="#f39c14" v-if="!kakaopay">카카오페이로 충전하기</v-btn>
           </div>
@@ -201,6 +201,7 @@ export default {
     kakaopay : false,
     kakaoCoin: { label: '충전 금액', val: 15, color: 'red' },
     kakaoEther : 1,
+    stopChangeEther : false,
   }),
   components: {
     MyWalletCharging,
@@ -294,6 +295,7 @@ export default {
     kakaoPay() {
       let filter = "win16|win32|win64|mac|macintel";
       let url = ""
+      this.stopChangeEther=true
       axios.get(this.$store.state.server + "/kakaopay/ready", {
         params: {
           "ether": Number(this.kakaoEther)
