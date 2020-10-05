@@ -483,12 +483,16 @@ public class ChallengeService implements IChallengeService {
 						System.out.println("1EH 송금");
 					}
 					
-					Reward newReward = new Reward.Builder()
-							.account(winner)
-							.challenge(challenge)
-							.prize(total*challenge.getFee())
-							.build();
-					rewardRepository.save(newReward);
+					Optional<Reward> getReward = rewardRepository.findByAccountAndChallenge(winner, challenge);
+					if(!getReward.isPresent()) {
+						Reward newReward = new Reward.Builder()
+								.account(winner)
+								.challenge(challenge)
+								.prize(total*challenge.getFee())
+								.build();
+						rewardRepository.save(newReward);
+					}
+					
 				}
 				
 			} 
@@ -545,12 +549,19 @@ public class ChallengeService implements IChallengeService {
 						System.out.println("1EH 송금");
 					}
 					
-					Reward newReward = new Reward.Builder()
-							.account(winner)
-							.challenge(challenge)
-							.prize(prize)
-							.build();
-					rewardRepository.save(newReward);
+					Optional<Reward> getReward = rewardRepository.findByAccountAndChallenge(winner, challenge);
+					if(!getReward.isPresent()) {
+						Reward newReward = new Reward.Builder()
+								.account(winner)
+								.challenge(challenge)
+								.prize(prize)
+								.build();
+						rewardRepository.save(newReward);
+					} else {
+						getReward.get().setPrize(prize);
+						rewardRepository.save(getReward.get());
+					}
+					
 				}
 			}
 		}
