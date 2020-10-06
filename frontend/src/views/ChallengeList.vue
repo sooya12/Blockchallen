@@ -1,9 +1,32 @@
 <template>
+  <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+    <v-btn
+        color="#000000"
+        top
+        style="margin: 2%; float: right; color : #ffffff;"
+        @click="logout"
+    >
+      로그아웃
+    </v-btn>
+    <v-btn
+        color="#ffffff"
+        top
+        right
+        elevation="0"
+        style="margin: 2%; float: right;"
+        @click="goMypage"
+    >
+      {{ user.nickname }} 님
+    </v-btn>
+
+
+
 
   <div class="ChallengeList">
-
+ 
     <!-- 상단 -->
-    <div class="high">
+    <!-- <div class="high">
       <div class="name">
         <strong>{{ user.nickname }}님</strong>
       </div>
@@ -11,7 +34,7 @@
         <v-btn @click="ToMyPage" style="background-color:#f39c14; margin-right:3px;">마이페이지</v-btn>
         <v-btn dark @click="logout">로그아웃</v-btn>
       </div>
-    </div>
+    </div> -->
     <br style="clear:both;"/>
 
     <!-- 검색 -->
@@ -35,11 +58,13 @@
                 float: left; 
                 width: 35%; 
                 line-height: 40px; 
-                margin: 20px;
+                margin: 11px;
                 background-color:#f39c14;
                 color:white "
             @click="ccreate" class="">챌린지 만들기</v-btn>
-        <select v-model="options" class="selectbox" @change="sortfunction($event)">
+
+        <select v-model="options" class="selectbox" @change="sortfunction($event)"
+          style="margin:11px;">
           <option value="" selected disabled hidden>정렬 기준</option>
           <option value="fast">빠른 시작</option>
           <option value="slow">느린 시작</option>
@@ -73,11 +98,11 @@
                   </div>
               </div>
               <div class="card-title">
-                <a class="toggle-info btn">
+                <!-- <a class="toggle-info btn">
                 
                   <span class="toggle-left"></span>
                   <span class="toggle-right"></span>
-                </a>
+                </a> -->
 
                 <h2>
                     {{challenge.name}}
@@ -108,6 +133,8 @@
       </div>
     </div>
     
+  </div>
+
   </div>
 
 </template>
@@ -196,7 +223,7 @@ export default {
       sessionStorage.removeItem("user")
       this.$router.push("/")
     },
-    ToMyPage: function () {
+    goMypage: function () {
       this.$router.push('/mypage')
     },
     ccreate: function () {
@@ -320,7 +347,6 @@ a:hover {
   transition: all 0.25s 0s ease-out;
 }
 
-
 .cards {
 
   max-width: 1000px;
@@ -350,10 +376,13 @@ a:hover {
   margin-left: auto; 
   margin-right: auto;
 
-
-
 }
 
+.card:hover{
+  box-shadow: 5px 8px 1px 0px #e7e7e7;
+  transform: translateY(-2px);
+  transition: all 0.25s 0s ease-out;
+}
 
 .card-image-holder {
     background: rgba(0,0,0,0.1);
