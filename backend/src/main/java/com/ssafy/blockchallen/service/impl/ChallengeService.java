@@ -375,7 +375,7 @@ public class ChallengeService implements IChallengeService {
 		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
 		for (Challenge challenge : challenges) {
 
-			//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스 테스트용
+//			String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스 테스트용
 	        String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
 	        String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
 	        
@@ -451,7 +451,7 @@ public class ChallengeService implements IChallengeService {
 			if(!challenge.getIsRandom()) { // 균등
 
 				for (Account winner : winners) {
-					//String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스
+//					String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스
 					String fromAddress = challenge.getAddress(); // 챌린지 지갑의 주소
 					String fromPassword = "ssafy"; // 챌린지 지갑의 패스워드
 					
@@ -488,11 +488,10 @@ public class ChallengeService implements IChallengeService {
 						Reward newReward = new Reward.Builder()
 								.account(winner)
 								.challenge(challenge)
-								.prize(reward.divide(eth).intValue())
+								.prize(Math.round(reward.doubleValue()/eth.doubleValue()*100)/(double)100)
 								.build();
 						rewardRepository.save(newReward);
 					}
-					
 				}
 				
 			} 
@@ -529,9 +528,8 @@ public class ChallengeService implements IChallengeService {
 						}
 						bonus = rand.nextInt(complete);
 					}
-					int prize = challenge.getFee() + (challenge.getFee()*(challenge.getAccounts().size()-complete)*(bonus/divnum));
-					
-					BigInteger reward = new BigInteger("1").multiply(eth).multiply(new BigInteger(String.valueOf(prize))); // 인별 상금
+					double prize = Math.round((challenge.getFee() + (challenge.getFee()*(challenge.getAccounts().size()-complete)*((double)bonus/divnum)))*100)/100;
+					BigInteger reward = new BigInteger("1").multiply(eth).multiply(new BigInteger(String.valueOf((int)(prize*100)))).divide(new BigInteger("100")); // 인별 상금
 					
 					System.out.println("총 상금 " + totalReward);
 					System.out.println("인별 상금 " + reward);
