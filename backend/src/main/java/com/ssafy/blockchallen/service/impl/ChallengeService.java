@@ -488,7 +488,7 @@ public class ChallengeService implements IChallengeService {
 						Reward newReward = new Reward.Builder()
 								.account(winner)
 								.challenge(challenge)
-								.prize(total*challenge.getFee())
+								.prize(reward.divide(eth).intValue())
 								.build();
 						rewardRepository.save(newReward);
 					}
