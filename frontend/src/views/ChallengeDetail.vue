@@ -1,4 +1,4 @@
-<template>
+0<template>
   <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
 
 
@@ -184,7 +184,8 @@
             {{ successlist.length }}명</p>
           <p style="font-size:2.5vh;  font-weight: bold;"><span style="font-size: 2.2vh;">실패 인원 : </span>
             {{ faillist.length }}명</p>
-          <v-card style="margin : 5% 1%; margin-top : 1%; padding : 1%;  padding-top : 2%;" v-if="successlist.length>0">
+          <v-card style="margin : 5% 1%; margin-top : 4%; padding : 1%;  padding-top : 2%;" v-if="successlist.length>0">
+            <p style="margin-left :2%;font-size:2.2vh;  font-weight: bold;">블록챌린저 명단</p><br>
             <div v-for="(success,index) in successlist" v-bind:key="success.id">
               <div>
                 <p style="font-size:2vh; font-weight: bold; float:left; width:50%; text-align: center;">
@@ -197,8 +198,8 @@
                   <font-awesome-icon icon="medal" v-if="index==1&&isRandom" style="color:silver;"></font-awesome-icon>
                   <font-awesome-icon icon="medal" v-if="index==2&&isRandom" style="color:#cd7f32;"></font-awesome-icon>
 
-                  <span v-if="index<3" style="font-size:2.2vh;">{{ insertCommaInNumber(success.prize) }}원</span>
-                  <span v-if="index>2" style="font-size:2vh;">{{ insertCommaInNumber(success.prize) }}원</span>
+                  <span v-if="index<3" style="font-size:2.2vh;">{{ insertCommaInNumber(success.prize) }} ETH</span>
+                  <span v-if="index>2" style="font-size:2vh;">{{ insertCommaInNumber(success.prize) }} ETH</span>
                 </p>
               </div>
 
@@ -206,7 +207,7 @@
           </v-card>
         </div>
       </v-card>
-      <div style="width:70%; padding: 1% 2%; margin-top: 3%; text-align: center;" v-if="challengeState=='before'">
+      <div style="width:90%; padding: 1% 2%; margin-top: 3%; text-align: center;" v-if="challengeState=='before'">
         <v-dialog
             v-model="passwordDialog"
             persistent
@@ -287,9 +288,9 @@
             ></v-progress-circular>
           </v-overlay>
         </v-dialog>
-        <v-btn color="error" dark large style="margin: 2% 0; width:50%; height: 8vh; font-size:3vh; font-weight: bold;" v-if="!alreadyParicipate" @click="passwordDialog=true">
-          참여하기
-        </v-btn>
+          <v-btn color="error" dark large style=" width:40%; height: 8vh; font-size:3vh; font-weight: bold; margin : 0 auto; " v-if="!alreadyParicipate" @click="passwordDialog=true">
+            참여하기
+          </v-btn>
 
       </div>
 
@@ -504,15 +505,15 @@ export default {
             this.done()
           }
           this.gather = this.fee * this.users.length;
-          let len = String(this.gather).length;
-          let comma = len % 3
-          let tempstr = String(this.gather).substr(0, comma)
-          while (comma < len) {
-            tempstr += ','
-            tempstr += String(this.gather).substr(comma, 3)
-            comma += 3
-          }
-          this.gather = tempstr
+          // let len = String(this.gather).length;
+          // let comma = len % 3
+          // let tempstr = String(this.gather).substr(0, comma)
+          // while (comma < len) {
+          //   tempstr += ','
+          //   tempstr += String(this.gather).substr(comma, 3)
+          //   comma += 3
+          // }
+          // this.gather = tempstr
 
           let from = new Date(res.data.startDate)
           let to = new Date(res.data.endDate)
@@ -711,15 +712,16 @@ export default {
     },
 
     insertCommaInNumber(num) {
-      let len = String(num).length;
-      let comma = len % 3
-      let tempstr = String(num).substr(0, comma)
-      while (comma < len) {
-        tempstr += ','
-        tempstr += String(num).substr(comma, 3)
-        comma += 3
-      }
-      return tempstr
+      // let len = String(num).length;
+      // let comma = len % 3
+      // let tempstr = String(num).substr(0, comma)
+      // while (comma < len) {
+      //   tempstr += ','
+      //   tempstr += String(num).substr(comma, 3)
+      //   comma += 3
+      // }
+      // return tempstr
+      return num
     },
 
     goMain(){

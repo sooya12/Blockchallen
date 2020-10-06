@@ -36,12 +36,12 @@ public class Reward {
 	private Challenge challenge;
 	
 	@ApiModelProperty(value = "상금")
-	private int prize;
+	private double prize;
 	
 	public static class Builder {
 		private Account account;
 		private Challenge challenge;
-		private int prize = 0;
+		private double prize = 0;
 		
 		public Builder() {
 			
@@ -54,7 +54,7 @@ public class Reward {
 			this.challenge = challenge;
 			return this;
 		}
-		public Builder prize(int prize) {
+		public Builder prize(double prize) {
 			this.prize = prize;
 			return this;
 		}
