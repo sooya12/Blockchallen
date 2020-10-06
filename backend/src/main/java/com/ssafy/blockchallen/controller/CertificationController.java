@@ -52,7 +52,7 @@ public class CertificationController {
 	}
 
 	@ApiOperation(value = "인증 신고하기")
-	@RequestMapping(value = "/certification/report", method = RequestMethod.POST)
+	@RequestMapping(value = "/certification/report", method = RequestMethod.GET)
 	public Object setReport(@RequestParam("pid") long pid, @RequestParam("uid") long uid) {// 인증사진 id 받아옴
 		
 		Certification report = certificationService.report(pid, uid);

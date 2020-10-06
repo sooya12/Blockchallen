@@ -70,12 +70,13 @@
                   max="15"
                   min="1"
                   thumb-label="always"
+                  :disabled="stopChangeEther"
               ></v-slider>
               <h3>{{kakaoEther}} 이더</h3>
               <br><br>
             <kakao-pay :url="kakaourl" v-if="kakaourl" style="height: 50vh; overflow: hidden;" scrolling="no" frameBorder="0"></kakao-pay>
               <v-btn @click="kakaoPay" color="#f39c14">충전하기</v-btn>
-              <v-btn @click="kakaopay=false" color="#f39c14" style="margin-left: 8%;">취소</v-btn>
+              <v-btn @click="kakaopay=false,stopChangeEther=false,kakaourl=''" color="#f39c14" style="margin-left: 8%;">취소</v-btn>
             </v-card>
             <v-btn @click="kakaopay=true" color="#f39c14" v-if="!kakaopay">카카오페이로 충전하기</v-btn>
           </div>
@@ -105,7 +106,8 @@
               <div class="challengeName">
                 <span> {{ challenge.name }} </span>
                 <div class="chips">
-                  <v-chip small v-if="challenge.running" color="#f39c14">진행 중</v-chip>
+                  <v-chip small v-if="challenge.running && !challenge.start" color="#388e3c">대기 중</v-chip>
+                  <v-chip small v-else-if="challenge.running && challenge.start" color="#f39c14">진행 중</v-chip>
                   <v-chip small v-else color="#bbbbbb">마감</v-chip>
                   <v-chip small v-if="!challenge.running && challenge.progressRate < 85" color="#FC766A">실패</v-chip>
                   <v-chip small v-else-if="!challenge.running && challenge.progressRate >= 85" color="#5C84B1">성공</v-chip>
@@ -199,6 +201,7 @@ export default {
     kakaopay : false,
     kakaoCoin: { label: '충전 금액', val: 15, color: 'red' },
     kakaoEther : 1,
+    stopChangeEther : false,
   }),
   components: {
     MyWalletCharging,
@@ -292,6 +295,7 @@ export default {
     kakaoPay() {
       let filter = "win16|win32|win64|mac|macintel";
       let url = ""
+      this.stopChangeEther=true
       axios.get(this.$store.state.server + "/kakaopay/ready", {
         params: {
           "ether": Number(this.kakaoEther)
@@ -321,14 +325,12 @@ export default {
     EventBus.$on('charge',this.test)
   },
   mounted() {
-
     const user = JSON.parse(sessionStorage.getItem("user"))
     this.user = user
 
     axios.get(this.$store.state.server + '/wallet/' + this.user.id)
         .then(res => {
           const address = res.data.address
-          console.log(address)
 
           if (address != null && address != ' ' && address != '') {
             this.myWallet.walletAddress = address
@@ -347,7 +349,6 @@ export default {
 
     axios.get(this.$store.state.server + '/mychallenges/' + this.user.id)
         .then(res => {
-          console.log(res.data)
           this.user.challenges = res.data
           this.progressBarFlag = true
 

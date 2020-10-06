@@ -107,8 +107,8 @@
           </div>
         </div>
 
-        <div style="width: 50%; text-align: left; margin-top: 8%;">
-          <p style="color: #f39c14;">베팅금액 &nbsp;&nbsp; <span style="margin-left : 10%; color:#777;">내 잔고 :  <span style=" margin-left:2%;color: #444   ;">{{balance}} 이더</span></span></p>
+        <div style="width: 80%; text-align: left; margin-top: 8%;">
+          <p style="color: #f39c14;">베팅금액 &nbsp;&nbsp; <span style="margin-left : 10%; color:#777;">내 잔고 : <span style=" margin-left:2%;color: #444;">{{balance}} 이더</span></span></p>
 
           <v-flex xs12 sm6 d-flex>
             <v-select
@@ -441,9 +441,9 @@ export default {
             data: ""
           }, this.password).then(() => {
             this.overlayProgress=4
-            axios.post(this.$store.state.server + '/challenge', 
-              formData,
-            {
+            axios.post(this.$store.state.server + '/challenge',
+              formData
+            , {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }

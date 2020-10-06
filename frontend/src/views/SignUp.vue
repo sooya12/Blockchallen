@@ -50,7 +50,6 @@ export default {
     duplicationCheck() {
       axios.get(this.$store.state.server + '/account/nickname/' + this.nickname)
           .then((res) => {
-            console.log(res.data)
             if(res.data) {
               this.flag = true
             } else {
@@ -77,14 +76,12 @@ export default {
           })
           .catch((err) => {
             console.log(err)
-            alert("닉네임 생성 실패")
             this.flag = false
           })
     }
   },
   mounted() {
     this.id = JSON.parse(sessionStorage.getItem("user")).id
-    console.log(this.id)
   }
 }
 </script>

@@ -29,10 +29,10 @@ public class KakaoPayController {
     private KakaoPayApprovalVO kakaoPayApprovalVO;
     private String cid = "TC0ONETIME";
     private int pricePerEther = 1;
-    private final String BACK_SERVER_URI = "http://localhost:8080/blockchallen";
-	private final String FRONT_SERVER_URI = "http://localhost:3030";
-//    private final String BACK_SERVER_URI = "https://j3a102.p.ssafy.io/blockchallen";
-//    private final String FRONT_SERVER_URI = "https://j3a102.p.ssafy.io";
+//    private final String BACK_SERVER_URI = "http://localhost:8080/blockchallen";
+//	private final String FRONT_SERVER_URI = "http://localhost:3030";
+    private final String BACK_SERVER_URI = "https://j3a102.p.ssafy.io/blockchallen";
+    private final String FRONT_SERVER_URI = "https://j3a102.p.ssafy.io";
 
     @GetMapping("/ready")
     public Object kakaoPayReady(@RequestParam int ether) {

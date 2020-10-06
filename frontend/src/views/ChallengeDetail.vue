@@ -65,8 +65,8 @@
     >
       {{ user.nickname }} 님
     </v-btn>
-    <div style="margin-left: 20%; margin-top: 3%;">
-      <v-card style="width: 80%; max-width: 1000px;">
+    <div style="margin-left: 5%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px;">
           <v-img
               src="/lego.ico"
               height="4vh"
@@ -84,7 +84,7 @@
             style="color:#ff5555; margin-left: 1%;">({{ periods }})</span>
         </div>
       </v-card>
-      <v-card style="width: 80%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
         <p style="font-size:2.5vh; margin-top: 2%;">배팅 금액 : <span style="font-size:3vh; font-weight: bold"> {{
             fee
           }} ETH</span></p>
@@ -100,7 +100,7 @@
           <v-img :src="samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
         </div>
       </v-card>
-      <v-card style="width: 80%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;">현재 참여 인원 : {{ users.length }}명</p>
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold; " v-if="challengeState=='before'">현재 까지
           {{ gather }} ETH가 모였습니다.</p>
@@ -108,7 +108,7 @@
           {{ gather }} ETH</p>
 
       </v-card>
-      <v-card style="width: 80%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
         <div v-if="challengeState=='before'">
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">마감까지 {{ remain }}</p>
           <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
@@ -691,7 +691,7 @@ export default {
         modal: this.$modal
       }, {
         name: 'dynamic-modal',
-        width: '50%',
+        width: '90%',
         height: '50%',
         draggable: false,
       })
