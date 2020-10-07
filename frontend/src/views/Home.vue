@@ -75,6 +75,7 @@ export default {
 #kakaoLogin img {
   width: auto;
   height: 6vh;
+
 }
 
 </style>
