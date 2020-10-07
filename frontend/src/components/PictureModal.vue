@@ -1,14 +1,14 @@
 <template>
     <div class="pictureCertification">
         <!-- <input v-on:change='piccer()' type='file' ref='picture' id='picture' accept='.jpg, .png, .gif'> -->
-        <v-img :src="imageUrl" v-if="imageUrl" style="width:100%;"></v-img>
+        <v-img :src="imageUrl" v-if="imageUrl" style="width:100%; max-height:40vh;"></v-img>
         <br style="clear:both;"/>
             <v-file-input
                 v-model="picture"
                 accept="image/png, image/jpeg, image/bmp, image/gif"
                 prepend-icon="mdi-camera"
                 :rules="picturelimit"
-
+                
             >
 
             </v-file-input>
@@ -64,7 +64,7 @@ export default {
     methods:{
         piccer(){
             console.log(this.$refs)
-            this.picture = this.$refs.picture.files[0]
+            this.picture = this.$refs.picture
             this.imageUrl = URL.createObjectURL(this.picture)
             console.log(this.picture.type)
             console.log(this.picture.lastModifiedDate.toISOString().substr(0, 10))
@@ -160,10 +160,12 @@ export default {
 </script>
 
 <style scoped>
+
+
 .pictureCertification{
   text-align: center;
   margin: 0px auto;
-  padding: 100px;
+  padding: 5vh;
   
 }
 
