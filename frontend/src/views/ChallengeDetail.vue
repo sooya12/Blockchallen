@@ -65,8 +65,8 @@
     >
       {{ user.nickname }} 님
     </v-btn>
-    <div style="margin-left: 5%; margin-top: 3%;">
-      <v-card style="width: 90%; max-width: 1000px;">
+    <div style="margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px; margin-left: auto; margin-right: auto;">
           <v-img
               src="/lego.ico"
               height="4vh"
@@ -84,7 +84,7 @@
             style="color:#ff5555; margin-left: 1%;">({{ periods }})</span>
         </div>
       </v-card>
-      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;margin-left: auto; margin-right: auto;">
         <p style="font-size:2.5vh; margin-top: 2%;">배팅 금액 : <span style="font-size:3vh; font-weight: bold"> {{
             fee
           }} ETH</span></p>
@@ -100,7 +100,7 @@
           <v-img :src="samplepicture" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
         </div>
       </v-card>
-      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%; margin-left: auto; margin-right: auto;">
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;">현재 참여 인원 : {{ users.length }}명</p>
         <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold; " v-if="challengeState=='before'">현재 까지
           {{ gather }} ETH가 모였습니다.</p>
@@ -108,7 +108,7 @@
           {{ gather }} ETH</p>
 
       </v-card>
-      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;">
+      <v-card style="width: 90%; max-width: 1000px; padding: 1% 2%; margin-top: 3%;margin-left: auto; margin-right: auto;">
         <div v-if="challengeState=='before'">
           <p style="font-size:2.5vh; margin-top: 2%; color:#ff5555; font-weight: bold;">마감까지 {{ remain }}</p>
           <p style="font-size:2.5vh; margin-top: 2%;  font-weight: bold;" v-if="alreadyParicipate">참여 중인 챌린지입니다.</p>
@@ -123,7 +123,7 @@
             챌린지 현황
           </p>
           <div v-for="participant of userlist" v-bind:key="participant.id">
-            <v-card style="margin : 5% 1%; margin-top : 1%; min-height: 32vh;"
+            <v-card style="margin : 5% 1%; margin-top : 1%; min-height: 32vh;margin-left: auto; margin-right: auto;"
                     @click="clickParticipant(participant,total)">
               <div>
 
@@ -184,7 +184,7 @@
             {{ successlist.length }}명</p>
           <p style="font-size:2.5vh;  font-weight: bold;"><span style="font-size: 2.2vh;">실패 인원 : </span>
             {{ faillist.length }}명</p>
-          <v-card style="margin : 5% 1%; margin-top : 4%; padding : 1%;  padding-top : 2%;" v-if="successlist.length>0">
+          <v-card style="margin : 5% 1%; margin-top : 4%; padding : 1%;  padding-top : 2%; margin-left: auto; margin-right: auto;" v-if="successlist.length>0">
             <p style="margin-left :2%;font-size:2.2vh;  font-weight: bold;">블록챌린저 명단</p><br>
             <div v-for="(success,index) in successlist" v-bind:key="success.id">
               <div>
