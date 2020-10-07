@@ -33,7 +33,6 @@
     <div style="text-align: center; ">
       <h1><span style="color: #f39c14;">챌린지</span> 생성하기</h1>
       <div style="width:80%; margin: 2% auto; max-width: 1000px;">
-
         <v-text-field
             v-model="title"
             :rules="rules"
@@ -41,9 +40,7 @@
             label="챌린지명"
             placeholder="챌린지명을 입력해주세요."
             outlined
-
         ></v-text-field>
-
         <div>
           <p style="text-align: left;">기간 <span
               style="color:#ff5555; margin-left: 3%;"> &nbsp;&nbsp;{{ periods }} </span></p>
@@ -108,7 +105,8 @@
         </div>
 
         <div style="width: 80%; text-align: left; margin-top: 8%;">
-          <p>베팅금액 &nbsp;&nbsp; <span style="margin-left : 10%; color:#777;">내 잔고 : <span style=" margin-left:2%;color: #444;">{{balance}} 이더</span></span></p>
+          <p>베팅금액 &nbsp;&nbsp; <span style="margin-left : 10%; color:#777;">내 잔고 : <span
+              style=" margin-left:2%;color: #444;">{{ balance }} 이더</span></span></p>
 
           <v-flex xs12 sm6 d-flex>
             <v-select
@@ -118,13 +116,13 @@
                 v-model="bet"
             ></v-select>
           </v-flex>
-          <p v-if="balanceAlert"  style="color:#ff5555; margin-top: 0%; margin-bottom: 5%;">{{  balanceAlert  }}</p>
+          <p v-if="balanceAlert" style="color:#ff5555; margin-top: 0%; margin-bottom: 5%;">{{ balanceAlert }}</p>
         </div>
         <div>
           <p style="text-align: left;">분배방식</p>
           <v-radio-group v-model="isRandom" :mandatory="true" row>
             <v-radio label="랜덤 차등 분배" value="true"></v-radio>
-            <v-radio label="균등 분배" value="false"  style="margin-left: 5%;"></v-radio>
+            <v-radio label="균등 분배" value="false" style="margin-left: 5%;"></v-radio>
           </v-radio-group>
 
         </div>
@@ -148,10 +146,17 @@
                 max="48"
             >
               <template v-slot:thumb-label="props">
-                {{timepick[props.value]}}
+                {{ timepick[props.value] }}
               </template>
             </v-range-slider>
-            <p style="text-align: left; margin-top:2%; font-weight: bold;">{{ Math.floor((certificationStartTime*30)/60) }}:{{ (certificationStartTime*30)%60==0?"00":"30" }} ~ {{ Math.floor((certificationEndTime*30)/60) }}:{{ (certificationEndTime*30)%60==0?"00":"30" }}</p>
+            <p style="text-align: left; margin-top:2%; font-weight: bold;">
+              {{
+                Math.floor((certificationStartTime * 30) / 60)
+              }}:{{ (certificationStartTime * 30) % 60 == 0 ? "00" : "30" }} ~
+              {{ Math.floor((certificationEndTime * 30) / 60) }}:{{
+                (certificationEndTime * 30) % 60 == 0 ? "00" : "30"
+              }}
+            </p>
           </div>
           <p style="text-align: left; margin-top: 5%;">사진 인증 조건 (선택)</p>
           <v-text-field
@@ -161,12 +166,10 @@
               label="사진 인증 조건"
               placeholder="인증 조건을 입력해주세요."
               outlined
-
           ></v-text-field>
 
-
           <p style="text-align: left; margin-top: 5%;">사진 인증 예시</p>
-          <div >
+          <div>
             <v-img :src="imageUrl" v-if="imageUrl" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
             <v-file-input
                 v-model="picture"
@@ -174,11 +177,10 @@
                 prepend-icon="mdi-camera"
                 label="인증 사진 예시를 올려주세요."
                 :rules="picturelimit"
-
             >
-
             </v-file-input>
-            <p style="margin-left:5%; margin-bottom:5%; text-align: left; color:#aaa; font-size: small;">사진 용량은 16MB이하만 가능합니다.</p>
+            <p style="margin-left:5%; margin-bottom:5%; text-align: left; color:#aaa; font-size: small;">사진 용량은 16MB이하만
+              가능합니다.</p>
           </div>
         </div>
         <div>
@@ -227,8 +229,7 @@
               :value="password"
               class="input-group--focused"
               @click:append="passwordShow = !passwordShow"
-
-              style="width:50%; "
+              style="width:50%;"
           ></v-text-field>
         </div>
       </div>
@@ -237,7 +238,6 @@
           :color="snackbarcolor"
           :timeout="snackbartimeout"
           :vertical="true"
-
       >
 
         {{ snackbarmsg }}
@@ -246,21 +246,18 @@
             dark
             :color="snackbarcolor"
             @click="snackbar = false"
-
         >
           Close
         </v-btn>
       </v-snackbar>
 
-
-
-      <v-btn class="ma-2" color="primary" :disabled="!(checktitle&&(bet>0)&&checkdate&&!balanceAlert&&imageUrl&&(password.length==4))"
+      <v-btn class="ma-2" color="primary"
+             :disabled="!(checktitle&&(bet>0)&&checkdate&&!balanceAlert&&imageUrl&&(password.length==4))"
              @click="register"
       >
         챌린지 만들기
         <v-icon dark right>mdi-checkbox-marked-circle</v-icon>
       </v-btn>
-
 
     </div>
     <v-overlay :value="overlay" style="text-align: center;">
@@ -282,19 +279,19 @@ import axios from 'axios'
 const Web3 = require('web3')
 const web3 = new Web3(new Web3.providers.HttpProvider('https://j3a102.p.ssafy.io/geth'))
 let offset = new Date().getTimezoneOffset() * 60000;
+
 export default {
   name: "challengeCreate",
-
   data() {
     return {
-      user : {},
+      user: {},
       title: '',
       description: '챌린지명을 입력해주세요',
       rules: [v => v.length <= 25 || 'Max 25 characters'],
       periods: '',
-      startdate: new Date(Date.now()-offset).toISOString().substr(0, 10),
+      startdate: new Date(Date.now() - offset).toISOString().substr(0, 10),
       startmenu: false,
-      enddate: new Date(Date.now()-offset).toISOString().substr(0, 10),
+      enddate: new Date(Date.now() - offset).toISOString().substr(0, 10),
       endmenu: false,
       bets: [1, 2, 3, 5, 10, 20],
       bet: 0,
@@ -302,11 +299,11 @@ export default {
       certificateCondition: '',
       expiredate: new Date().toISOString().substr(0, 10),
       expiremenu: false,
-      certificationAvailableTime:true,
-      certificationStartTime : 0,
-      certificationEndTime : 48,
-      certificationTime:[0,48],
-      timepick : [
+      certificationAvailableTime: true,
+      certificationStartTime: 0,
+      certificationEndTime: 48,
+      certificationTime: [0, 48],
+      timepick: [
         "00:00",
         "00:30",
         "01:00",
@@ -364,144 +361,123 @@ export default {
       snackbarmsg: '정보 없음',
       checktitle: false,
       checkdate: false,
-      picture:[],
-      imageUrl:'',
-      picturelimit:[
-          value => !value || value.size < 16000000 || '이미지가 선택되지 않았거나 이미지 크기는 16MB 이하여야 합니다.!',
+      picture: [],
+      imageUrl: '',
+      picturelimit: [
+        value => !value || value.size < 16000000 || '이미지가 선택되지 않았거나 이미지 크기는 16MB 이하여야 합니다.!',
       ],
-      walletAddress : '',
-      balance : 0,
+      walletAddress: '',
+      balance: 0,
       balanceAlert: '',
       passwordShow: false,
       password: '',
       passwordRules: {
         required: password => !!password || '입력해주세요.',
         min: v => v.length == 4 || '비밀번호는 4글자 입니다.',
-
       },
       overlay: false,
-      overlayProgress : 0,
+      overlayProgress: 0,
     }
   },
   mounted() {
-
-    this.startdate =new Date(Date.now()-(offset-24*60*60*1000)).toISOString().substr(0, 10)
-    this.user=JSON.parse(sessionStorage.getItem('user'))
+    this.startdate = new Date(Date.now() - (offset - 24 * 60 * 60 * 1000)).toISOString().substr(0, 10)
+    this.user = JSON.parse(sessionStorage.getItem('user'))
     axios.get(this.$store.state.server + '/wallet/' + this.user.id)
-            .then(res => {
-              const address = res.data.address
+        .then(res => {
+          const address = res.data.address
 
-              if (address != null && address != ' ' && address != '') {
-                this.walletAddress = address
-                this.getBalance()
-              }
-            })
-
-
-
-
-
+          if (address != null && address != ' ' && address != '') {
+            this.walletAddress = address
+            this.getBalance()
+          }
+        })
   },
   methods: {
-
     async register() {
-      this.overlay=true
+      this.overlay = true
       let formData = new FormData
-      if(this.certificationAvailableTime){
-        this.certificationStartTime=0
-        this.certificationEndTime=48
+      if (this.certificationAvailableTime) {
+        this.certificationStartTime = 0
+        this.certificationEndTime = 48
       }
-      formData.append("name",this.title)
-      formData.append("startDate",this.startdate)
-      formData.append("endDate",this.enddate)
-      formData.append("expireDate",this.expiredate)
-      formData.append("fee",this.bet)
-      formData.append("isRandom",this.isRandom)
-      formData.append("certification",this.certificateCondition)
-      formData.append("uid",JSON.parse(sessionStorage.getItem("user")).id)
-      formData.append("certificationStartTime",this.certificationStartTime)
-      formData.append("certificationEndTime",this.certificationEndTime)
-      formData.append("samplepicture",this.picture)
+      formData.append("name", this.title)
+      formData.append("startDate", this.startdate)
+      formData.append("endDate", this.enddate)
+      formData.append("expireDate", this.expiredate)
+      formData.append("fee", this.bet)
+      formData.append("isRandom", this.isRandom)
+      formData.append("certification", this.certificateCondition)
+      formData.append("uid", JSON.parse(sessionStorage.getItem("user")).id)
+      formData.append("certificationStartTime", this.certificationStartTime)
+      formData.append("certificationEndTime", this.certificationEndTime)
+      formData.append("samplepicture", this.picture)
 
+      let price = 1000000000000000000 * this.bet
+      this.overlayProgress = 1
 
-      let price = 1000000000000000000*this.bet
-      this.overlayProgress=1
       await web3.eth.personal.unlockAccount(this.walletAddress, this.password, 600).then(() => {
-        this.overlayProgress=2
-      web3.eth.personal.newAccount("ssafy")
-      .then(res => {
-        formData.append("address", res)
-        this.overlayProgress=3
-          web3.eth.sendTransaction({
-            from: this.walletAddress,
-            gasPrice: "200000000",
-            gas: "1000000",
-            to: res,
-            value: String(price),
-            data: ""
-          }, this.password).then(() => {
-            this.overlayProgress=4
-            axios.post(this.$store.state.server + '/challenge',
-              formData
-            , {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
+        this.overlayProgress = 2
+
+        web3.eth.personal.newAccount("ssafy")
+            .then(res => {
+              formData.append("address", res)
+              this.overlayProgress = 3
+
+              web3.eth.sendTransaction({
+                from: this.walletAddress,
+                gasPrice: "200000000",
+                gas: "1000000",
+                to: res,
+                value: String(price),
+                data: ""
+              }, this.password).then(() => {
+                this.overlayProgress = 4
+                axios.post(this.$store.state.server + '/challenge',
+                    formData
+                    , {
+                      headers: {
+                        'Content-Type': 'multipart/form-data'
+                      }
+                    })
+                    .then(() => {
+                      this.overlay = false
+                      this.$router.push('/challenges') //상세페이지로 이동하자
+                    })
+                    .catch(() => {
+                      this.overlay = false
+                    })
+              })
+                  .catch(() => {
+                    this.overlay = false
+                  })
             })
-                .then(() => {
-                  this.overlay=false
-                  this.$router.push('/challenges') //상세페이지로 이동하자
-                })
-                .catch(() => {
-                  this.overlay=false
-                })
-          })
-        .catch(()=>{
-          this.overlay=false
-        })
-
-        })
-
       })
-          .catch(()=> {
+          .catch(() => {
             this.snackbarmsg = '비밀번호를 틀렸습니다. 다시 확인해주세요.'
-            this.snackbartimeout=10000
+            this.snackbartimeout = 10000
             this.snackbar = true;
-            this.overlay=false
+            this.overlay = false
           })
-
-
-
-
     },
-    async getBalance(){
-      await web3.eth.getBalance(this.walletAddress).then((b)=>this.balance=Math.floor(b/1000000000000000000))
+    async getBalance() {
+      await web3.eth.getBalance(this.walletAddress).then((b) => this.balance = Math.floor(b / 1000000000000000000))
     },
-
-
-
-
-
-    goMain(){
+    goMain() {
       this.$router.push('/challenges')
     },
-
     goMypage() {
       this.$router.push('/mypage')
     },
-
     logout() {
       let win = window.open('https://accounts.kakao.com/logout?continue=https://accounts.kakao.com/weblogin/account')
       win.close()
       sessionStorage.removeItem("user")
       this.$router.push("/")
     },
-
-    piccer(){
+    piccer() {
       this.picture = this.$refs.picture
-      this.checkflag=false
+      this.checkflag = false
       this.imageUrl = URL.createObjectURL(this.picture);
-
     },
   },
   watch: {
@@ -513,13 +489,12 @@ export default {
       }
     },
     startdate: function (newVal) {
-
-      let curDate = new Date(Date.now()-offset).toISOString().substr(0, 10)
+      let curDate = new Date(Date.now() - offset).toISOString().substr(0, 10)
       if (curDate >= newVal) {
         this.snackbarmsg = '시작 일은 현재 날짜 보다 최소 1일 이후 여야 합니다.'
-        this.snackbartimeout=3000
+        this.snackbartimeout = 3000
         this.snackbar = true;
-        this.startdate = new Date(Date.now()-(offset-24*60*60*1000)).toISOString().substr(0,10)
+        this.startdate = new Date(Date.now() - (offset - 24 * 60 * 60 * 1000)).toISOString().substr(0, 10)
         this.checkdate = false;
         return;
       } else {
@@ -528,7 +503,6 @@ export default {
           tempDate.setDate(tempDate.getDate() + 1)
           this.enddate = tempDate.toISOString().substr(0, 10)
         }
-
         let newDate = new Date(newVal)
         newDate.setDate(newDate.getDate() - 1)
         this.expiredate = newDate.toISOString().substr(0, 10)
@@ -536,9 +510,8 @@ export default {
     },
     enddate: function (newVal) {
       if (this.startdate >= newVal) {
-
         this.snackbarmsg = '종료 날짜는 시작 날짜 이후여야 합니다.'
-        this.snackbartimeout=3000
+        this.snackbartimeout = 3000
         this.snackbar = true;
         let tempDate = new Date(this.startdate)
         tempDate.setDate(tempDate.getDate() + 1)
@@ -549,7 +522,7 @@ export default {
         let from = new Date(this.startdate)
         let to = new Date(this.enddate)
         let differ = (to - from) / (24 * 60 * 60 * 1000)
-        differ+=1
+        differ += 1
         if (differ >= 7) {
           if ((differ % 7) == 0) {
             differ = Math.floor((differ / 7)) + '주'
@@ -566,44 +539,35 @@ export default {
     expiredate: function (newVal) {
       if (newVal >= this.startdate) {
         this.snackbarmsg = '마감일은 시작일보다 최소 하루 전이여야 합니다.'
-        this.snackbartimeout=3000
+        this.snackbartimeout = 3000
         this.snackbar = true;
         let tempDate = new Date(this.startdate)
         tempDate.setDate(tempDate.getDate() - 1)
         this.expiredate = tempDate.toISOString().substr(0, 10)
-      }
-      else if(newVal<new Date(Date.now()-(offset)).toISOString().substr(0,10)){
+      } else if (newVal < new Date(Date.now() - (offset)).toISOString().substr(0, 10)) {
         this.snackbarmsg = '마감일은 최소 오늘 이후여야 합니다.'
-        this.snackbartimeout=3000
+        this.snackbartimeout = 3000
         this.snackbar = true;
-        this.expiredate=new Date(Date.now()-offset).toISOString().substr(0,10)
+        this.expiredate = new Date(Date.now() - offset).toISOString().substr(0, 10)
       }
     },
-
-    certificationTime :function (newVal){
-      this.certificationStartTime=newVal[0]
-      this.certificationEndTime=newVal[1]
-
+    certificationTime: function (newVal) {
+      this.certificationStartTime = newVal[0]
+      this.certificationEndTime = newVal[1]
     },
-
-    picture:function (newVal){
-      if(newVal==null){
-        this.imageUrl=null
+    picture: function (newVal) {
+      if (newVal == null) {
+        this.imageUrl = null
         return;
       }
       this.imageUrl = URL.createObjectURL(newVal);
-
     },
-    bet : function (newVal){
-      this.balanceAlert=''
-      if(newVal>this.balance){
-        this.balanceAlert='현재 가진 잔액이 부족합니다.'
-
+    bet: function (newVal) {
+      this.balanceAlert = ''
+      if (newVal > this.balance) {
+        this.balanceAlert = '현재 가진 잔액이 부족합니다.'
       }
     }
-
-
-
   }
 }
 </script>

@@ -12,8 +12,18 @@
     </div>
     <div id="tabs">
       <v-tabs fixed centered color="#f39c14">
-        <v-tab @click="changeTabWallet"><h3><font-awesome-icon icon="coins"></font-awesome-icon> 나의 지갑</h3></v-tab>
-        <v-tab @click="changeTabChallenge"><h3><font-awesome-icon icon="thumbs-up"></font-awesome-icon> 나의 챌린지</h3></v-tab>
+        <v-tab @click="changeTabWallet">
+          <h3>
+            <font-awesome-icon icon="coins"></font-awesome-icon>
+            나의 지갑
+          </h3>
+        </v-tab>
+        <v-tab @click="changeTabChallenge">
+          <h3>
+            <font-awesome-icon icon="thumbs-up"></font-awesome-icon>
+            나의 챌린지
+          </h3>
+        </v-tab>
       </v-tabs>
     </div>
     <div id="wallet" v-show="selectTab">
@@ -72,11 +82,14 @@
                   thumb-label="always"
                   :disabled="stopChangeEther"
               ></v-slider>
-              <h3>{{kakaoEther}} 이더</h3>
+              <h3>{{ kakaoEther }} 이더</h3>
               <br><br>
-            <kakao-pay :url="kakaourl" v-if="kakaourl" style="height: 70vh; overflow: hidden;" scrolling="no" frameBorder="0"></kakao-pay>
+              <kakao-pay :url="kakaourl" v-if="kakaourl" style="height: 70vh; overflow: hidden;" scrolling="no"
+                         frameBorder="0"></kakao-pay>
               <v-btn @click="kakaoPay" color="#f39c14">충전하기</v-btn>
-              <v-btn @click="kakaopay=false,stopChangeEther=false,kakaourl=''" color="#f39c14" style="margin-left: 8%;">취소</v-btn>
+              <v-btn @click="kakaopay=false,stopChangeEther=false,kakaourl=''" color="#f39c14" style="margin-left: 8%;">
+                취소
+              </v-btn>
             </v-card>
             <v-btn @click="kakaopay=true" color="#f39c14" v-if="!kakaopay">카카오페이로 충전하기</v-btn>
           </div>
@@ -110,7 +123,8 @@
                   <v-chip small v-else-if="challenge.running && challenge.start" color="#f39c14">진행 중</v-chip>
                   <v-chip small v-else color="#bbbbbb">마감</v-chip>
                   <v-chip small v-if="!challenge.running && challenge.progressRate < 85" color="#FC766A">실패</v-chip>
-                  <v-chip small v-else-if="!challenge.running && challenge.progressRate >= 85" color="#5C84B1">성공</v-chip>
+                  <v-chip small v-else-if="!challenge.running && challenge.progressRate >= 85" color="#5C84B1">성공
+                  </v-chip>
                 </div>
               </div>
               <v-progress-linear
@@ -198,10 +212,10 @@ export default {
     walletInfoLoading: true, // true:지갑정보받는중 false:지갑정보있음
     walletLoading: false,
     kakaourl: '',
-    kakaopay : false,
-    kakaoCoin: { label: '충전 금액', val: 15, color: 'red' },
-    kakaoEther : 1,
-    stopChangeEther : false,
+    kakaopay: false,
+    kakaoCoin: {label: '충전 금액', val: 15, color: 'red'},
+    kakaoEther: 1,
+    stopChangeEther: false,
   }),
   components: {
     MyWalletCharging,
@@ -222,8 +236,7 @@ export default {
             const address = res
 
             axios.post(this.$store.state.server + '/wallet/create', {id: this.user.id, address: address})
-                .then(res => {
-                  console.log(res)
+                .then(() => {
                   this.passwordFlag = 2
                   this.myWallet.walletAddress = address
                   this.walletLoading = false
@@ -236,7 +249,7 @@ export default {
     async charge(chargeEther) {
       this.chargeFlag = true
 
-      let price=1001000000000000000*chargeEther+""
+      let price = 1001000000000000000 * chargeEther + ""
 
       await web3.eth.sendTransaction({
         from: "0x03fb923A157c20565E36D7d518418E1b9b0c2C86",
@@ -295,7 +308,7 @@ export default {
     kakaoPay() {
       let filter = "win16|win32|win64|mac|macintel";
       let url = ""
-      this.stopChangeEther=true
+      this.stopChangeEther = true
       axios.get(this.$store.state.server + "/kakaopay/ready", {
         params: {
           "ether": Number(this.kakaoEther)
@@ -322,7 +335,7 @@ export default {
     }
   },
   created() {
-    EventBus.$on('charge',this.test)
+    EventBus.$on('charge', this.test)
   },
   mounted() {
     const user = JSON.parse(sessionStorage.getItem("user"))
@@ -340,8 +353,8 @@ export default {
 
           this.walletInfoLoading = false
 
-          if(sessionStorage.getItem('chargeEther')!=null){
-            let chargeEther =sessionStorage.getItem('chargeEther')
+          if (sessionStorage.getItem('chargeEther') != null) {
+            let chargeEther = sessionStorage.getItem('chargeEther')
             sessionStorage.removeItem('chargeEther')
             this.charge(chargeEther)
           }
@@ -352,13 +365,13 @@ export default {
           this.user.challenges = res.data
           this.progressBarFlag = true
 
-          if(this.user.challenges.length <= 0) { // 챌린지 없는 경우
+          if (this.user.challenges.length <= 0) { // 챌린지 없는 경우
             this.chartFlag = 1
           }
 
-          for(var i = 0; i < this.user.challenges.length; i++) {
-            if(!this.user.challenges[i].running) {
-              if(this.user.challenges[i].progressRate >= 85) {
+          for (var i = 0; i < this.user.challenges.length; i++) {
+            if (!this.user.challenges[i].running) {
+              if (this.user.challenges[i].progressRate >= 85) {
                 this.pieSuccess += 1
               } else {
                 this.pieFail += 1
@@ -368,7 +381,7 @@ export default {
             }
           }
 
-          if(this.user.challenges.length > 0 && (this.pieSuccess > 0 || this.pieFail > 0)) {
+          if (this.user.challenges.length > 0 && (this.pieSuccess > 0 || this.pieFail > 0)) {
             this.chartFlag = 2
             this.createChart()
           }

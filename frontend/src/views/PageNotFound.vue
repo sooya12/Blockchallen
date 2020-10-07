@@ -1,12 +1,9 @@
 <template>
   <div class="container">
-
     <div class="content">
-
       <!-- top container -->
       <div class="inner-wrapper">
         <div class="top-title">Oh!</div>
-
         <div class="main-title">
           4
           <span class="svg-wrap">
@@ -74,11 +71,8 @@
         해당 페이지는 존재하지 않습니다.<br/>
         <a href="#">첫 페이지</a>로 이동해주세요.
       </p>
-
       <a href="/" class="lego-btn">BlockChallen</a>
-
     </div>
-
   </div>
 </template>
 
@@ -208,7 +202,5 @@ svg {
   .lego-btn {
     font-size: 18px;
   }
-
-
 }
 </style>

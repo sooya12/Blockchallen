@@ -7,22 +7,33 @@
       </v-btn>
     </div>
     <div id="terms">
-      <p><font-awesome-icon icon="exclamation-circle"/> 블록챌린 이용 약관을 읽어주세요.</p>
+      <p>
+        <font-awesome-icon icon="exclamation-circle"/>
+        블록챌린 이용 약관을 읽어주세요.
+      </p>
       <div>
         <v-textarea :value="userInfoAgree" outlined label="서비스 이용 약관" readonly></v-textarea>
       </div>
     </div>
     <div id="nicknameForm">
-      <p><font-awesome-icon icon="user-check"/> 닉네임 입력 후, 중복확인을 해주세요.</p>
+      <p>
+        <font-awesome-icon icon="user-check"/>
+        닉네임 입력 후, 중복확인을 해주세요.
+      </p>
       <div id="nickname">
-        <v-text-field v-model="nickname" label="닉네임 (1 ~ 7 글자)" :rules="nicknameRules" hide-details="auto"></v-text-field>
+        <v-text-field v-model="nickname" label="닉네임 (1 ~ 7 글자)" :rules="nicknameRules"
+                      hide-details="auto"></v-text-field>
       </div>
       <div id="nicknameCheck">
-        <v-btn medium color="primary" @click="duplicationCheck" :disabled="nickname.length < 1 || nickname.length > 7">중복확인</v-btn>
+        <v-btn medium color="primary" @click="duplicationCheck" :disabled="nickname.length < 1 || nickname.length > 7">
+          중복확인
+        </v-btn>
       </div>
     </div>
     <div id="signUp">
-      <v-btn large color="#f39c14" @click="signUp" :disabled="!flag || nickname.length < 1 || nickname != nicknameResult">가입하기</v-btn>
+      <v-btn large color="#f39c14" @click="signUp"
+             :disabled="!flag || nickname.length < 1 || nickname != nicknameResult">가입하기
+      </v-btn>
     </div>
   </div>
 </template>
@@ -51,7 +62,7 @@ export default {
     duplicationCheck() {
       axios.get(this.$store.state.server + '/account/nickname/' + this.nickname)
           .then((res) => {
-            if(res.data) {
+            if (res.data) {
               this.flag = true
               this.nicknameResult = this.nickname
             } else {

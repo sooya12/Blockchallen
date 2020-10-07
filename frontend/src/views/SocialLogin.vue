@@ -25,7 +25,6 @@ export default {
   mounted() {
     axios.get(this.$store.state.server + '/account/' + this.id)
         .then(res => {
-          console.log(res)
           if (res.data.nickname != null && res.data.nickname != '') {
             this.user.id = this.id
             this.user.email = res.data.email

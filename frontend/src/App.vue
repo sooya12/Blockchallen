@@ -6,7 +6,7 @@
     <v-footer
         style="margin-top: 10%;"
     >
-      <main-footer ></main-footer>
+      <main-footer></main-footer>
 
     </v-footer>
   </v-app>
@@ -20,17 +20,17 @@ export default {
   components: {
     'main-footer': Footer,
   },
-  data: () => ({
-  }),
+  data: () => ({}),
   mounted() {
     const user = sessionStorage.getItem("user");
 
-    if(user == null) {
+    if (user == null) {
       this.$router.push("/");
     }
   }
 };
 </script>
+
 <style>
 @font-face {
   font-family: 'yg-jalnan';
@@ -39,7 +39,7 @@ export default {
   font-style: normal;
 }
 
-*{
+* {
   font-family: 'yg-jalnan';
 }
 </style>
