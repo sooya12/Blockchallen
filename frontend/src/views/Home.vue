@@ -7,6 +7,7 @@
         <p>
           <b>BlockChallen</b>
         </p>
+        <p style="font-size: 2vw">돈은 새로운 나를 만든다</p>
       </div>
       <div id="kakaoLogin">
         <img :src="require('@/assets/kakao_login_large_narrow.png')" @click=kakaoLogin>
@@ -44,7 +45,6 @@ export default {
 
 #app {
   width: 100%;
-  height: 1vh;
   margin: 0 auto;
   font-family: 'Kalam', cursive;
 }
@@ -74,6 +74,7 @@ export default {
 #kakaoLogin img {
   width: auto;
   height: 6vh;
+
 }
 
 </style>

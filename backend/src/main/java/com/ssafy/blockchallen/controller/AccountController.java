@@ -5,10 +5,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,10 +39,10 @@ public class AccountController {
 	@Autowired
 	private IAccountService accountService;
 
-	private final String BACK_SERVER_URI = "http://localhost:8080";
-	private final String FRONT_SERVER_URI = "http://localhost:3030";
-//	private final String BACK_SERVER_URI = "https://j3a102.p.ssafy.io";
-//	private final String FRONT_SERVER_URI = "https://j3a102.p.ssafy.io";
+//	private final String BACK_SERVER_URI = "http://localhost:8080";
+//	private final String FRONT_SERVER_URI = "http://localhost:3030";
+	private final String BACK_SERVER_URI = "https://j3a102.p.ssafy.io";
+	private final String FRONT_SERVER_URI = "https://j3a102.p.ssafy.io";
 	private final String kakaoRedirectBackURI = BACK_SERVER_URI + "/blockchallen/login";
 	private final String kakaoRedirectFrontURI = FRONT_SERVER_URI + "/login/";
 

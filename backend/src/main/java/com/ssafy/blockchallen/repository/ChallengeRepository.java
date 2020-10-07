@@ -21,4 +21,6 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 	@Query(value = "select * from challenge order by fee desc", nativeQuery = true)
 	Collection<Challenge> findAllOrderByFeeDesc();
 	Collection<Challenge> findAllByStartDate(String startDate);
+	Collection<Challenge> findAllByEndDate(String endDate);
+	Collection<Challenge> findAllByExpireDate(String expireDate);
 }

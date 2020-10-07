@@ -8,12 +8,12 @@ import lombok.Setter;
 public class successDTO {
 	private long uid;
 	private String nickname;
-	private int prize;
+	private double prize;
 	
 	public static class Builder {
 		private long uid;
 		private String nickname;
-		private int prize;
+		private double prize;
 		
 		public Builder() {
 			
@@ -26,7 +26,7 @@ public class successDTO {
 			this.nickname = nickname;
 			return this;
 		}
-		public Builder prize(int prize) {
+		public Builder prize(double prize) {
 			this.prize = prize;
 			return this;
 		}

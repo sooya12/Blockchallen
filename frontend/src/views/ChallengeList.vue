@@ -1,16 +1,40 @@
 <template>
+  <div style="width: 100%; max-width: 1000px; margin: 0 auto;">
+
+    <v-btn
+        color="#000000"
+        top
+        style="margin: 2%; float: right; color : #ffffff;"
+        @click="logout"
+    >
+      로그아웃
+    </v-btn>
+    <v-btn
+        color="#ffffff"
+        top
+        right
+        elevation="0"
+        style="margin: 2%; float: right;"
+        @click="goMypage"
+    >
+      {{ user.nickname }} 님
+    </v-btn>
+
+
+
 
   <div class="ChallengeList">
+ 
     <!-- 상단 -->
-    <div class="high">
+    <!-- <div class="high">
       <div class="name">
         <strong>{{ user.nickname }}님</strong>
       </div>
       <div class="topbutton">
-        <v-btn @click="ToMyPage">마이페이지</v-btn>
-        <v-btn @click="logout">로그아웃</v-btn>
+        <v-btn @click="ToMyPage" style="background-color:#f39c14; margin-right:3px;">마이페이지</v-btn>
+        <v-btn dark @click="logout">로그아웃</v-btn>
       </div>
-    </div>
+    </div> -->
     <br style="clear:both;"/>
 
     <!-- 검색 -->
@@ -21,30 +45,26 @@
           outlined
           v-model="searchText"
           class="col-12 px-3"
-          color="#5858FA"
+          color="#bbbbbb"
           style="padding:10px;"
           append-icon="mdi-magnify"
       >
       </v-text-field>
- 
-    <!-- select box-->
-    <!-- <v-form class="mt-3 px-3 d-flex">
-        <v-select
-        :items="items"
-        label="정렬기준"
-        ></v-select>
-    </v-form> -->
+
 
     <!-- 챌린지 목록 -->
     <div>
-
         <v-btn style="
                 float: left; 
                 width: 35%; 
                 line-height: 40px; 
-                margin: 20px" 
+                margin: 11px;
+                background-color:#f39c14;
+                color:white "
             @click="ccreate" class="">챌린지 만들기</v-btn>
-        <select v-model="options" class="selectbox" @change="sortfunction($event)">
+
+        <select v-model="options" class="selectbox" @change="sortfunction($event)"
+          style="margin:11px;">
           <option value="" selected disabled hidden>정렬 기준</option>
           <option value="fast">빠른 시작</option>
           <option value="slow">느린 시작</option>
@@ -52,12 +72,51 @@
           <option value="cheap">저렴한 배팅</option>
           >
         </select>
+      <br style="clear:both;"/>
+      <div v-if="Loading">
+        <v-progress-circular
+            :size="70"
+            :width="7"
+            color="#f39c14"
+            indeterminate
+        ></v-progress-circular>
+      </div>
+      <div class="cards" v-if="!Loading">
+
       <v-slide-item
           v-for="challenge in challengelist
                         .filter((challenge)=> challenge.name.indexOf(this.searchText)!=-1)"
           :key="challenge.id"
       >
-        <v-btn @click="ToDetail(challenge.id)"
+            <div class="card"  @click="ToDetail(challenge.id)">
+              <div class="card-image-holder">
+                <div v-if="!challenge.samplepicture">
+                   <img class="card-image" src="https://source.unsplash.com/280x210/?wave" alt="wave" />
+                </div>
+                  <div v-if="challenge.samplepicture">
+                    <v-img :src="challenge.samplepicture" style="height:210px; width:280px;"></v-img>
+                  </div>
+              </div>
+              <div class="card-title">
+                <!-- <a class="toggle-info btn">
+                
+                  <span class="toggle-left"></span>
+                  <span class="toggle-right"></span>
+                </a> -->
+
+                <h2>
+                    {{challenge.name}}
+                    <small>{{ challenge.fee }} ETH</small>
+                </h2>
+                <div class="chips">
+                  <v-chip small v-if="challenge.startDate <= today && today < challenge.endDate" color="#f39c14">진행중</v-chip>
+                  <v-chip small v-if="challenge.endDate <= today" color="#bbbbbb">마감</v-chip>
+                  <v-chip small v-if="today < challenge.expireDate+1" color="#FC766A">모집중</v-chip>
+                  <v-chip small v-if="challenge.expireDate+1 <= today && today < challenge.startDate" color="#5C84B1">대기중</v-chip>
+                </div>
+              </div>
+            </div>
+        <!-- <v-btn @click="ToDetail(challenge.id)"
             style="
               width:100%; 
               height:250px; 
@@ -67,11 +126,15 @@
 
         >{{ challenge.name }}<br>시작일 : {{ challenge.startDate }}<br>마감일 : {{ challenge.endDate }}<br>배팅 금액 :
           {{ challenge.fee }}
-        </v-btn>
+        </v-btn> -->
       </v-slide-item>
         <!-- 무한 스크롤 -->
     <!-- <infinite-loading @infinite="infiniteHandler" spinner="circles">  </infinite-loading> -->
+      </div>
     </div>
+    
+  </div>
+
   </div>
 
 </template>
@@ -95,13 +158,35 @@ export default {
       searchText: '',
       challengelist: [],
       limit: 0,
-      options:''
+      options:'',
+      samplepicture:'', // 샘플 픽처
+
+      // 상태변수
+      waiting:false, // 대기중
+      ongoing:false, // 진행중
+      terminate:false, // 마감
+      gathering:false, // 모집중
+
+      Loading:true,
+
+    // 날짜
+      today:new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().substr(0, 10),
+
+      // 색 변수
+      white: '#ffffff',
+      lightBG: '#dce1df',
+      salmon: '#ff6666',
+      tealMid: '#0ebac7',
+      tealContrast: '#33ffff',
+      tealShade:	'#007c85',
+      darkGrey: '#4f585e',
+
     }
   },
   mounted() {
       const user = JSON.parse(sessionStorage.getItem("user"))
       this.user = user
-      
+
   },
   components: {
     // InfiniteLoading
@@ -117,8 +202,18 @@ export default {
             .then(res => {
               console.log(res)
               this.challengelist = res.data
+              
+              for (let i = 0; i < res.data.length; i++) {
+                if(this.challengelist[i].samplepicture!=null)
+                  this.challengelist[i].samplepicture = "data:;base64, " + this.challengelist[i].samplepicture
 
+              }
+
+              this.Loading=false
             })
+
+
+        
 
   },
   methods: {
@@ -128,7 +223,7 @@ export default {
       sessionStorage.removeItem("user")
       this.$router.push("/")
     },
-    ToMyPage: function () {
+    goMypage: function () {
       this.$router.push('/mypage')
     },
     ccreate: function () {
@@ -144,6 +239,12 @@ export default {
         })
               .then(res => {
                  this.challengelist = res.data
+
+                for (let i = 0; i < res.data.length; i++) {
+                  if(this.challengelist[i].samplepicture!=null)
+                    this.challengelist[i].samplepicture = "data:;base64, " + this.challengelist[i].samplepicture
+                }
+
                 //  this.limit =2
               })
     },
@@ -178,14 +279,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 
 .ChallengeList {
   width: 100%;
   max-width: 1000px;
   text-align: center;
   margin: 0px auto;
-  padding: 20px
+  padding: 20px;
+
 }
 
 .high {
@@ -200,6 +302,7 @@ export default {
 
 .topbutton {
   float: right;
+  margin-right: 20px;
 }
 
 .selectbox {
@@ -212,6 +315,150 @@ export default {
 
 }
 
+.chips {
+  float: right;
+}
+
+/* -------------------------------- */
+
+
+/* body {
+  background: lightBG;
+  color: darkGrey;
+  text-rendering: optimizeLegibility;
+} */
+
+a.btn {
+  background:#ffbf00;
+  border-radius: 4px;
+	box-shadow: 0 2px 0px 0 rgba(0,0,0,0.25);
+  color: white;
+  display: inline-block;
+  padding: 6px 30px 8px;
+  position: relative;
+  text-decoration: none;
+	transition: all 0.1s 0s ease-out;
+}
+
+a:hover {
+  background: lighten(#ffbf00,2.5);
+  box-shadow: 0px 8px 2px 0 rgba(0, 0, 0, 0.075);
+  transform: translateY(-2px);
+  transition: all 0.25s 0s ease-out;
+}
+
+.cards {
+
+  max-width: 1000px;
+  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  /* grid-auto-rows: auto; */
+  grid-gap: 20px;
+
+
+}
+
+.card {
+
+  display: inline-block;
+  margin: 8px;
+  max-width: 300px;
+  perspective: 1000;
+  position: relative;
+  text-align: left;
+  transition: all 0.3s 0s ease-in;
+  width: 300px;
+  z-index: 1;
+  border: 2px solid #e7e7e7;
+  border-radius: 4px;
+  padding: .5rem;
+  margin-left: auto; 
+  margin-right: auto;
+
+}
+
+.card:hover{
+  box-shadow: 5px 8px 1px 0px #e7e7e7;
+  transform: translateY(-2px);
+  transition: all 0.25s 0s ease-out;
+}
+
+.card-image-holder {
+    background: rgba(0,0,0,0.1);
+    height: 0;
+    padding-bottom: 75%;
+  }
+
+.card-title {
+    background: white;
+    padding: 6px 15px 10px;
+    position: relative;
+    z-index: 0;
+    
+
+}
+
+.card-title.a.toggle-info {
+      border-radius: 32px;
+      height: 32px;
+      padding: 0;
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      width: 32px;
+      
+  }
+
+a.toggle-info {
+      border-radius: 32px;
+      height: 32px;
+      padding: 0;
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      width: 32px;
+}
+
+.toggle-left{
+        right: 14px;
+        transform: rotate(45deg);
+        background: white;
+        display: block;
+        height: 2px;
+        position: absolute;
+        top: 16px;
+        transition: all 0.15s 0s ease-out;
+        width: 12px;
+}
+.toggle-right{
+        left: 14px;
+        transform: rotate(-45deg);
+        background: white;
+        display: block;
+        height: 2px;
+        position: absolute;
+        top: 16px;
+        transition: all 0.15s 0s ease-out;
+        width: 12px;
+}
+
+
+h2 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      margin: 0;
+      padding: 0;
+      
+
+}
+small {
+        display: block;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: -0.025em;
+}
 
 
 </style>

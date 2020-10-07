@@ -19,7 +19,14 @@ public class createChallengeDTO {
 	private long uid;
 	private int certificationStartTime;
 	private int certificationEndTime;
+	private String address;
 
+	public boolean isIsRandom(){
+		return this.isRandom;
+	}
+	public void setIsRandom(boolean isRandom){
+		this.isRandom=isRandom;
+	}
 	@Override
 	public String toString() {
 		return "createChallengeDTO{" +
@@ -34,6 +41,7 @@ public class createChallengeDTO {
 				", uid=" + uid +
 				", certificationStartTime=" + certificationStartTime +
 				", certificationEndTime=" + certificationEndTime +
+				", address=" + address+
 				'}';
 	}
 }

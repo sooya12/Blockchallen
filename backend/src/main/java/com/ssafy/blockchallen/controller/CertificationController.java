@@ -44,9 +44,15 @@ public class CertificationController {
 	public Boolean register(@ModelAttribute certificationDTO certification) throws IOException {
 		return certificationService.register( certification.getUid(),certification.getCid(), certification.getPicture().getBytes(),certification.getRegDate());
 	}
-	
+
+	@ApiOperation(value = "인증 위변조 검사")
+	@RequestMapping(value = "/certification/block/{pid}", method = RequestMethod.GET)
+	public Object checkBlock(@PathVariable("pid") long pid) {
+		return new ResponseEntity<>(certificationService.checkBlock(pid), HttpStatus.OK); // 일치하면 true. 불일치하면 false
+	}
+
 	@ApiOperation(value = "인증 신고하기")
-	@RequestMapping(value = "/certification/report", method = RequestMethod.POST)
+	@RequestMapping(value = "/certification/report", method = RequestMethod.GET)
 	public Object setReport(@RequestParam("pid") long pid, @RequestParam("uid") long uid) {// 인증사진 id 받아옴
 		
 		Certification report = certificationService.report(pid, uid);
