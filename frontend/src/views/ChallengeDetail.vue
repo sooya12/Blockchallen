@@ -65,7 +65,7 @@
     >
       {{ user.nickname }} 님
     </v-btn>
-    <div style="margin-top: 3%;">
+    <div style="margin-left: 5%; margin-top: 3%;">
       <v-card style="width: 90%; max-width: 1000px; margin-left: auto; margin-right: auto;">
           <v-img
               src="/lego.ico"
@@ -123,7 +123,7 @@
             챌린지 현황
           </p>
           <div v-for="participant of userlist" v-bind:key="participant.id">
-            <v-card style="margin : 5% 1%; margin-top : 1%; min-height: 32vh;margin-left: auto; margin-right: auto;"
+            <v-card style="margin : 5% 1%; margin-top : 1%; min-height: 32vh;"
                     @click="clickParticipant(participant,total)">
               <div>
 
@@ -184,7 +184,7 @@
             {{ successlist.length }}명</p>
           <p style="font-size:2.5vh;  font-weight: bold;"><span style="font-size: 2.2vh;">실패 인원 : </span>
             {{ faillist.length }}명</p>
-          <v-card style="margin : 5% 1%; margin-top : 4%; padding : 1%;  padding-top : 2%; margin-left: auto; margin-right: auto;" v-if="successlist.length>0">
+          <v-card style="margin : 5% 1%; margin-top : 4%; padding : 1%;  padding-top : 2%;" v-if="successlist.length>0">
             <p style="margin-left :2%;font-size:2.2vh;  font-weight: bold;">블록챌린저 명단</p><br>
             <div v-for="(success,index) in successlist" v-bind:key="success.id">
               <div>
