@@ -45,7 +45,7 @@
         ></v-text-field>
 
         <div>
-          <p style="text-align: left; color: #f39c14;">기간 <span
+          <p style="text-align: left;">기간 <span
               style="color:#ff5555; margin-left: 3%;"> &nbsp;&nbsp;{{ periods }} </span></p>
           <div style="width : 45%; float: left;">
             <v-menu
@@ -108,7 +108,7 @@
         </div>
 
         <div style="width: 80%; text-align: left; margin-top: 8%;">
-          <p style="color: #f39c14;">베팅금액 &nbsp;&nbsp; <span style="margin-left : 10%; color:#777;">내 잔고 : <span style=" margin-left:2%;color: #444;">{{balance}} 이더</span></span></p>
+          <p>베팅금액 &nbsp;&nbsp; <span style="margin-left : 10%; color:#777;">내 잔고 : <span style=" margin-left:2%;color: #444;">{{balance}} 이더</span></span></p>
 
           <v-flex xs12 sm6 d-flex>
             <v-select
@@ -121,7 +121,7 @@
           <p v-if="balanceAlert"  style="color:#ff5555; margin-top: 0%; margin-bottom: 5%;">{{  balanceAlert  }}</p>
         </div>
         <div>
-          <p style="text-align: left; color: #f39c14;">분배방식</p>
+          <p style="text-align: left;">분배방식</p>
           <v-radio-group v-model="isRandom" :mandatory="true" row>
             <v-radio label="랜덤 차등 분배" value="true"></v-radio>
             <v-radio label="균등 분배" value="false"  style="margin-left: 5%;"></v-radio>
@@ -129,7 +129,7 @@
 
         </div>
         <div style="margin-top: 2%;">
-          <p style="text-align: left; color: #f39c14;">사진 인증 가능 시간</p>
+          <p style="text-align: left;">사진 인증 가능 시간</p>
           <v-switch
               v-model="certificationAvailableTime"
               class="mt-0"
@@ -140,7 +140,7 @@
           ></v-switch>
           <v-spacer></v-spacer>
           <div v-if="!certificationAvailableTime">
-            <p style="text-align: left; margin-top:2%; font-weight: bold; color: #f39c14;">시간 선택</p>
+            <p style="text-align: left; margin-top:2%; font-weight: bold;">시간 선택</p>
             <v-range-slider
                 v-model="certificationTime"
                 :value="[certificationStartTime, certificationEndTime]"
@@ -153,7 +153,7 @@
             </v-range-slider>
             <p style="text-align: left; margin-top:2%; font-weight: bold;">{{ Math.floor((certificationStartTime*30)/60) }}:{{ (certificationStartTime*30)%60==0?"00":"30" }} ~ {{ Math.floor((certificationEndTime*30)/60) }}:{{ (certificationEndTime*30)%60==0?"00":"30" }}</p>
           </div>
-          <p style="text-align: left; margin-top: 5%; color: #f39c14;">사진 인증 조건 (선택)</p>
+          <p style="text-align: left; margin-top: 5%;">사진 인증 조건 (선택)</p>
           <v-text-field
               v-model="certificateCondition"
               :rules="rules"
@@ -165,7 +165,7 @@
           ></v-text-field>
 
 
-          <p style="text-align: left; margin-top: 5%; color: #f39c14;">사진 인증 예시</p>
+          <p style="text-align: left; margin-top: 5%;">사진 인증 예시</p>
           <div >
             <v-img :src="imageUrl" v-if="imageUrl" style="width:50%; margin-right: 10%; margin-bottom: 5%;"></v-img>
             <v-file-input
@@ -182,7 +182,7 @@
           </div>
         </div>
         <div>
-          <p style="text-align: left; color: #f39c14;">모집 마감 기간</p>
+          <p style="text-align: left;">모집 마감 기간</p>
           <v-menu
               ref="expire"
               v-model="expiremenu"
@@ -215,7 +215,7 @@
         </div>
 
         <div style="margin-top: 5%;">
-          <p style="text-align: left; color: #f39c14;">지갑 비밀번호</p>
+          <p style="text-align: left;">지갑 비밀번호</p>
           <v-text-field
               v-model="password"
               :append-icon="passwordShow ? 'mdi-eye' : 'mdi-eye-off'"
