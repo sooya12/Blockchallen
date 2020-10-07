@@ -1,18 +1,13 @@
 <template>
-  <div>
-
   <v-app>
     <v-main>
       <router-view :key="$route.fullPath"/>
     </v-main>
-  </v-app>
-    <v-footer
-      style="margin-top: 5%;"
-    >
-      <main-footer></main-footer>
+    <v-footer>
+      <main-footer ></main-footer>
 
     </v-footer>
-  </div>
+  </v-app>
 </template>
 
 <script>

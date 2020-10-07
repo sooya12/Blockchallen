@@ -39,10 +39,10 @@ public class AccountController {
 	@Autowired
 	private IAccountService accountService;
 
-//	private final String BACK_SERVER_URI = "http://localhost:8080";
-//	private final String FRONT_SERVER_URI = "http://localhost:3030";
-	private final String BACK_SERVER_URI = "https://j3a102.p.ssafy.io";
-	private final String FRONT_SERVER_URI = "https://j3a102.p.ssafy.io";
+	private final String BACK_SERVER_URI = "http://localhost:8080";
+	private final String FRONT_SERVER_URI = "http://localhost:3030";
+//	private final String BACK_SERVER_URI = "https://j3a102.p.ssafy.io";
+//	private final String FRONT_SERVER_URI = "https://j3a102.p.ssafy.io";
 	private final String kakaoRedirectBackURI = BACK_SERVER_URI + "/blockchallen/login";
 	private final String kakaoRedirectFrontURI = FRONT_SERVER_URI + "/login/";
 

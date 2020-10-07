@@ -74,7 +74,7 @@
               ></v-slider>
               <h3>{{kakaoEther}} 이더</h3>
               <br><br>
-            <kakao-pay :url="kakaourl" v-if="kakaourl" style="height: 50vh; overflow: hidden;" scrolling="no" frameBorder="0"></kakao-pay>
+            <kakao-pay :url="kakaourl" v-if="kakaourl" style="height: 70vh; overflow: hidden;" scrolling="no" frameBorder="0"></kakao-pay>
               <v-btn @click="kakaoPay" color="#f39c14">충전하기</v-btn>
               <v-btn @click="kakaopay=false,stopChangeEther=false,kakaourl=''" color="#f39c14" style="margin-left: 8%;">취소</v-btn>
             </v-card>
@@ -384,7 +384,6 @@ export default {
 #app {
   width: 100%;
   max-width: 1000px;
-  height: 1vh;
   margin: 0 auto;
 }
 
