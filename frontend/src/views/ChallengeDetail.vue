@@ -65,7 +65,7 @@
     >
       {{ user.nickname }} 님
     </v-btn>
-    <div style="margin-left: 5%; margin-top: 3%;">
+    <div style="margin-top: 3%;">
       <v-card style="width: 90%; max-width: 1000px; margin-left: auto; margin-right: auto;">
           <v-img
               src="/lego.ico"
