@@ -3,7 +3,9 @@
     <v-main>
       <router-view :key="$route.fullPath"/>
     </v-main>
-    <v-footer>
+    <v-footer
+        style="margin-top: 5%;"
+    >
       <main-footer ></main-footer>
 
     </v-footer>
