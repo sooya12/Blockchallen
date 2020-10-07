@@ -3,18 +3,27 @@
     <v-main>
       <router-view :key="$route.fullPath"/>
     </v-main>
+    <main-footer></main-footer>
   </v-app>
 </template>
 
 <script>
+import Footer from '@/components/Footer'
+
 export default {
   name: 'App',
-
   components: {
+    'main-footer': Footer,
   },
-
   data: () => ({
   }),
+  mounted() {
+    const user = sessionStorage.getItem("user");
+
+    if(user == null) {
+      this.$router.push("/");
+    }
+  }
 };
 </script>
 <style>

@@ -22,7 +22,7 @@
       </div>
     </div>
     <div id="signUp">
-      <v-btn large color="#f39c14" @click="signUp" :disabled="!flag">가입하기</v-btn>
+      <v-btn large color="#f39c14" @click="signUp" :disabled="!flag || nickname.length < 1 || nickname != nicknameResult">가입하기</v-btn>
     </div>
   </div>
 </template>
@@ -39,9 +39,10 @@ export default {
     nicknameRules: [
       value => !!value || '필수 사항. 한 글자 이상 입력해주세요',
       value => (value && value.length >= 1) || '한 글자 이상 입력해주세요',
-      value => (value.length < 8) || '최대 일곱 글자입니다'
+      value => (value.length < 8) || '최대 일곱 글자입니다',
     ],
-    flag: false
+    flag: false,
+    nicknameResult: "",
   }),
   methods: {
     backHome() {
@@ -52,6 +53,7 @@ export default {
           .then((res) => {
             if(res.data) {
               this.flag = true
+              this.nicknameResult = this.nickname
             } else {
               this.flag = false
             }
@@ -64,7 +66,7 @@ export default {
     signUp() {
       const account = {
         id: this.id,
-        nickname: this.nickname
+        nickname: this.nicknameResult
       }
 
       axios.put(this.$store.state.server + '/account', account)
