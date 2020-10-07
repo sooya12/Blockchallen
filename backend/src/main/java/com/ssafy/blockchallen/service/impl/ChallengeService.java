@@ -364,7 +364,8 @@ public class ChallengeService implements IChallengeService {
 	}
 
 	@Transactional
-	@Scheduled(cron = "0 0 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
+//	@Scheduled(cron = "0 0 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
+	@Scheduled(cron = "0 30 15 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
 	@Override
 	public void deleteUnderachieving() throws InterruptedException, ExecutionException, ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
