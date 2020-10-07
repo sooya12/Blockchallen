@@ -45,7 +45,6 @@ export default {
 
 #app {
   width: 100%;
-  height: 1vh;
   margin: 0 auto;
   font-family: 'Kalam', cursive;
 }

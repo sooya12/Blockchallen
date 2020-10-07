@@ -4,7 +4,7 @@
       <router-view :key="$route.fullPath"/>
     </v-main>
     <v-footer
-        style="margin-top: 5%;"
+        style="margin-top: 10%;"
     >
       <main-footer ></main-footer>
 

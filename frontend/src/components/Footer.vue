@@ -1,8 +1,8 @@
 <template>
   <div id="footer">
-    <p style="color:#555; font-weight: bold;">BlockChallen</p>
-    <p>최현수 박형민 이유진 이채영 임진섭</p>
-    <p>Copyright ⓒ BlockChallen. All rights reserved</p>
+    <p style="color:#555; font-weight: bold; margin-bottom: 1%;">BlockChallen</p>
+    <p style="margin-bottom: 0%;">최현수 박형민 이유진 이채영 임진섭</p>
+    <p style="margin-bottom: 0%;">Copyright ⓒ BlockChallen. All rights reserved</p>
   </div>
 </template>
 
