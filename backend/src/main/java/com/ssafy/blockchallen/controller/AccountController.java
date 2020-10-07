@@ -1,35 +1,22 @@
 package com.ssafy.blockchallen.controller;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.ssafy.blockchallen.dto.findAccountDTO;
 import com.ssafy.blockchallen.dto.setNicknameDTO;
-
+import com.ssafy.blockchallen.entity.Account;
+import com.ssafy.blockchallen.service.IAccountService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.ssafy.blockchallen.entity.Account;
-import com.ssafy.blockchallen.service.IAccountService;
-
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -56,7 +43,6 @@ public class AccountController {
 		}
 		else
 			return new ResponseEntity<>("존재하지 않는 회원", HttpStatus.NO_CONTENT);
-
 	}
 
 	@ApiOperation(value = "닉네임 중복 확인")
@@ -120,8 +106,7 @@ public class AccountController {
 			}
 		}
 	}
-	
-	
+
 	// 로그인 토큰 가져오는 함수
 	private String getKakaoAccessToken(String authorize_code) {
 		String access_token = "";

@@ -1,19 +1,17 @@
 package com.ssafy.blockchallen.controller;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import com.ssafy.blockchallen.dto.*;
+import com.ssafy.blockchallen.service.IChallengeService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.ssafy.blockchallen.service.IChallengeService;
-
-import io.swagger.annotations.ApiOperation;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -27,7 +25,6 @@ public class ChallengeController {
 	@RequestMapping(path = "/challenge", method = RequestMethod.POST)	
 	public Object createChallenge(@ModelAttribute createChallengeDTO challenge) throws IOException, InterruptedException, ExecutionException {
 
-		System.out.println(challenge.toString());
 		if(challengeService.createChallenge(challenge)) {
 			return new ResponseEntity<>("챌린지 생성 성공", HttpStatus.OK);
 		}

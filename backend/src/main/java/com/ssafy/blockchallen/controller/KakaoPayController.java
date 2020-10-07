@@ -3,20 +3,18 @@ package com.ssafy.blockchallen.controller;
 import com.ssafy.blockchallen.dto.KakaoPayApprovalVO;
 import com.ssafy.blockchallen.dto.KakaoPayReadyVO;
 import lombok.extern.java.Log;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-
-
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -111,10 +109,8 @@ public class KakaoPayController {
             return ResponseEntity.ok().body(kakaoPayApprovalVO);
 
         } catch (RestClientException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
