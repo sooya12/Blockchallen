@@ -1,8 +1,58 @@
 # 블록챌린 - BlockChallen
 
+![img](Img/blockchallen.png)
+
 ##### 블록체인을 기반으로 원하는 목표를 설정하고, 목표 달성 시 암호화폐로 보상받는 서비스
 
-![img](Img/blockchallen.png)
+
+
+[BlockChallen 보러가기](https://j3a102.p.ssafy.io)
+
+
+
+-------
+
+
+
+##### 계정
+
+- 회원
+  - 카카오 소셜 로그인 / 로그아웃
+- 지갑
+  - 계좌 생성
+  - 카카오 페이로 이더 충전
+
+##### 챌린지
+
+- 생성
+
+  - 챌린지 계좌 생성
+  - 배팅 금액(이더) 송금
+
+- 참가
+
+  - 배팅 금액(이더) 송금
+  - 사진 인증
+    - 최근 수정일 == 인증일 ? 인증 성공 : 실패
+    - 블록체인에 사진 해싱 데이터 저장
+    - 해싱 데이터 기반 위변조 검사
+    - 회원 간 신고
+
+- 결과
+
+  - 85% 이상 참가 시, 성공
+  - 분배 조건(랜덤 / 균등)에 따른 배팅 금액 자동 분배
+
+- 삭제
+
+  - 최소 참가 인원 미달 시, 자동 삭제
+
+  - 삭제 시, 배팅 금액 자동 환급
+
+    
+
+------
+
 
 
 ##### :woman: 최현수 (프론트 / 팀장)
@@ -15,6 +65,8 @@
 
 ##### :man: 임진섭 (백)
 
+
+
 -------
 
 
@@ -25,15 +77,25 @@
 
 
 
+
+
+### :black_nib: 구현 결과
+
+![img](Img/resultPage.png)
+
+
+
 -------
 
 
 
 ### :hammer_and_wrench: 사용 기술
 
-![batge](https://img.shields.io/badge/Ubuntu-18.04.1%20LTS-blue)![batge](https://img.shields.io/badge/Docker-19.03.12-blue)![batge](https://img.shields.io/badge/MySQL-8.0.20-blue)![batge](https://img.shields.io/badge/Vue.js-2.6.11-blue)![batge](https://img.shields.io/badge/Vagrant-2.2.10-blue) ![batge](https://img.shields.io/badge/Geth-1.9.20-blue)![batge](https://img.shields.io/badge/OpenJDK-1.8-blue) ![batge](https://img.shields.io/badge/Node.js-12.18.2-blue) ![batge](https://img.shields.io/badge/JPA----blue) ![batge](https://img.shields.io/badge/Web3j-4.6.3-blue) ![batge](https://img.shields.io/badge/Web3-1.2.11-blue)
+![batge](https://img.shields.io/badge/Ubuntu-18.04.1%20LTS-black)![batge](https://img.shields.io/badge/Docker-19.03.12-black)![batge](https://img.shields.io/badge/Vagrant-2.2.10-black) ![batge](https://img.shields.io/badge/Geth-1.9.20-black)
 
-![batge](https://img.shields.io/badge/STS-3.9.12-lightgrey) ![batge](https://img.shields.io/badge/Intellij-2020.2.1-lightgrey) ![batge](https://img.shields.io/badge/VSCode-1.49.0-lightgrey) ![batge](https://img.shields.io/badge/Gitlab-11.6.2-yellow) ![batge](https://img.shields.io/badge/Jira-8.2-yellow) ![batge](https://img.shields.io/badge/Notion----yellow)
+![batge](https://img.shields.io/badge/Vue.js-2.6.11-blue) ![batge](https://img.shields.io/badge/MySQL-8.0.20-blue)![batge](https://img.shields.io/badge/OpenJDK-1.8-blue) ![batge](https://img.shields.io/badge/Node.js-12.18.2-blue) ![batge](https://img.shields.io/badge/JPA----blue)![batge](https://img.shields.io/badge/Web3j-4.6.3-blue) ![batge](https://img.shields.io/badge/Web3-1.2.11-blue)
+
+![batge](https://img.shields.io/badge/STS-3.9.12-green) ![batge](https://img.shields.io/badge/Intellij-2020.2.1-green) ![batge](https://img.shields.io/badge/VSCode-1.49.0-green) ![batge](https://img.shields.io/badge/Gitlab-11.6.2-lightgreen) ![batge](https://img.shields.io/badge/Jira-8.2-lightgreen) ![batge](https://img.shields.io/badge/Notion----lightgreen)
 
 
 
@@ -46,6 +108,7 @@
 ```Frontend
 frontend
  ├── .gitignore
+ ├── babel.config.js
  ├── frontend.iml
  ├── package-lock.json
  ├── package.json
@@ -64,6 +127,7 @@ frontend
  │   │   └── block9.jpg
  │   ├── certification.jpg
  │   ├── index.html
+ │   ├── kakaopay.png
  │   ├── lego.ico
  │   ├── lego.png
  │   └── uncertification.jpg
@@ -76,9 +140,15 @@ frontend
  │   │   ├── BlockProgress.vue
  │   │   ├── CertificationReport.vue
  │   │   ├── ChallengeModal.vue
- │   │   ├── HelloWorld.vue
- │   │   ├── MyPageLoading.vue
+ │   │   ├── Footer.vue
+ │   │   ├── KakaoPay.vue
+ │   │   ├── KakaoPayCancel.vue
+ │   │   ├── KakaoPaySuccess.vue
+ │   │   ├── Loading.vue
+ │   │   ├── MyWalletCharging.vue
+ │   │   ├── PasswordModal.vue
  │   │   └── PictureModal.vue
+ │   ├── EventBus.js
  │   ├── main.js
  │   ├─> plugins
  │   │   └── vuetify.js
@@ -92,18 +162,16 @@ frontend
  │       ├── ChallengeList.vue
  │       ├── Home.vue
  │       ├── MyPage.vue
+ │       ├── PageNotFound.vue
  │       ├── SignUp.vue
- │       ├── SocialLogin.vue
- │       └── tranferTest.vue
+ │       └── SocialLogin.vue
+ ├── vue.config.js
  └── yarn.lock
 ```
 
 ```backend
 backend
  ├── .gitignore
- ├─> .mvn
- │   └─> wrapper
- │       └── MavenWrapperDownloader.java
  ├── blockchallen.iml
  ├── mvnw
  ├── mvnw.cmd
@@ -128,8 +196,11 @@ backend
          │               │   │   ├── ControllerExceptionHandler.java
          │               │   │   ├── ErrorMessage.java
          │               │   │   └── ResourceNotFoundException.java
+         │               │   ├── KakaoPayController.java
          │               │   └── WalletController.java
          │               ├─> dto
+         │               │   ├── AmountVO.java
+         │               │   ├── CardVO.java
          │               │   ├── certificationDTO.java
          │               │   ├── certificationForCLDTO.java
          │               │   ├── certificationListDTO.java
@@ -140,6 +211,8 @@ backend
          │               │   ├── findAccountDTO.java
          │               │   ├── findWalletDTO.java
          │               │   ├── idDTO.java
+         │               │   ├── KakaoPayApprovalVO.java
+         │               │   ├── KakaoPayReadyVO.java
          │               │   ├── myChallengeDTO.java
          │               │   ├── reportDTO.java
          │               │   ├── resultChallengeDTO.java
@@ -150,11 +223,13 @@ backend
          │               │   ├── Account.java
          │               │   ├── Certification.java
          │               │   ├── Challenge.java
+         │               │   ├── Reward.java
          │               │   └── Wallet.java
          │               ├─> repository
          │               │   ├── AccountRepository.java
          │               │   ├── CertificationRepository.java
          │               │   ├── ChallengeRepository.java
+         │               │   ├── RewardRepository.java
          │               │   └── WalletRepository.java
          │               ├─> service
          │               │   ├── IAccountService.java
@@ -238,4 +313,8 @@ $ sudo kill [프로세스 번호]
 
 $ sudo nohup java -jar -Duser.timezone=Asia/Seoul blockchallen-0.0.1-SNAPSHOT.jar &
 ```
+
+
+
+-----
 
