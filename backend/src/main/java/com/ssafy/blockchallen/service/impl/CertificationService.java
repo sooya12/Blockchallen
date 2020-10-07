@@ -1,17 +1,5 @@
 package com.ssafy.blockchallen.service.impl;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.ssafy.blockchallen.entity.Account;
 import com.ssafy.blockchallen.entity.Certification;
 import com.ssafy.blockchallen.entity.Challenge;
@@ -19,16 +7,23 @@ import com.ssafy.blockchallen.repository.AccountRepository;
 import com.ssafy.blockchallen.repository.CertificationRepository;
 import com.ssafy.blockchallen.repository.ChallengeRepository;
 import com.ssafy.blockchallen.service.ICertificationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
-import org.web3j.protocol.admin.methods.response.TxPoolContent;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.EthTransaction;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
+
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CertificationService implements ICertificationService {
@@ -101,11 +96,8 @@ public class CertificationService implements ICertificationService {
 					String transactionHash = est.getTransactionHash();
 					certification.setTransactionHash(transactionHash); // 트랜잭션해쉬 저장
 					long id = est.getId();
-					System.out.println("TransactionHash : " + transactionHash);
-					System.out.println("사진 인증 정보 저장");
-					
+
 					EthTransaction et = admin.ethGetTransactionByHash(transactionHash).sendAsync().get();
-					System.out.println(et.getResult().getInput()); // transactionHash값으로 가져온 블록체인에 저장된 정보(sha256. 0x로 시작됨)
 				}
 				
 			} catch (Exception e) {
