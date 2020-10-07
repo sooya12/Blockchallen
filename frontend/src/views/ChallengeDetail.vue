@@ -207,7 +207,7 @@
           </v-card>
         </div>
       </v-card>
-      <div style="width:90%; padding: 1% 2%; margin-top: 3%; text-align: center;" v-if="challengeState=='before'">
+      <div style="width:90%; padding: 2%; margin: 0 auto 3%; text-align: center;" v-if="challengeState=='before'">
         <v-dialog
             v-model="passwordDialog"
             persistent
