@@ -22,4 +22,5 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 	Collection<Challenge> findAllOrderByFeeDesc();
 	Collection<Challenge> findAllByStartDate(String startDate);
 	Collection<Challenge> findAllByEndDate(String endDate);
+	Collection<Challenge> findAllByExpireDate(String expireDate);
 }

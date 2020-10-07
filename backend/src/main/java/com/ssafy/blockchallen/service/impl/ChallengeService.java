@@ -365,15 +365,21 @@ public class ChallengeService implements IChallengeService {
 
 	@Transactional
 //	@Scheduled(cron = "0 0 0 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
-	@Scheduled(cron = "0 30 15 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
+	@Scheduled(cron = "0 45 15 * * *") // 초(0-59) 분(0-59) 시(0-23) 일(1-31) 월(1-12) 요일(0-7)
 	@Override
 	public void deleteUnderachieving() throws InterruptedException, ExecutionException, ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		String today = format.format(new Date());
+		
+		// 어제 날짜
+		Date dDate = new Date();
+		dDate = new Date(dDate.getTime() + (1000 * 60 * 60 * 24 * -1));
+		SimpleDateFormat dSdf = new SimpleDateFormat("yyyy-MM-dd");
+		String yesterday = dSdf.format(dDate);
+		System.out.println(yesterday);
 		
 		Admin admin = Admin.build(new HttpService("https://j3a102.p.ssafy.io/geth"));
 		
-		List<Challenge> challenges = challengeRepository.findAllByStartDate(today).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
+		List<Challenge> challenges = challengeRepository.findAllByExpireDate(yesterday).stream().filter(el->el.getAccounts().size()<3).collect(Collectors.toList());
 		for (Challenge challenge : challenges) {
 
 //			String fromAddress = "0x03fb923A157c20565E36D7d518418E1b9b0c2C86"; // 코인베이스 테스트용
@@ -412,12 +418,6 @@ public class ChallengeService implements IChallengeService {
 			
 		}
 		
-		// 어제 날짜
-		Date dDate = new Date();
-		dDate = new Date(dDate.getTime() + (1000 * 60 * 60 * 24 * -1));
-		SimpleDateFormat dSdf = new SimpleDateFormat("yyyy-MM-dd");
-		String yesterday = dSdf.format(dDate);
-		System.out.println(yesterday);
 				
 		List<Challenge> endChallenges = (List<Challenge>) challengeRepository.findAllByEndDate(yesterday); // 종료된 모든 챌린지
 		for (Challenge challenge : endChallenges) {
