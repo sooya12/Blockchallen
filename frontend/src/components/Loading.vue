@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="boxLoading">
       <p style="margin-top :-70%; margin-left: -20%;">Loading</p>
     </div>
@@ -24,6 +23,7 @@ export default {
   top: 0;
   bottom: 0;
 }
+
 .boxLoading:before {
   content: "";
   width: 50px;
@@ -36,6 +36,7 @@ export default {
   border-radius: 50%;
   animation: shadow 0.5s linear infinite;
 }
+
 .boxLoading:after {
   content: "";
   width: 50px;
@@ -66,6 +67,7 @@ export default {
     transform: translateY(0) rotate(90deg);
   }
 }
+
 @keyframes shadow {
   0%,
   100% {
@@ -75,6 +77,7 @@ export default {
     transform: scale(1.2, 1);
   }
 }
+
 body,
 html {
   background: #ccc;

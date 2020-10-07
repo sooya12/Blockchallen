@@ -10,10 +10,8 @@
         :value="password"
         class="input-group--focused"
         @click:append="show = !show"
-
         style="width:50%; "
     ></v-text-field>
-
   </div>
 </template>
 
@@ -27,14 +25,10 @@ export default {
       rules: {
         required: value => !!value || '입력해주세요.',
         min: v => v.length == 4 || '비밀번호는 4글자 입니다.',
-
       },
-
     }
   },
-  methods : {
-
-  }
+  methods: {}
 }
 
 </script>

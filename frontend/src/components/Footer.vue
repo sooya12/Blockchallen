@@ -16,7 +16,7 @@ export default {
 #footer {
   width: 80%;
   max-width: 1000px;
-  margin: 0 auto ;
+  margin: 0 auto;
   text-align: center;
   padding: 1%;
   font-size: small;

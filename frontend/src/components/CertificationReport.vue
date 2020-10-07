@@ -11,8 +11,8 @@
         </p>
       </v-card>
 
-
-      <v-card style="width: 80%; margin: 2%; margin-left: auto; margin-right: auto;padding: 1%; margin-top:3%;  padding-bottom: 0;">
+      <v-card
+          style="width: 80%; margin: 2%; margin-left: auto; margin-right: auto;padding: 1%; margin-top:3%;  padding-bottom: 0;">
         <p style="font-size: 1.5vh; font-weight: bold; text-align:center;">
           아래 내용을 입력창에 입력하시면 신고 버튼이 활성화 됩니다.
           <br>
@@ -25,26 +25,22 @@
             ref="title"
             v-model="textSignature"
             :placeholder="description"
-
             outlined
             style="width: 90%; margin-top:3%; margin-left: auto; margin-right: auto;"
-            
             onpaste="return false;"
             oncopy="return false;"
         ></v-text-field>
         <p style="font-size: 1.8vh; color:#4775d1; font-weight: bold; text-align:center;">
-          {{checkmessage}}
+          {{ checkmessage }}
         </p>
       </v-card>
       <div style="position: absolute; left:0; bottom :5%; width: 100%;margin-left: auto; margin-right: auto;">
         <div style="position: relative; margin: 0 auto; text-align: center; float:left;  width: 100%;">
-          
-          <v-btn 
-            @click="checkPicture()"
-            :disabled="!checkflag"
-            style="margin-right: 2%; background-color:#f39c14">
-            
-             <p style="color:white; font-size:2vh;  font-weight: bold; ">위변조 검사하기</p>
+          <v-btn
+              @click="checkPicture()"
+              :disabled="!checkflag"
+              style="margin-right: 2%; background-color:#f39c14">
+            <p style="color:white; font-size:2vh;  font-weight: bold; ">위변조 검사하기</p>
           </v-btn>
 
           <v-btn
@@ -88,33 +84,26 @@ export default {
       description: '위 내용을 그대로 입력해주세요. (붙여넣기 사용 불가)',
       textOriginal: '위 내용을 숙지하였으며 동의합니다.',
       activateReport: false,
-      checkmessage:'',
-      checkflag:true,
-
+      checkmessage: '',
+      checkflag: true,
     }
   },
-  mounted() {
-
-  },
   methods: {
-
-    checkPicture(){
+    checkPicture() {
       axios.get(this.$store.state.server + '/certification/block/' + this.participant.certification.id)
-        .then((res)=>{
-          if(res.data){
-            this.checkmessage = "사진이 위변조되지 않았습니다. 그래도 신고하시겠습니까?"
-            this.checkflag = false
-          }else{
-            this.checkmessage = "사진이 위변조되었습니다."
-            this.checkflag = false
-          }
-
-      })
+          .then((res) => {
+            if (res.data) {
+              this.checkmessage = "사진이 위변조되지 않았습니다. 그래도 신고하시겠습니까?"
+              this.checkflag = false
+            } else {
+              this.checkmessage = "사진이 위변조되었습니다."
+              this.checkflag = false
+            }
+          })
     },
-
     clickReport(participant) {
-      axios.get(this.$store.state.server +'/certification/report', {
-        params : {
+      axios.get(this.$store.state.server + '/certification/report', {
+        params: {
           'pid': Number(participant.certification.id),
           'uid': Number(participant.id)
         }
@@ -123,10 +112,7 @@ export default {
             this.$emit('close')
             window.location.reload()
           })
-
     },
-
-
     cancel() {
       this.$emit('close')
       this.$modal.show(ChallengeModal, {
@@ -140,7 +126,6 @@ export default {
         draggable: false,
       })
     }
-
   },
   watch: {
     textSignature(val) {
@@ -151,14 +136,13 @@ export default {
       }
     },
   }
-
 }
 </script>
 
 <style scoped>
-.reportPage{
+
+.reportPage {
   width: 100%;
-  
 }
 
 </style>
