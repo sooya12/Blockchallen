@@ -254,15 +254,14 @@ backend
 
 ### :page_facing_up: Commit 규칙
 
-##### [BE/FE/FS/BC] initial/update | 내용 | Jira 이슈 번호
+##### [BE/FE/FS] initial/update | 내용 | Jira 이슈 번호
 
 > BE : 백
 >
 > FE : 프론트
 >
 > FS : 풀스택
->
-> BC : 블록체인
+
 
 ##### README(이름)
 
@@ -280,6 +279,8 @@ backend
 
 ### :computer: AWS 서버
 
+#### Geth
+
 ```aws
 // AWS 접속
 $ ssh -i [pem 저장 경로]/[pem 키] ubuntu@j3a102.p.ssafy.io
@@ -295,7 +296,47 @@ $ geth attach rpc:http://localhost:8545
 $ geth attach rpc:http://j3a102.p.ssafy.io:8545
 ```
 
+#### CI/CD
 
+---
+
+##### Jenkins
+
+> Gitlab에서 push와 같은 webhook을 날리면 Jenkins에서 repository를 가지고 와서 프론트엔드와 백엔드를 빌드
+
+[Jenkins sever](http://j3a102.p.ssafy.io:8070/)
+
+>  id : ```visitor``` password : ``` j3a102```
+
+빌드 완료 시 SSH & SCP를 통해 AWS로 빌드된 파일을 날리고 sh파일과 Dockerfile을 통해 자동 배포
+
+```shell
+## front.sh
+sudo rm -rf /var/www/html/dist
+sudo mv {front.sh 파일 경로} /var/www/html/dist
+sudo service nginx restart
+```
+
+```shell
+## back.sh
+sudo docker stop be
+sudo docker rm be
+sudo docker rmi be
+sudo docker built -t be /{도커 파일 경로}
+sudo docker run --name be -d -v /etc/localtime:/etc/localtime:ro -v /usr/share/zoneinfo/Asia/Seoul:/etc/timezone:ro -p 8080:8080 be
+```
+
+```dockerfile
+## Dockerfile
+FROM openjdk:8-jre
+COPY /{*.jar 파일 경로}/*.jar app.jar
+CMD ["java","-jar","/app.jar"]
+```
+
+
+
+
+#### 직접 빌드 시,
 
 ```build
 // 백엔드 target 폴더 올리기
@@ -317,4 +358,3 @@ $ sudo nohup java -jar -Duser.timezone=Asia/Seoul blockchallen-0.0.1-SNAPSHOT.ja
 
 
 -----
-
