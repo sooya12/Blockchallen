@@ -17,6 +17,7 @@ public class AccountService implements IAccountService {
 	
 	public Account findAccount(String email) {
 		Optional<Account> account = accountRepository.findByEmail(email);
+
 		if(account.isPresent())
 			return account.get();  
 		else

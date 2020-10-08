@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class WalletRunner implements ApplicationRunner {
+
     @Autowired
     WalletRepository walletRepository;
 

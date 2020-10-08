@@ -3,6 +3,7 @@ package com.ssafy.blockchallen.service;
 import com.ssafy.blockchallen.entity.Certification;
 
 public interface ICertificationService {
+
     Boolean register(long userId, long challengeId, byte[] picture, String regDate);
 
     Boolean checkBlock(long pid);

@@ -508,6 +508,7 @@ public class ChallengeService implements IChallengeService {
 					}
 					
 					Optional<Reward> getReward = rewardRepository.findByAccountAndChallenge(winner, challenge);
+
 					if(!getReward.isPresent()) {
 						Reward newReward = new Reward.Builder()
 								.account(winner)

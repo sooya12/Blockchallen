@@ -28,4 +28,5 @@ public interface IChallengeService {
     Object checkParticipate(long uid, long cid);
 
     void deleteUnderachieving() throws InterruptedException, ExecutionException, ParseException;
+
 }

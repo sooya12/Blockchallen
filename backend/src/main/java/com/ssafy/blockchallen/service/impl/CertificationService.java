@@ -48,6 +48,7 @@ public class CertificationService implements ICertificationService {
 	
 		StringBuilder sb = new StringBuilder();
 		String date; // 오늘 날짜
+
 		if(month/10 < 1) {
 			if(day/10 < 1) {
 				 date = sb.append(year).append("-").append(0).append(month).append("-").append(0).append(day).toString();
