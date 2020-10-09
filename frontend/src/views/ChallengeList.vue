@@ -84,11 +84,11 @@
                   <small>{{ challenge.fee }} ETH</small>
                 </h2>
                 <div class="chips">
-                  <v-chip small v-if="challenge.startDate <= today && today < challenge.endDate" color="#f39c14">진행중
+                  <v-chip small v-if="challenge.startDate <= today && today <= challenge.endDate" color="#f39c14">진행중
                   </v-chip>
-                  <v-chip small v-if="challenge.endDate <= today" color="#bbbbbb">마감</v-chip>
-                  <v-chip small v-if="today < challenge.expireDate+1" color="#FC766A">모집중</v-chip>
-                  <v-chip small v-if="challenge.expireDate+1 <= today && today < challenge.startDate" color="#5C84B1">
+                  <v-chip small v-if="challenge.endDate < today" color="#bbbbbb">마감</v-chip>
+                  <v-chip small v-if="today <= challenge.expireDate" color="#FC766A">모집중</v-chip>
+                  <v-chip small v-if="challenge.expireDate < today && today < challenge.startDate" color="#5C84B1">
                     대기중
                   </v-chip>
                 </div>
