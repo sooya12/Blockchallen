@@ -6,7 +6,7 @@
 
 
 
-[BlockChallen 보러가기](https://j3a102.p.ssafy.io)
+:runner: [BlockChallen 보러가기](https://j3a102.p.ssafy.io)
 
 
 
